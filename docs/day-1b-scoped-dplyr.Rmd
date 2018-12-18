@@ -1,0 +1,579 @@
+---
+title: "Scoped Variable Transformation"
+author: "Brad Boehmke"
+date: "2019-01-31"
+output:
+  xaringan::moon_reader:
+    css: ["scrollable.css", "mtheme_max.css", "fonts_mtheme_max.css"]
+    self_contained: false
+    lib_dir: libs
+    chakra: libs/remark-latest.min.js
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false  
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+# set working directory to docs folder
+setwd(here::here("docs"))
+
+# Set global R options
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+
+# Set global knitr chunk options
+knitr::opts_chunk$set(
+  fig.align = "center", 
+  cache = TRUE,
+  error = FALSE,
+  message = FALSE, 
+  warning = FALSE, 
+  collapse = TRUE 
+)
+
+# This is good for getting the ggplot background consistent with
+# the html background color
+library(ggplot2)
+thm <- theme_bw()
+theme_set(thm)
+```
+
+class: clear, center, middle
+
+background-image: url(images/transformer.gif)
+background-size: cover
+
+.font200.white.bold[Scoped Variable Transformation]
+
+---
+
+# Session Prereqs
+
+.pull-left[
+
+.font120.bold.center[Packages]
+
+```{r package-requirements}
+library(nycflights13)  # data
+library(dplyr)         # data transformation
+```
+
+]
+
+.pull-right[
+
+.font120.bold.center[Data]
+
+```{r data-requirements}
+flights
+```
+
+]
+
+---
+
+# Data transformation task
+
+<br><br>
+```{r, echo=FALSE}
+knitr::include_graphics("images/transform-task.png")
+```
+
+---
+
+# dplyr review
+
+In the Intro to R course, you learned six key .bold[dplyr] functions that allow you to solve the vast majority of your data manipulation challenges:
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .bold[`select`]: pick variables
+
+* .bold[`summarize`]: compute statistical summaries 
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .bold[`arrange`]: reorder data
+
+* .bold[`mutate`]: create new variables
+
+]
+
+.pull-right[
+
+<br>
+```{r dplyr-hex, echo=FALSE, out.height="50%", out.width="50%"}
+knitr::include_graphics("images/dplyr.png")
+```
+<br>
+]
+
+---
+
+# Basics
+
+.font130[All functions work similarly:]
+.font120[
+* The first argument is a data frame
+* Subsequent arguments describe what to do
+* Output is a new data frame
+]
+
+<br>
+
+```{r data-frame-in-and-out, echo=FALSE}
+knitr::include_graphics("images/function-in-out.png")
+```
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .opacity20[`select`: pick variables]
+
+* .opacity20[`summarize`: compute statistical summaries]
+
+* .opacity20[`group_by`: perform operations at different levels of your data]
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+```{r filter-observations}
+# filter flights with arrival delay > 60 minutes
+filter(flights, arr_delay > 60)
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .opacity20[`filter`: pick observations based on values]
+
+* .bold[`select`]: pick variables
+
+* .opacity20[`summarize`: compute statistical summaries]
+
+* .opacity20[`group_by`: perform operations at different levels of your data]
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+```{r select-variables}
+# select carrier, year, month, day, and all variables containing "delay"
+select(flights, carrier, year, month, day, contains("delay"))
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .opacity20[`filter`: pick observations based on values]
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .opacity20[`group_by`: perform operations at different levels of your data]
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+```{r summary-statistics}
+# compute median departure delay across all fights
+summarize(flights, median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .opacity20[`filter`: pick observations based on values]
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+```{r grouped-summary-statistics}
+# compute median departure delay across all fights
+summarize(flights, median_delay = median(dep_delay, na.rm = TRUE))
+
+# compute median departure delay for each carrier
+flights %>%
+  group_by(carrier) %>%
+  summarize(median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left-40[
+
+.center[
+
+```{r wait-one-sec, echo=FALSE}
+knitr::include_graphics("images/wait-one-sec.gif")
+```
+
+]
+]
+
+.pull-right-60[
+
+```{r comparing-pipe, eval=FALSE}
+#--------------TRADITIONAL APPROACH -------------------------------------------------------
+# Step 1: group data
+grouped_flights <- group_by(flights, carrier)
+
+# Step 2: compute median departure delay for each carrier
+summarize(grouped_flights, median_delay = median(dep_delay, na.rm = TRUE))
+          
+
+#--------------NESTED APPROACH ------------------------------------------------------------
+summarize(group_by(flights, carrier), median_delay = median(dep_delay, na.rm = TRUE))
+
+
+#--------------PIPE OPERATOR APPROACH -----------------------------------------------------
+flights %>%
+  group_by(carrier) %>%
+  summarize(median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+]
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+.center.bold[The .blue[`%>%`] operator takes the output of the left-hand-side function and passes it to the right-hand-side function as the first argument.]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .bold[`arrange`]: reorder data
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+```{r arrange-data-based-on-variable}
+# rank order carriers with greatest delays on Jan 31
+flights %>%
+  filter(month == 1, day == 31) %>%
+  group_by(carrier) %>%
+  summarize(avg_delay = mean(arr_delay, na.rm = TRUE)) %>%
+  arrange(desc(avg_delay)) #<<
+
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .bold[`arrange`]: reorder data
+
+* .bold[`mutate`]: create new variables
+
+]
+
+.pull-right[
+
+```{r create-new-variable-with-mutate}
+# rank order carriers with greatest difference in delays
+flights %>%
+  filter(month == 1, day == 31) %>%
+  group_by(carrier) %>%
+  summarize(
+    avg_dep_delay = mean(dep_delay, na.rm = TRUE),
+    avg_arr_delay = mean(arr_delay, na.rm = TRUE)
+    ) %>%
+  mutate(avg_diff = avg_arr_delay - avg_dep_delay) %>% #<<
+  arrange(desc(avg_diff ))
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+
+   ```r
+   # hint
+   flights %>%
+     group_by(____) %>%
+     summarize(____) %>% 
+     arrange(____) 
+   ```
+2. Which carriers have the fastest average air speed where $air\_speed = \frac{distance}{air\_time}$?
+
+   ```r
+   # hint
+   flights %>%
+     mutate(____) %>%
+     group_by(____) %>%
+     summarize(____) %>%
+     arrange(____)
+   ```
+
+]
+
+--
+
+.pull-right[
+
+```{r your-turn-1a}
+# 1
+flights %>%
+  group_by(dest) %>%
+  summarize(med_arr_delay = median(arr_delay, na.rm = TRUE)) %>% 
+  arrange(desc(med_arr_delay))
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+
+   ```r
+   # hint
+   flights %>%
+     group_by(____) %>%
+     summarize(____) %>% 
+     arrange(____) 
+   ```
+2. Which carriers have the fastest average air speed where $air\_speed = \frac{distance}{air\_time}$?
+
+   ```r
+   # hint
+   flights %>%
+     mutate(____) %>%
+     group_by(____) %>%
+     summarize(____) %>%
+     arrange(____) 
+   ```
+
+]
+
+.pull-right[
+
+```{r your-turn-1b}
+# 2
+flights %>%
+  mutate(air_speed = distance / air_time) %>%
+  group_by(carrier) %>%
+  summarize(avg_air_speed = mean(air_speed, na.rm = TRUE)) %>%
+  arrange(desc(avg_air_speed))
+```
+
+]
+
+---
+
+# .red[Scoped] dplyr verbs
+
+.font150[Performing manipulations on `r anicon::nia("multiple", speed = "slow", animate = "tada")` columns can be tedious]
+
+--
+
+Say we wanted to compute several departure and arrival time stats for each month:
+
+.pull-left[
+
+```{r multiple-summary-statistics}
+# compute several departure and arrival time stats for each month
+flights %>%
+  group_by(month) %>%
+  summarize(
+    dep_actual = mean(dep_time, na.rm = TRUE),
+    dep_sched  = mean(sched_dep_time, na.rm = TRUE),
+    dep_delay  = mean(dep_delay, na.rm = TRUE),
+    arr_actual = mean(arr_time, na.rm = TRUE),
+    arr_sched  = mean(sched_arr_time, na.rm = TRUE),
+    arr_delay  = mean(arr_delay, na.rm = TRUE),
+  )
+```
+
+]
+
+--
+
+.pull-right[
+
+```{r, echo=FALSE}
+knitr::include_graphics("images/why-so-difficult.gif")
+```
+
+]
+
+---
+
+# .red[Scoped] dplyr verbs
+
+.font150[Many __dplyr__ functions have cousins with the following suffixes:]
+
+<br>
+
+.font140[
+
+- `*_all()`: perform operations on all variables
+
+- `*_if()`: perform operations on variables that meet a certain condition
+
+- `*_at()`: perform operations for pre-specified variables
+
+<br>
+
+.center[.content-box-gray[Type `filter_ + tab` to see example options.]]
+
+]
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
+Going back to our prior problem: _say we wanted to compute summary stats across .red[all variables] for each month_:
+
+.font150.center[`df %>% summarize(function_call, addtl_arguments)`]
+
+--
+
+```{r summarize-all-example-1}
+flights %>%
+  group_by(month) %>%
+  summarize_all(mean, na.rm = TRUE)
+```
+
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
+...or _say we wanted to standardize .red[all variables]_:
+
+.font150.center[`df %>% mutate(function_call, addtl_arguments)`]
+
+--
+
+
+```{r mutate-all-example-1, error=TRUE}
+flights %>%
+  mutate_all(scale)
+
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
+  mutate_all(scale)
+```
+
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
+What if we want to write our own <u>custom function</u> on the fly?
+
+.pull-left[
+
+```{r}
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
+  mutate_all(function(x) (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)) #<<
+```
+
+]
+
+.pull-right[
+
+```{r}
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
+  mutate_all(.funs = funs((. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE))) #<<
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+
+
+

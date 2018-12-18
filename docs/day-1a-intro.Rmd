@@ -17,6 +17,9 @@ output:
 ---
 
 ```{r setup, include=FALSE, cache=FALSE}
+# set working directory to docs folder
+setwd(here::here("docs"))
+
 # Set global R options
 options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
 

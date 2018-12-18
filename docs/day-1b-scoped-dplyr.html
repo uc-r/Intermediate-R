@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scoped Variable Transformation</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Brad Boehmke" />
+    <meta name="date" content="2019-01-31" />
+    <link href="libs/font-awesome-animation/font-awesome-animation-emi.css" rel="stylesheet" />
+    <script src="libs/fontawesome/js/fontawesome-all.min.js"></script>
+    <link rel="stylesheet" href="scrollable.css" type="text/css" />
+    <link rel="stylesheet" href="mtheme_max.css" type="text/css" />
+    <link rel="stylesheet" href="fonts_mtheme_max.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: clear, center, middle
+
+background-image: url(images/transformer.gif)
+background-size: cover
+
+.font200.white.bold[Scoped Variable Transformation]
+
+---
+
+# Session Prereqs
+
+.pull-left[
+
+.font120.bold.center[Packages]
+
+
+```r
+library(nycflights13)  # data
+library(dplyr)         # data transformation
+```
+
+]
+
+.pull-right[
+
+.font120.bold.center[Data]
+
+
+```r
+flights
+## # A tibble: 336,776 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # … with 336,766 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
+```
+
+]
+
+---
+
+# Data transformation task
+
+&lt;br&gt;&lt;br&gt;
+&lt;img src="images/transform-task.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# dplyr review
+
+In the Intro to R course, you learned six key .bold[dplyr] functions that allow you to solve the vast majority of your data manipulation challenges:
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .bold[`select`]: pick variables
+
+* .bold[`summarize`]: compute statistical summaries 
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .bold[`arrange`]: reorder data
+
+* .bold[`mutate`]: create new variables
+
+]
+
+.pull-right[
+
+&lt;br&gt;
+&lt;img src="images/dplyr.png" width="50%" height="50%" style="display: block; margin: auto;" /&gt;
+&lt;br&gt;
+]
+
+---
+
+# Basics
+
+.font130[All functions work similarly:]
+.font120[
+* The first argument is a data frame
+* Subsequent arguments describe what to do
+* Output is a new data frame
+]
+
+&lt;br&gt;
+
+&lt;img src="images/function-in-out.png" width="1343" style="display: block; margin: auto;" /&gt;
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .opacity20[`select`: pick variables]
+
+* .opacity20[`summarize`: compute statistical summaries]
+
+* .opacity20[`group_by`: perform operations at different levels of your data]
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+
+```r
+# filter flights with arrival delay &gt; 60 minutes
+filter(flights, arr_delay &gt; 60)
+## # A tibble: 27,789 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      811            630       101     1047
+##  2  2013     1     1      848           1835       853     1001
+##  3  2013     1     1      957            733       144     1056
+##  4  2013     1     1     1114            900       134     1447
+##  5  2013     1     1     1120            944        96     1331
+##  6  2013     1     1     1255           1200        55     1451
+##  7  2013     1     1     1301           1150        71     1518
+##  8  2013     1     1     1337           1220        77     1649
+##  9  2013     1     1     1342           1320        22     1617
+## 10  2013     1     1     1400           1250        70     1645
+## # … with 27,779 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .opacity20[`filter`: pick observations based on values]
+
+* .bold[`select`]: pick variables
+
+* .opacity20[`summarize`: compute statistical summaries]
+
+* .opacity20[`group_by`: perform operations at different levels of your data]
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+
+```r
+# select carrier, year, month, day, and all variables containing "delay"
+select(flights, carrier, year, month, day, contains("delay"))
+## # A tibble: 336,776 x 6
+##    carrier  year month   day dep_delay arr_delay
+##    &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 UA       2013     1     1         2        11
+##  2 UA       2013     1     1         4        20
+##  3 AA       2013     1     1         2        33
+##  4 B6       2013     1     1        -1       -18
+##  5 DL       2013     1     1        -6       -25
+##  6 UA       2013     1     1        -4        12
+##  7 B6       2013     1     1        -5        19
+##  8 EV       2013     1     1        -3       -14
+##  9 B6       2013     1     1        -3        -8
+## 10 AA       2013     1     1        -2         8
+## # … with 336,766 more rows
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .opacity20[`filter`: pick observations based on values]
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .opacity20[`group_by`: perform operations at different levels of your data]
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+
+```r
+# compute median departure delay across all fights
+summarize(flights, median_delay = median(dep_delay, na.rm = TRUE))
+## # A tibble: 1 x 1
+##   median_delay
+##          &lt;dbl&gt;
+## 1           -2
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .opacity20[`filter`: pick observations based on values]
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .opacity20[`arrange`: reorder data]
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+
+```r
+# compute median departure delay across all fights
+summarize(flights, median_delay = median(dep_delay, na.rm = TRUE))
+## # A tibble: 1 x 1
+##   median_delay
+##          &lt;dbl&gt;
+## 1           -2
+
+# compute median departure delay for each carrier
+flights %&gt;%
+  group_by(carrier) %&gt;%
+  summarize(median_delay = median(dep_delay, na.rm = TRUE))
+## # A tibble: 16 x 2
+##    carrier median_delay
+##    &lt;chr&gt;          &lt;dbl&gt;
+##  1 9E              -2  
+##  2 AA              -3  
+##  3 AS              -3  
+##  4 B6              -1  
+##  5 DL              -2  
+##  6 EV              -1  
+##  7 F9               0.5
+##  8 FL               1  
+##  9 HA              -4  
+## 10 MQ              -3  
+## 11 OO              -6  
+## 12 UA               0  
+## 13 US              -4  
+## 14 VX               0  
+## 15 WN               1  
+## 16 YV              -2
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left-40[
+
+.center[
+
+&lt;img src="images/wait-one-sec.gif" style="display: block; margin: auto;" /&gt;
+
+]
+]
+
+.pull-right-60[
+
+
+```r
+#--------------TRADITIONAL APPROACH -------------------------------------------------------
+# Step 1: group data
+grouped_flights &lt;- group_by(flights, carrier)
+
+# Step 2: compute median departure delay for each carrier
+summarize(grouped_flights, median_delay = median(dep_delay, na.rm = TRUE))
+          
+
+#--------------NESTED APPROACH ------------------------------------------------------------
+summarize(group_by(flights, carrier), median_delay = median(dep_delay, na.rm = TRUE))
+
+
+#--------------PIPE OPERATOR APPROACH -----------------------------------------------------
+flights %&gt;%
+  group_by(carrier) %&gt;%
+  summarize(median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+]
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+.center.bold[The .blue[`%&gt;%`] operator takes the output of the left-hand-side function and passes it to the right-hand-side function as the first argument.]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .bold[`arrange`]: reorder data
+
+* .opacity20[`mutate`: create new variables]
+
+]
+
+.pull-right[
+
+
+```r
+# rank order carriers with greatest delays on Jan 31
+flights %&gt;%
+  filter(month == 1, day == 31) %&gt;%
+  group_by(carrier) %&gt;%
+  summarize(avg_delay = mean(arr_delay, na.rm = TRUE)) %&gt;%
+* arrange(desc(avg_delay))
+## # A tibble: 15 x 2
+##    carrier avg_delay
+##    &lt;chr&gt;       &lt;dbl&gt;
+##  1 F9           88  
+##  2 WN           68.8
+##  3 EV           68.2
+##  4 YV           47  
+##  5 MQ           41.6
+##  6 US           38.2
+##  7 B6           36.5
+##  8 AS           34.5
+##  9 9E           34.3
+## 10 FL           26.2
+## 11 UA           18.8
+## 12 AA           16.2
+## 13 DL           12.0
+## 14 VX           -1  
+## 15 HA          -55
+```
+
+]
+
+---
+
+# dplyr .red[review]
+
+.pull-left[
+
+* .bold[`filter`]: pick observations based on values
+
+* .opacity20[`select`: pick variables]
+
+* .bold[`summarize`]: compute statistical summaries
+
+* .bold[`group_by`]: perform operations at different levels of your data
+
+* .bold[`arrange`]: reorder data
+
+* .bold[`mutate`]: create new variables
+
+]
+
+.pull-right[
+
+
+```r
+# rank order carriers with greatest difference in delays
+flights %&gt;%
+  filter(month == 1, day == 31) %&gt;%
+  group_by(carrier) %&gt;%
+  summarize(
+    avg_dep_delay = mean(dep_delay, na.rm = TRUE),
+    avg_arr_delay = mean(arr_delay, na.rm = TRUE)
+    ) %&gt;%
+* mutate(avg_diff = avg_arr_delay - avg_dep_delay) %&gt;%
+  arrange(desc(avg_diff ))
+## # A tibble: 15 x 4
+##    carrier avg_dep_delay avg_arr_delay avg_diff
+##    &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;
+##  1 B6               28.2          36.5   8.35  
+##  2 YV               39            47     8     
+##  3 EV               60.2          68.2   7.92  
+##  4 MQ               34.2          41.6   7.40  
+##  5 US               32.8          38.2   5.35  
+##  6 FL               21.3          26.2   4.90  
+##  7 UA               15.7          18.8   3.09  
+##  8 DL               10.8          12.0   1.25  
+##  9 AA               15.1          16.2   1.18  
+## 10 9E               34.4          34.3  -0.0952
+## 11 WN               71.4          68.8  -2.59  
+## 12 F9               94.5          88    -6.5   
+## 13 VX                7.4          -1    -8.4   
+## 14 AS               62            34.5 -27.5   
+## 15 HA               -2           -55   -53
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+
+   ```r
+   # hint
+   flights %&gt;%
+     group_by(____) %&gt;%
+     summarize(____) %&gt;% 
+     arrange(____) 
+   ```
+2. Which carriers have the fastest average air speed where `\(air\_speed = \frac{distance}{air\_time}\)`?
+
+   ```r
+   # hint
+   flights %&gt;%
+     mutate(____) %&gt;%
+     group_by(____) %&gt;%
+     summarize(____) %&gt;%
+     arrange(____)
+   ```
+
+]
+
+--
+
+.pull-right[
+
+
+```r
+# 1
+flights %&gt;%
+  group_by(dest) %&gt;%
+  summarize(med_arr_delay = median(arr_delay, na.rm = TRUE)) %&gt;% 
+  arrange(desc(med_arr_delay))
+## # A tibble: 105 x 2
+##    dest  med_arr_delay
+##    &lt;chr&gt;         &lt;dbl&gt;
+##  1 CAE            28  
+##  2 OKC            16  
+##  3 JAC            15  
+##  4 TUL            14  
+##  5 EYW             7  
+##  6 SMF             4  
+##  7 CAK             3  
+##  8 HDN             2  
+##  9 TYS             2  
+## 10 ANC             1.5
+## # … with 95 more rows
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+
+   ```r
+   # hint
+   flights %&gt;%
+     group_by(____) %&gt;%
+     summarize(____) %&gt;% 
+     arrange(____) 
+   ```
+2. Which carriers have the fastest average air speed where `\(air\_speed = \frac{distance}{air\_time}\)`?
+
+   ```r
+   # hint
+   flights %&gt;%
+     mutate(____) %&gt;%
+     group_by(____) %&gt;%
+     summarize(____) %&gt;%
+     arrange(____) 
+   ```
+
+]
+
+.pull-right[
+
+
+```r
+# 2
+flights %&gt;%
+  mutate(air_speed = distance / air_time) %&gt;%
+  group_by(carrier) %&gt;%
+  summarize(avg_air_speed = mean(air_speed, na.rm = TRUE)) %&gt;%
+  arrange(desc(avg_air_speed))
+## # A tibble: 16 x 2
+##    carrier avg_air_speed
+##    &lt;chr&gt;           &lt;dbl&gt;
+##  1 HA               8.01
+##  2 VX               7.44
+##  3 AS               7.39
+##  4 F9               7.09
+##  5 UA               7.01
+##  6 DL               6.97
+##  7 AA               6.96
+##  8 WN               6.68
+##  9 B6               6.67
+## 10 FL               6.57
+## 11 MQ               6.14
+## 12 OO               6.11
+## 13 EV               6.05
+## 14 9E               5.76
+## 15 US               5.70
+## 16 YV               5.53
+```
+
+]
+
+---
+
+# .red[Scoped] dplyr verbs
+
+.font150[Performing manipulations on <span class=" faa-tada animated faa-slow " style=" display: -moz-inline-stack; display: inline-block; transform: rotate(0deg);">multiple</span> columns can be tedious]
+
+--
+
+Say we wanted to compute several departure and arrival time stats for each month:
+
+.pull-left[
+
+
+```r
+# compute several departure and arrival time stats for each month
+flights %&gt;%
+  group_by(month) %&gt;%
+  summarize(
+    dep_actual = mean(dep_time, na.rm = TRUE),
+    dep_sched  = mean(sched_dep_time, na.rm = TRUE),
+    dep_delay  = mean(dep_delay, na.rm = TRUE),
+    arr_actual = mean(arr_time, na.rm = TRUE),
+    arr_sched  = mean(sched_arr_time, na.rm = TRUE),
+    arr_delay  = mean(arr_delay, na.rm = TRUE),
+  )
+## # A tibble: 12 x 7
+##    month dep_actual dep_sched dep_delay arr_actual arr_sched arr_delay
+##    &lt;int&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1     1      1347.     1341.     10.0       1523.     1548.     6.13 
+##  2     2      1348.     1342.     10.8       1522.     1547.     5.61 
+##  3     3      1359.     1354.     13.2       1510.     1546.     5.81 
+##  4     4      1353.     1351.     13.9       1501.     1537.    11.2  
+##  5     5      1351.     1345.     13.0       1503.     1533.     3.52 
+##  6     6      1351.     1346.     20.8       1468.     1527.    16.5  
+##  7     7      1353.     1347.     21.7       1456.     1521.    16.7  
+##  8     8      1350.     1345.     12.6       1495.     1519.     6.04 
+##  9     9      1334.     1335.      6.72      1504.     1534.    -4.02 
+## 10    10      1340.     1336.      6.24      1520.     1539.    -0.167
+## 11    11      1344.     1342.      5.44      1523.     1545.     0.461
+## 12    12      1357.     1345.     16.6       1505.     1543.    14.9
+```
+
+]
+
+--
+
+.pull-right[
+
+&lt;img src="images/why-so-difficult.gif" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+# .red[Scoped] dplyr verbs
+
+.font150[Many __dplyr__ functions have cousins with the following suffixes:]
+
+&lt;br&gt;
+
+.font140[
+
+- `*_all()`: perform operations on all variables
+
+- `*_if()`: perform operations on variables that meet a certain condition
+
+- `*_at()`: perform operations for pre-specified variables
+
+&lt;br&gt;
+
+.center[.content-box-gray[Type `filter_ + tab` to see example options.]]
+
+]
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
+Going back to our prior problem: _say we wanted to compute summary stats across .red[all variables] for each month_:
+
+.font150.center[`df %&gt;% summarize(function_call, addtl_arguments)`]
+
+--
+
+
+```r
+flights %&gt;%
+  group_by(month) %&gt;%
+  summarize_all(mean, na.rm = TRUE)
+## # A tibble: 12 x 19
+##    month  year   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1     1  2013  16.0    1347.          1341.     10.0     1523.
+##  2     2  2013  14.7    1348.          1342.     10.8     1522.
+##  3     3  2013  16.0    1359.          1354.     13.2     1510.
+##  4     4  2013  15.4    1353.          1351.     13.9     1501.
+##  5     5  2013  16.0    1351.          1345.     13.0     1503.
+##  6     6  2013  15.6    1351.          1346.     20.8     1468.
+##  7     7  2013  16.2    1353.          1347.     21.7     1456.
+##  8     8  2013  15.8    1350.          1345.     12.6     1495.
+##  9     9  2013  15.6    1334.          1335.      6.72    1504.
+## 10    10  2013  16.0    1340.          1336.      6.24    1520.
+## 11    11  2013  15.3    1344.          1342.      5.44    1523.
+## 12    12  2013  15.7    1357.          1345.     16.6     1505.
+## # … with 12 more variables: sched_arr_time &lt;dbl&gt;, arr_delay &lt;dbl&gt;,
+## #   carrier &lt;dbl&gt;, flight &lt;dbl&gt;, tailnum &lt;dbl&gt;, origin &lt;dbl&gt;, dest &lt;dbl&gt;,
+## #   air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;,
+## #   time_hour &lt;dttm&gt;
+```
+
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
+...or _say we wanted to standardize .red[all variables]_:
+
+.font150.center[`df %&gt;% mutate(function_call, addtl_arguments)`]
+
+--
+
+
+
+```r
+flights %&gt;%
+  mutate_all(scale)
+## Error in mutate_impl(.data, dots): Evaluation error: 'x' must be numeric.
+
+flights %&gt;%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %&gt;%
+  mutate_all(scale)
+## # A tibble: 336,776 x 14
+##    year[,1] month[,1] day[,1] dep_time[,1] sched_dep_time[… dep_delay[,1]
+##       &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;
+##  1      NaN     -1.63   -1.68        -1.70            -1.77        -0.265
+##  2      NaN     -1.63   -1.68        -1.67            -1.74        -0.215
+##  3      NaN     -1.63   -1.68        -1.65            -1.72        -0.265
+##  4      NaN     -1.63   -1.68        -1.65            -1.71        -0.339
+##  5      NaN     -1.63   -1.68        -1.63            -1.59        -0.464
+##  6      NaN     -1.63   -1.68        -1.63            -1.68        -0.414
+##  7      NaN     -1.63   -1.68        -1.63            -1.59        -0.439
+##  8      NaN     -1.63   -1.68        -1.62            -1.59        -0.389
+##  9      NaN     -1.63   -1.68        -1.62            -1.59        -0.389
+## 10      NaN     -1.63   -1.68        -1.62            -1.59        -0.364
+## # … with 336,766 more rows, and 8 more variables: arr_time[,1] &lt;dbl&gt;,
+## #   sched_arr_time[,1] &lt;dbl&gt;, arr_delay[,1] &lt;dbl&gt;, flight[,1] &lt;dbl&gt;,
+## #   air_time[,1] &lt;dbl&gt;, distance[,1] &lt;dbl&gt;, hour[,1] &lt;dbl&gt;,
+## #   minute[,1] &lt;dbl&gt;
+```
+
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
+What if we want to write our own &lt;u&gt;custom function&lt;/u&gt; on the fly?
+
+.pull-left[
+
+
+```r
+flights %&gt;%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %&gt;%
+* mutate_all(function(x) (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE))
+## # A tibble: 336,776 x 14
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1   NaN -1.63 -1.68    -1.70          -1.77    -0.265   -1.26 
+##  2   NaN -1.63 -1.68    -1.67          -1.74    -0.215   -1.22 
+##  3   NaN -1.63 -1.68    -1.65          -1.72    -0.265   -1.09 
+##  4   NaN -1.63 -1.68    -1.65          -1.71    -0.339   -0.934
+##  5   NaN -1.63 -1.68    -1.63          -1.59    -0.464   -1.29 
+##  6   NaN -1.63 -1.68    -1.63          -1.68    -0.414   -1.43 
+##  7   NaN -1.63 -1.68    -1.63          -1.59    -0.439   -1.10 
+##  8   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.49 
+##  9   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.25 
+## 10   NaN -1.63 -1.68    -1.62          -1.59    -0.364   -1.40 
+## # … with 336,766 more rows, and 7 more variables: sched_arr_time &lt;dbl&gt;,
+## #   arr_delay &lt;dbl&gt;, flight &lt;dbl&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;
+```
+
+]
+
+.pull-right[
+
+
+```r
+flights %&gt;%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %&gt;%
+* mutate_all(.funs = funs((. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)))
+## # A tibble: 336,776 x 14
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1   NaN -1.63 -1.68    -1.70          -1.77    -0.265   -1.26 
+##  2   NaN -1.63 -1.68    -1.67          -1.74    -0.215   -1.22 
+##  3   NaN -1.63 -1.68    -1.65          -1.72    -0.265   -1.09 
+##  4   NaN -1.63 -1.68    -1.65          -1.71    -0.339   -0.934
+##  5   NaN -1.63 -1.68    -1.63          -1.59    -0.464   -1.29 
+##  6   NaN -1.63 -1.68    -1.63          -1.68    -0.414   -1.43 
+##  7   NaN -1.63 -1.68    -1.63          -1.59    -0.439   -1.10 
+##  8   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.49 
+##  9   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.25 
+## 10   NaN -1.63 -1.68    -1.62          -1.59    -0.364   -1.40 
+## # … with 336,766 more rows, and 7 more variables: sched_arr_time &lt;dbl&gt;,
+## #   arr_delay &lt;dbl&gt;, flight &lt;dbl&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
