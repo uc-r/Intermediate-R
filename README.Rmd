@@ -19,7 +19,7 @@ following is an outline of the material covered in this training:
 | Topic                                                                          |     Time      |
 | :----------------------------------------------------------------------------- | :-----------: |
 | Breakfast / Social time                                                        |  8:00 - 9:00  |
-| Introductions                                                                  |  9:00 - 9:30  |
+| [Introductions](https://uc-r.github.io/Intermediate-R/day-1a-intro.html)       |  9:00 - 9:30  |
 | Scoped variable transformations                                                |  9:30 - 10:45 |
 | Break                                                                          | 10:45 - 11:00 |
 | Control flow                                                                   | 11:00 - 12:00 |

@@ -1,0 +1,360 @@
+---
+title: "Intermediate R"
+author: "Brad Boehmke"
+date: "2019-01-31"
+output:
+  xaringan::moon_reader:
+    css: ["scrollable.css", "mtheme_max.css", "fonts_mtheme_max.css"]
+    self_contained: false
+    lib_dir: libs
+    chakra: libs/remark-latest.min.js
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false  
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+# Set global R options
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+
+# Set global knitr chunk options
+knitr::opts_chunk$set(
+  fig.align = "center", 
+  cache = TRUE,
+  error = FALSE,
+  message = FALSE, 
+  warning = FALSE, 
+  collapse = TRUE 
+)
+
+# This is good for getting the ggplot background consistent with
+# the html background color
+library(ggplot2)
+thm <- theme_bw()
+theme_set(thm)
+```
+
+class: title-slide   
+<a href="https://github.com/uc-r/Intermediate-R"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+
+<br><br><br><br>
+# .font200[Intermediate `r anicon::faa("r-project", animate = 'pulse', speed = 'slow', color = 'steelblue')`]
+
+## _"Don't repeat yourself"_ - [Hunt & Thomas (1999)](https://www.amazon.com/Pragmatic-Programmer-Journeyman-Master/dp/020161622X)
+
+### Brad Boehmke
+### Jan 31 - Feb 1, 2019
+
+
+---
+
+class: clear, center, middle
+
+
+background-image: url(images/introductions.jpg)
+background-size: cover
+
+
+---
+
+# About me
+
+.pull-left[
+
+```{r name-tag, echo=FALSE}
+knitr::include_graphics("images/name-tag.png")
+```
+
+* [`r fontawesome::fa("globe", fill = "steelblue")`](http://bradleyboehmke.github.io/) bradleyboehmke.github.io
+* [`r fontawesome::fa("github", fill = "steelblue")`](https://github.com/bradleyboehmke/) @bradleyboehmke
+* [`r fontawesome::fa("twitter", fill = "steelblue")`](https://twitter.com/bradleyboehmke) @bradleyboehmke
+* [`r fontawesome::fa("linkedin", fill = "steelblue")`](https://www.linkedin.com/in/brad-boehmke-ph-d-9b0a257/) @bradleyboehmke
+* [`r fontawesome::fa("envelope", fill = "steelblue")`](mailto:bradleyboehmke@gmail.com) bradleyboehmke@gmail.com
+
+]
+
+
+.pull-right[
+
+#### Family <img src="images/family.png" align="right" alt="family" width="130" />
+
+* Dayton, OH
+* Kate, Alivia (9), Jules (6)
+
+
+#### Professional 
+
+* 84.51° - Data Science Enabler <img src="images/logo8451.jpg" align="right" alt="family" width="150" />
+
+#### Academic
+
+* University of Cincinnati <img src="images/uc.png" align="right" alt="family" width="100" />
+* Air Force Institute of Technology
+
+#### R Community
+
+<img src="images/r-contributions.png" alt="family" width="400" />
+
+]
+
+---
+
+# Data science
+
+```{r, echo=FALSE, out.width="60%"}
+knitr::include_graphics("images/data-science.png")
+```
+
+---
+
+# Data science
+
+```{r, echo=FALSE, out.width="80%"}
+knitr::include_graphics("images/data-science-2.png")
+```
+
+---
+
+# Data science
+
+```{r, echo=FALSE, out.width="95%"}
+knitr::include_graphics("images/applied-data-science.gif")
+```
+
+---
+
+# Data science courses
+
+<br><br><br>
+
+.pull-left[
+.font120[
+
+| Course | Dates |
+|:------|:------:|
+| Intro to R | Dec 13-14 |
+| Intermediate R &nbsp; `r anicon::faa("map-pin", colour = "red")` | Jan 31 - Feb 1 |
+| Advanced R | Feb 28 - Mar 1 |
+| Machine Learning with R &nbsp; | Apr 1-2 |
+
+]
+]
+
+.pull-right[
+
+```{r ds-class-options, echo=FALSE}
+knitr::include_graphics("images/data-science-flow-overall.png")
+```
+
+]
+
+---
+
+# Course objectives!
+
+.font110[Moving from apprentice to journeyman with the `r anicon::faa("r-project", colour = "steelblue", size = 1, animate = FALSE)` programming language:]
+
+.font90[
+
+.pull-left[
+
+.center[.bold[Day 1]]
+
+| Topic                               |     Time      |
+| :---------------------------------- | :-----------: |
+| .opacity[<s>Breakfast / Social time</s>]      |  <s>8:00 - 9:00</s>  |
+| Introductions                       |  9:00 - 9:30  |
+| Scoped variable transformations     |  9:30 - 10:45 |
+| .opacity[Break]                     | 10:45 - 11:00 |
+| Control flow                        | 11:00 - 12:00 |
+| .opacity[Lunch]                     | 12:00 - 1:00 |
+| Work flow                           |  1:00 - 2:30  |
+| .opacity[Break]                     | 2:30 - 2:45 |
+| Case study                          |  2:45 - 4:00  |
+| Q&A                                |  4:00 - 4:30  |
+
+]
+]
+
+--
+
+.font90[
+
+.pull-right[
+
+.center[.bold[Day 2]]
+ 
+| Topic                                    |     Time      |
+| :----------------------------------------| :-----------: |
+| .opacity[Breakfast / Social time]        |  8:00 - 9:00  |
+| Review                                   |  9:00 - 9:30  |
+| Iteration with loops                     |  9:30 - 10:30 |
+| .opacity[Break]                          | 10:30 - 10:45 |
+| Iteration with functional programming    | 10:45 - 12:00 |
+| .opacity[Lunch]                          | 12:00 - 1:00  |
+| Writing functions                        |  1:00 - 2:45  |
+| .opacity[Break]                          |  2:45 - 3:00  |
+| Case study                               |  3:00 - 4:00  |
+| Q&A                                      |  4:00 - 4:30  |
+
+]
+]
+
+---
+
+# A hands-on learning environment
+
+.pull-left[
+
+### You may be overwhelmed
+
+```{r drowning, echo=FALSE, out.height="400"}
+knitr::include_graphics("images/drowning.gif")
+```
+
+]
+
+--
+
+.pull-right[
+
+### So work together
+
+```{r helping, echo=FALSE, out.height="400"}
+knitr::include_graphics("images/dogs-helping.gif")
+```
+
+]
+
+---
+
+# Class material
+
+<a href="https://github.com/uc-r/Intermediate-R" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+.pull-left[
+
+### Source code 
+
+- `r anicon::faa("github", animate = "pulse", anitype="hover", rtext=" GitHub")`: [github.com/uc-r/Intermediate-R](https://github.com/uc-r/Intermediate-R)
+
+   - `r anicon::faa("slideshare", animate = "pulse", anitype="hover", rtext=" Slides")`
+
+   - `r anicon::faa("code", animate = "pulse", anitype="hover", rtext=" Student Scripts")`
+
+   - `r anicon::faa("database", animate = "pulse", anitype="hover", rtext=" Data")`
+
+]
+
+--
+
+.pull-right[
+
+### UC R Programming Guide 
+
+- http://uc-r.github.io
+
+```{r effo, echo=FALSE, out.width="500"}
+knitr::include_graphics("images/uc-guide.png")
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+<br>
+## .font150[Meet your neighbors:]
+
+.font140[
+1. What is their experience with R?
+
+2. What programming experience other than R do they have?
+
+3. How are they using, or how do they plan to use, R in their job?
+]
+
+
+
+---
+
+class: clear, center, middle
+
+
+background-image: url(images/prereqs.jpg)
+background-size: cover
+
+<br><br><br><br><br><br><br><br>
+
+.pull-left-narrow[
+.font200[Prerequisites]
+]
+
+---
+
+# Software
+
+.pull-left[
+
+### R (programming language) `r fontawesome::fa("r-project", fill = "steelblue")`
+
+1. Go to https://cran.r-project.org/
+2. Click "Download R for Mac/Windows"
+3. Download the appropriate file:
+   - Windows users click Base, and download the installer for the latest R version
+   - Mac users select the file R-3.X.X that aligns with your OS version
+4. Follow the instructions of the installer   
+
+]
+
+.pull-right[
+
+### RStudio (IDE) <img src="https://dfsuknfbz46oq.cloudfront.net/p/icons/rstudio.png" width="35" align="center"/>
+
+1. Go to RStudio for desktop https://www.rstudio.com/products/rstudio/download/#download
+2. Select the install file for your OS
+3. Follow the instructions of the installer  
+
+]
+
+<br>
+<br>
+
+.center[
+.content-box-gray[.bold[You should have R version 3.4.5 or greater installed.]]
+]
+
+---
+
+# Knowledge
+
+This course makes some assumptions about your prior knowledge. To ensure your success, you should have reviewed the material covered in the Intro to R course [`r fontawesome::fa("github", fill = "steelblue")`](https://github.com/uc-r/Intro-R).
+
+<br>
+
+| Topics                  | &nbsp;&nbsp; Slides &nbsp;&nbsp; |
+| :---------------------- | :-----: |
+| R & RStudio fundamentals &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-1a-intro.html) |
+| Importing data          | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-1b-import.html) |
+| Data transformation     | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-1c-transform.html) |
+| Data visualization      | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-1e-visualization.html) |
+| Data types              | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-2b-data-types.html) |
+| Tidy data               | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-2c-tidy.html) |
+| Joining data            | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-2d-joins.html) |
+| Data structures         | [`r anicon::faa("slideshare", animate = "pulse", anitype="hover", colour = "steelblue")`](https://uc-r.github.io/Intro-R/day-2e-data-structures.html) | 
+
+
+---
+
+# Questions about the class
+
+<br>
+
+```{r questions, echo=FALSE, out.height="450", out.width="450"}
+knitr::include_graphics("images/questions.png")
+```
