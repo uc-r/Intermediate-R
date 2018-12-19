@@ -456,8 +456,11 @@ class: yourturn
 # Your Turn!
 
 .pull-left[
+.font90[
 
-1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+### Challenge
+
+1. Which top 5 destination airports (`dest`) have the largest median arrival delays (`arr_delay`)?
 
    ```r
    # hint
@@ -466,7 +469,7 @@ class: yourturn
      summarize(____) %&gt;% 
      arrange(____) 
    ```
-2. Which carriers have the fastest average air speed where `\(air\_speed = \frac{distance}{air\_time}\)`?
+2. Which carriers (`carrier`) have the fastest average air speed where `\(air\_speed = \frac{distance}{air\_time}\)`?
 
    ```r
    # hint
@@ -476,12 +479,14 @@ class: yourturn
      summarize(____) %&gt;%
      arrange(____)
    ```
-
+]
 ]
 
 --
 
 .pull-right[
+
+### Solution
 
 
 ```r
@@ -513,8 +518,11 @@ class: yourturn
 # Your Turn!
 
 .pull-left[
+.font90[
 
-1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+### Challenge
+
+1. Which top 5 destination airports (`dest`) have the largest median arrival delays (`arr_delay`)?
 
    ```r
    # hint
@@ -523,7 +531,7 @@ class: yourturn
      summarize(____) %&gt;% 
      arrange(____) 
    ```
-2. Which carriers have the fastest average air speed where `\(air\_speed = \frac{distance}{air\_time}\)`?
+2. Which carriers (`carrier`) have the fastest average air speed where `\(air\_speed = \frac{distance}{air\_time}\)`?
 
    ```r
    # hint
@@ -533,10 +541,12 @@ class: yourturn
      summarize(____) %&gt;%
      arrange(____) 
    ```
-
+]
 ]
 
 .pull-right[
+
+### Solution
 
 
 ```r
@@ -631,11 +641,11 @@ flights %&gt;%
 
 .font140[
 
-- `*_all()`: perform operations on all variables
+- `*_all()`: execute function(s) on all variables
 
-- `*_if()`: perform operations on variables that meet a certain condition
+- `*_if()`: execute function(s) on variables that meet a certain condition
 
-- `*_at()`: perform operations for pre-specified variables
+- `*_at()`: execute function(s) for pre-specified variables
 
 &lt;br&gt;
 
@@ -647,17 +657,33 @@ flights %&gt;%
 
 # Transform .red[all] variables with .red[`*_all()`]
 
+.font150.center[
+
+Perform some operation on all variables
+
+`df %&gt;%` .red[`xxxx_all`]`(`.blue[`.funs`], .grey[`...`]`)`
+
+]
+.center[
+.content-box-red-dark[.white[scoped dplyr function]]
+.content-box-blue-dark[.white[function call to execute]]
+.content-box-grey-dark[.white[additional args for function call]]
+]
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
 Going back to our prior problem: _say we wanted to compute summary stats across .red[all variables] for each month_:
 
-.font150.center[`df %&gt;% summarize(function_call, addtl_arguments)`]
+.font140.center[`df %&gt;% summarize_all(.funs, ...)`]
 
---
 
 
 ```r
 flights %&gt;%
   group_by(month) %&gt;%
-  summarize_all(mean, na.rm = TRUE)
+* summarize_all(mean, na.rm = TRUE)
 ## # A tibble: 12 x 19
 ##    month  year   day dep_time sched_dep_time dep_delay arr_time
 ##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
@@ -686,7 +712,7 @@ flights %&gt;%
 
 ...or _say we wanted to standardize .red[all variables]_:
 
-.font150.center[`df %&gt;% mutate(function_call, addtl_arguments)`]
+.font140.center[`df %&gt;% mutate_all(.funs, ...)`]
 
 --
 
@@ -699,7 +725,7 @@ flights %&gt;%
 
 flights %&gt;%
   select(-c(carrier, tailnum, origin, dest, time_hour)) %&gt;%
-  mutate_all(scale)
+* mutate_all(scale)
 ## # A tibble: 336,776 x 14
 ##    year[,1] month[,1] day[,1] dep_time[,1] sched_dep_time[… dep_delay[,1]
 ##       &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;
@@ -783,6 +809,499 @@ flights %&gt;%
 ---
 class: yourturn
 # Your Turn!
+
+
+
+---
+
+# .font80[But what if we only want to transform .red[some] but not all .red[variables]?]
+
+.pull-left[
+
+* In a prior example, we saw that an error occurred when we tried to `mutate_all()` variables.
+
+* This is because we are trying to execute a function that does not work on non-numeric variables
+
+* What we actually want is to standardize variables ___if they are numeric___
+
+* .red[We can use the `*_if()` suffix to only execute on variables that meet a certain condition]
+
+]
+
+
+.pull-right[
+
+
+```r
+# my own standarizing function
+standardize &lt;- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+# results in an error due to non-numeric variables
+flights %&gt;%
+  mutate_all(standardize)
+## Error in mutate_impl(.data, dots): Evaluation error: non-numeric argument to binary operator.
+
+# works when performed on only numeric variables
+flights %&gt;%
+* select(-c(carrier, tailnum, origin, dest, time_hour)) %&gt;%
+* mutate_all(standardize)
+## # A tibble: 336,776 x 14
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1   NaN -1.63 -1.68    -1.70          -1.77    -0.265   -1.26 
+##  2   NaN -1.63 -1.68    -1.67          -1.74    -0.215   -1.22 
+##  3   NaN -1.63 -1.68    -1.65          -1.72    -0.265   -1.09 
+##  4   NaN -1.63 -1.68    -1.65          -1.71    -0.339   -0.934
+##  5   NaN -1.63 -1.68    -1.63          -1.59    -0.464   -1.29 
+##  6   NaN -1.63 -1.68    -1.63          -1.68    -0.414   -1.43 
+##  7   NaN -1.63 -1.68    -1.63          -1.59    -0.439   -1.10 
+##  8   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.49 
+##  9   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.25 
+## 10   NaN -1.63 -1.68    -1.62          -1.59    -0.364   -1.40 
+## # … with 336,766 more rows, and 7 more variables: sched_arr_time &lt;dbl&gt;,
+## #   arr_delay &lt;dbl&gt;, flight &lt;dbl&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;
+```
+
+]
+
+---
+
+# Transform .red[some] variables with .red[`*_if()`]
+
+.font150.center[
+
+Perform some operation on all variables that meet a condition
+
+`df %&gt;%` .red[`xxxx_if`]`(`.green[`.predicate`], .blue[`.funs`], .grey[`...`]`)`
+
+]
+.center.font90[
+.content-box-red-dark[.white[scoped dplyr function]]
+.content-box-green-dark[.white[condition to meet]]
+.content-box-blue-dark[.white[function call to execute]]
+.content-box-grey-dark[.white[additional args for function call]]
+]
+
+---
+
+# Transform .red[some] variables with .red[`*_if()`]
+
+Back to our problem of _wanting to standardize only .red[only numeric variables]_:
+
+.font150.center[`df %&gt;% mutate_if(.predicate, .funs, ...)`]
+
+
+```r
+# standardize only numeric variables but keep ALL variables
+flights %&gt;%
+* mutate_if(is.numeric, standardize)
+## # A tibble: 336,776 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1   NaN -1.63 -1.68    -1.70          -1.77    -0.265   -1.26 
+##  2   NaN -1.63 -1.68    -1.67          -1.74    -0.215   -1.22 
+##  3   NaN -1.63 -1.68    -1.65          -1.72    -0.265   -1.09 
+##  4   NaN -1.63 -1.68    -1.65          -1.71    -0.339   -0.934
+##  5   NaN -1.63 -1.68    -1.63          -1.59    -0.464   -1.29 
+##  6   NaN -1.63 -1.68    -1.63          -1.68    -0.414   -1.43 
+##  7   NaN -1.63 -1.68    -1.63          -1.59    -0.439   -1.10 
+##  8   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.49 
+##  9   NaN -1.63 -1.68    -1.62          -1.59    -0.389   -1.25 
+## 10   NaN -1.63 -1.68    -1.62          -1.59    -0.364   -1.40 
+## # … with 336,766 more rows, and 12 more variables: sched_arr_time &lt;dbl&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;dbl&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
+```
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+### Challenge
+
+Using the `flights` data:
+
+1. convert year, month, and day variables to type character
+
+2. group by month
+
+3. compute the mean of all numeric variables
+
+   ```r
+   # hint
+   flights %&gt;%
+     mutate(____) %&gt;%
+     group_by(____) %&gt;%
+     summarize_if(____) 
+   ```
+   
+]
+
+--
+
+.pull-right[
+
+### Solution
+
+
+```r
+flights %&gt;%
+  mutate(
+    year  = as.character(year),
+    month = as.character(month),
+    day   = as.character(day)
+  ) %&gt;%
+  group_by(month) %&gt;%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+## # A tibble: 12 x 12
+##    month dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    &lt;chr&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;
+##  1 1        1347.          1341.     10.0     1523.          1548.
+##  2 10       1340.          1336.      6.24    1520.          1539.
+##  3 11       1344.          1342.      5.44    1523.          1545.
+##  4 12       1357.          1345.     16.6     1505.          1543.
+##  5 2        1348.          1342.     10.8     1522.          1547.
+##  6 3        1359.          1354.     13.2     1510.          1546.
+##  7 4        1353.          1351.     13.9     1501.          1537.
+##  8 5        1351.          1345.     13.0     1503.          1533.
+##  9 6        1351.          1346.     20.8     1468.          1527.
+## 10 7        1353.          1347.     21.7     1456.          1521.
+## 11 8        1350.          1345.     12.6     1495.          1519.
+## 12 9        1334.          1335.      6.72    1504.          1534.
+## # … with 6 more variables: arr_delay &lt;dbl&gt;, flight &lt;dbl&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+### Challenge
+
+Using the `flights` data:
+
+1. convert year, month, and day variables to type character
+
+2. group by month
+
+3. compute the mean of all numeric variables
+
+   ```r
+   # hint
+   flights %&gt;%
+     mutate(____) %&gt;%
+     group_by(____) %&gt;%
+     summarize_if(____) 
+   ```
+   
+]
+
+
+.pull-right[
+
+### Solution
+
+
+```r
+flights %&gt;%
+  mutate(
+*   year  = as.character(year),  # can we
+*   month = as.character(month), # simplify
+*   day   = as.character(day)    # this?
+  ) %&gt;%
+  group_by(month) %&gt;%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+## # A tibble: 12 x 12
+##    month dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    &lt;chr&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;
+##  1 1        1347.          1341.     10.0     1523.          1548.
+##  2 10       1340.          1336.      6.24    1520.          1539.
+##  3 11       1344.          1342.      5.44    1523.          1545.
+##  4 12       1357.          1345.     16.6     1505.          1543.
+##  5 2        1348.          1342.     10.8     1522.          1547.
+##  6 3        1359.          1354.     13.2     1510.          1546.
+##  7 4        1353.          1351.     13.9     1501.          1537.
+##  8 5        1351.          1345.     13.0     1503.          1533.
+##  9 6        1351.          1346.     20.8     1468.          1527.
+## 10 7        1353.          1347.     21.7     1456.          1521.
+## 11 8        1350.          1345.     12.6     1495.          1519.
+## 12 9        1334.          1335.      6.72    1504.          1534.
+## # … with 6 more variables: arr_delay &lt;dbl&gt;, flight &lt;dbl&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;
+```
+
+]
+
+---
+
+# Transform .red[specific] variables with .red[`*_at()`]
+
+.font150.center[
+
+Perform some operation on pre-specified variables
+
+`df %&gt;%` .red[`xxxx_at`]`(`.green[`vars(x, y, z)`], .blue[`.funs`], .grey[`...`]`)`
+
+]
+.center.font90[
+.content-box-red-dark[.white[scoped dplyr function]]
+.content-box-green-dark[.white[variables to execute on]]
+.content-box-blue-dark[.white[function call to execute]]
+.content-box-grey-dark[.white[additional args for function call]]
+]
+
+---
+
+# Transform .red[specific] variables with .red[`*_at()`]
+
+Back to our problem of _wanting to mutate .red[specific variables]_:
+
+.font150.center[`df %&gt;% mutate_at(vars(x, y, z), .funs, ...)`]
+
+.pull-left[
+
+.center.font120.bold[Unscoped approach]
+
+
+```r
+flights %&gt;%
+  mutate(
+*   year  = as.character(year),  # can we
+*   month = as.character(month), # simplify
+*   day   = as.character(day)    # this?
+  ) %&gt;%
+  group_by(month) %&gt;%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+## # A tibble: 12 x 12
+##    month dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    &lt;chr&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;
+##  1 1        1347.          1341.     10.0     1523.          1548.
+##  2 10       1340.          1336.      6.24    1520.          1539.
+##  3 11       1344.          1342.      5.44    1523.          1545.
+##  4 12       1357.          1345.     16.6     1505.          1543.
+##  5 2        1348.          1342.     10.8     1522.          1547.
+##  6 3        1359.          1354.     13.2     1510.          1546.
+##  7 4        1353.          1351.     13.9     1501.          1537.
+##  8 5        1351.          1345.     13.0     1503.          1533.
+##  9 6        1351.          1346.     20.8     1468.          1527.
+## 10 7        1353.          1347.     21.7     1456.          1521.
+## 11 8        1350.          1345.     12.6     1495.          1519.
+## 12 9        1334.          1335.      6.72    1504.          1534.
+## # … with 6 more variables: arr_delay &lt;dbl&gt;, flight &lt;dbl&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;
+```
+
+]
+
+.pull-right[
+
+.center.font120.bold[Scoped `*_at()` approach]
+
+
+```r
+flights %&gt;%
+* mutate_at(vars(year, month, day), as.character) %&gt;%
+  group_by(month) %&gt;%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+## # A tibble: 12 x 12
+##    month dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    &lt;chr&gt;    &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;
+##  1 1        1347.          1341.     10.0     1523.          1548.
+##  2 10       1340.          1336.      6.24    1520.          1539.
+##  3 11       1344.          1342.      5.44    1523.          1545.
+##  4 12       1357.          1345.     16.6     1505.          1543.
+##  5 2        1348.          1342.     10.8     1522.          1547.
+##  6 3        1359.          1354.     13.2     1510.          1546.
+##  7 4        1353.          1351.     13.9     1501.          1537.
+##  8 5        1351.          1345.     13.0     1503.          1533.
+##  9 6        1351.          1346.     20.8     1468.          1527.
+## 10 7        1353.          1347.     21.7     1456.          1521.
+## 11 8        1350.          1345.     12.6     1495.          1519.
+## 12 9        1334.          1335.      6.72    1504.          1534.
+## # … with 6 more variables: arr_delay &lt;dbl&gt;, flight &lt;dbl&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;
+```
+
+]
+
+---
+
+# Thinking out loud <span style=" display: -moz-inline-stack; display: inline-block; transform: rotate(0deg);">&lt;img src="https://emojis.slackmojis.com/emojis/images/1542340471/4979/thinking.gif?1542340471" style="height:1em; width:auto; "/&gt;</span>
+
+.font130[
+Can you think of an easy way to do the following:
+
+1. for each destination airport,
+2. compute the median of all variables that contain "delay",
+3. re-order the destinations in descending order based on all delay statistics
+
+]
+
+--
+
+
+```r
+flights %&gt;%
+  group_by(dest) %&gt;%
+  summarize_at(vars(contains("delay")), median, na.rm = TRUE) %&gt;%
+  arrange_if(is.numeric, desc)
+## # A tibble: 105 x 3
+##    dest  dep_delay arr_delay
+##    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 CAE        14        28  
+##  2 SBN        14        -3.5
+##  3 JAC        13.5      15  
+##  4 OKC        10        16  
+##  5 TUL         8        14  
+##  6 HDN         6.5       2  
+##  7 ANC         3         1.5
+##  8 MTJ         3       -10.5
+##  9 SMF         2         4  
+## 10 MDW         2        -1  
+## # … with 95 more rows
+```
+
+---
+
+# Thinking out loud <span style=" display: -moz-inline-stack; display: inline-block; transform: rotate(0deg);">&lt;img src="https://emojis.slackmojis.com/emojis/images/1542340471/4979/thinking.gif?1542340471" style="height:1em; width:auto; "/&gt;</span>
+
+.font130[
+Can you think of an easy way to do the following:
+
+1. for each destination airport,
+2. compute the median of all variables that contain "delay",
+3. re-order the destinations in descending order based on all delay statistics
+
+]
+
+.center.font130.red[Any `select()` helper function can be used in `vars()`!]
+
+--
+
+.center.font110.red[and we can combine them just like we do in `select()`]
+
+
+```r
+flights %&gt;%
+  group_by(dest) %&gt;%
+  summarize_at(vars(contains("delay"), ends_with("time")), median, na.rm = TRUE)
+## # A tibble: 105 x 8
+##    dest  dep_delay arr_delay dep_time sched_dep_time arr_time
+##    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;    &lt;dbl&gt;
+##  1 ABQ           0      -5.5    2005            2001    2246.
+##  2 ACK          -3      -3      1141            1140    1242 
+##  3 ALB           1      -4      1738            1721    1832 
+##  4 ANC           3       1.5    1618            1615    1957 
+##  5 ATL          -2      -1      1317            1308    1535 
+##  6 AUS          -1      -5      1652.           1655    1829 
+##  7 AVL          -3      -1      1051            1053    1242 
+##  8 BDL          -1     -10      1328.           1327    1414.
+##  9 BGR          -2      -9      1842.           1825    1955 
+## 10 BHM           1      -2      1947            1910    2120 
+## # … with 95 more rows, and 2 more variables: sched_arr_time &lt;dbl&gt;,
+## #   air_time &lt;dbl&gt;
+```
+
+---
+
+# Computing .red[multiple] functions
+
+.pull-left-30[
+.font110[
+
+* We can also include multiple functions to be executed
+
+* Use the .red.bold[`funs()`] wrapper
+
+* Additional arguments must be relevant to ___all___ functions
+
+* Applicable to `*_all()`, `*_if()`, and `*at_()`
+
+]
+]
+
+
+.pull-right-60[
+
+
+```r
+flights %&gt;%
+  group_by(dest) %&gt;%
+  summarize_at(vars(contains("delay")), funs(mean, sd), na.rm = TRUE)
+## # A tibble: 105 x 5
+##    dest  dep_delay_mean arr_delay_mean dep_delay_sd arr_delay_sd
+##    &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+##  1 ABQ            13.7            4.38         30.5         42.0
+##  2 ACK             6.46           4.85         26.3         30.0
+##  3 ALB            23.6           14.4          48.6         50.5
+##  4 ANC            12.9           -2.5          25.6         26.4
+##  5 ATL            12.5           11.3          43.8         47.0
+##  6 AUS            13.0            6.02         36.7         43.5
+##  7 AVL             8.19           8.00         30.1         33.6
+##  8 BDL            17.7            7.05         41.0         42.1
+##  9 BGR            19.5            8.03         45.1         46.4
+## 10 BHM            29.7           16.9          56.9         56.2
+## # … with 95 more rows
+```
+
+]
+
+---
+class: yourturn
+
+# Your Turn!
+
+
+---
+
+# `filter_*()` .red[and its helpers]
+
+&lt;br&gt;
+.font120[
+
+* Sometimes we want to filter rows based on multiple variables
+
+* Until now, we have been discussing manipulation and summarization of multiple variables, but we also ossasionally need to filter by the same condition on multiple variables.
+
+* Common examples of this include:
+   - missing values
+   - infinite values
+   - removing outliers
+
+]
+
+---
+
+# Filter .red[all] rows
+
+
+
+.pull-left[
+
+
+
+]
+
+--
+
+.pull-right[
+
+
+]
+
+---
+
+# `group_by_*()` .red[and its helpers]
     </textarea>
 <script src="libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

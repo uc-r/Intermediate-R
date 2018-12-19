@@ -368,8 +368,11 @@ class: yourturn
 # Your Turn!
 
 .pull-left[
+.font90[
 
-1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+### Challenge
+
+1. Which top 5 destination airports (`dest`) have the largest median arrival delays (`arr_delay`)?
 
    ```r
    # hint
@@ -378,7 +381,7 @@ class: yourturn
      summarize(____) %>% 
      arrange(____) 
    ```
-2. Which carriers have the fastest average air speed where $air\_speed = \frac{distance}{air\_time}$?
+2. Which carriers (`carrier`) have the fastest average air speed where $air\_speed = \frac{distance}{air\_time}$?
 
    ```r
    # hint
@@ -388,12 +391,14 @@ class: yourturn
      summarize(____) %>%
      arrange(____)
    ```
-
+]
 ]
 
 --
 
 .pull-right[
+
+### Solution
 
 ```{r your-turn-1a}
 # 1
@@ -410,8 +415,11 @@ class: yourturn
 # Your Turn!
 
 .pull-left[
+.font90[
 
-1. Which top 5 airports (`dest`) have the largest median arrival delays (`arr_delay`)?
+### Challenge
+
+1. Which top 5 destination airports (`dest`) have the largest median arrival delays (`arr_delay`)?
 
    ```r
    # hint
@@ -420,7 +428,7 @@ class: yourturn
      summarize(____) %>% 
      arrange(____) 
    ```
-2. Which carriers have the fastest average air speed where $air\_speed = \frac{distance}{air\_time}$?
+2. Which carriers (`carrier`) have the fastest average air speed where $air\_speed = \frac{distance}{air\_time}$?
 
    ```r
    # hint
@@ -430,10 +438,12 @@ class: yourturn
      summarize(____) %>%
      arrange(____) 
    ```
-
+]
 ]
 
 .pull-right[
+
+### Solution
 
 ```{r your-turn-1b}
 # 2
@@ -494,11 +504,11 @@ knitr::include_graphics("images/why-so-difficult.gif")
 
 .font140[
 
-- `*_all()`: perform operations on all variables
+- `*_all()`: execute function(s) on all variables
 
-- `*_if()`: perform operations on variables that meet a certain condition
+- `*_if()`: execute function(s) on variables that meet a certain condition
 
-- `*_at()`: perform operations for pre-specified variables
+- `*_at()`: execute function(s) for pre-specified variables
 
 <br>
 
@@ -510,16 +520,32 @@ knitr::include_graphics("images/why-so-difficult.gif")
 
 # Transform .red[all] variables with .red[`*_all()`]
 
+.font150.center[
+
+Perform some operation on all variables
+
+`df %>%` .red[`xxxx_all`]`(`.blue[`.funs`], .grey[`...`]`)`
+
+]
+.center[
+.content-box-red-dark[.white[scoped dplyr function]]
+.content-box-blue-dark[.white[function call to execute]]
+.content-box-grey-dark[.white[additional args for function call]]
+]
+
+---
+
+# Transform .red[all] variables with .red[`*_all()`]
+
 Going back to our prior problem: _say we wanted to compute summary stats across .red[all variables] for each month_:
 
-.font150.center[`df %>% summarize(function_call, addtl_arguments)`]
+.font140.center[`df %>% summarize_all(.funs, ...)`]
 
---
 
 ```{r summarize-all-example-1}
 flights %>%
   group_by(month) %>%
-  summarize_all(mean, na.rm = TRUE)
+  summarize_all(mean, na.rm = TRUE) #<<
 ```
 
 
@@ -529,7 +555,7 @@ flights %>%
 
 ...or _say we wanted to standardize .red[all variables]_:
 
-.font150.center[`df %>% mutate(function_call, addtl_arguments)`]
+.font140.center[`df %>% mutate_all(.funs, ...)`]
 
 --
 
@@ -540,7 +566,7 @@ flights %>%
 
 flights %>%
   select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
-  mutate_all(scale)
+  mutate_all(scale) #<<
 ```
 
 
@@ -576,4 +602,340 @@ class: yourturn
 
 
 
+---
+
+# .font80[But what if we only want to transform .red[some] but not all .red[variables]?]
+
+.pull-left[
+
+* In a prior example, we saw that an error occurred when we tried to `mutate_all()` variables.
+
+* This is because we are trying to execute a function that does not work on non-numeric variables
+
+* What we actually want is to standardize variables ___if they are numeric___
+
+* .red[We can use the `*_if()` suffix to only execute on variables that meet a certain condition]
+
+]
+
+
+.pull-right[
+
+```{r mutate-all-error, error=TRUE}
+# my own standarizing function
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+# results in an error due to non-numeric variables
+flights %>%
+  mutate_all(standardize)
+
+# works when performed on only numeric variables
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>% #<<
+  mutate_all(standardize) #<<
+```
+
+]
+
+---
+
+# Transform .red[some] variables with .red[`*_if()`]
+
+.font150.center[
+
+Perform some operation on all variables that meet a condition
+
+`df %>%` .red[`xxxx_if`]`(`.green[`.predicate`], .blue[`.funs`], .grey[`...`]`)`
+
+]
+.center.font90[
+.content-box-red-dark[.white[scoped dplyr function]]
+.content-box-green-dark[.white[condition to meet]]
+.content-box-blue-dark[.white[function call to execute]]
+.content-box-grey-dark[.white[additional args for function call]]
+]
+
+---
+
+# Transform .red[some] variables with .red[`*_if()`]
+
+Back to our problem of _wanting to standardize only .red[only numeric variables]_:
+
+.font150.center[`df %>% mutate_if(.predicate, .funs, ...)`]
+
+```{r mutate-if}
+# standardize only numeric variables but keep ALL variables
+flights %>%
+  mutate_if(is.numeric, standardize) #<<
+```
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+### Challenge
+
+Using the `flights` data:
+
+1. convert year, month, and day variables to type character
+
+2. group by month
+
+3. compute the mean of all numeric variables
+
+   ```r
+   # hint
+   flights %>%
+     mutate(____) %>%
+     group_by(____) %>%
+     summarize_if(____) 
+   ```
+   
+]
+
+--
+
+.pull-right[
+
+### Solution
+
+```{r}
+flights %>%
+  mutate(
+    year  = as.character(year),
+    month = as.character(month),
+    day   = as.character(day)
+  ) %>%
+  group_by(month) %>%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+### Challenge
+
+Using the `flights` data:
+
+1. convert year, month, and day variables to type character
+
+2. group by month
+
+3. compute the mean of all numeric variables
+
+   ```r
+   # hint
+   flights %>%
+     mutate(____) %>%
+     group_by(____) %>%
+     summarize_if(____) 
+   ```
+   
+]
+
+
+.pull-right[
+
+### Solution
+
+```{r}
+flights %>%
+  mutate(
+    year  = as.character(year),  # can we   #<<
+    month = as.character(month), # simplify #<<
+    day   = as.character(day)    # this?    #<<
+  ) %>%
+  group_by(month) %>%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+```
+
+]
+
+---
+
+# Transform .red[specific] variables with .red[`*_at()`]
+
+.font150.center[
+
+Perform some operation on pre-specified variables
+
+`df %>%` .red[`xxxx_at`]`(`.green[`vars(x, y, z)`], .blue[`.funs`], .grey[`...`]`)`
+
+]
+.center.font90[
+.content-box-red-dark[.white[scoped dplyr function]]
+.content-box-green-dark[.white[variables to execute on]]
+.content-box-blue-dark[.white[function call to execute]]
+.content-box-grey-dark[.white[additional args for function call]]
+]
+
+---
+
+# Transform .red[specific] variables with .red[`*_at()`]
+
+Back to our problem of _wanting to mutate .red[specific variables]_:
+
+.font150.center[`df %>% mutate_at(vars(x, y, z), .funs, ...)`]
+
+.pull-left[
+
+.center.font120.bold[Unscoped approach]
+
+```{r unscoped-approach}
+flights %>%
+  mutate(
+    year  = as.character(year),  # can we   #<<
+    month = as.character(month), # simplify #<<
+    day   = as.character(day)    # this?    #<<
+  ) %>%
+  group_by(month) %>%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+```
+
+]
+
+.pull-right[
+
+.center.font120.bold[Scoped `*_at()` approach]
+
+```{r scoped-at-approach}
+flights %>%
+  mutate_at(vars(year, month, day), as.character) %>% #<<
+  group_by(month) %>%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+```
+
+]
+
+---
+
+# Thinking out loud `r anicon::cia("https://emojis.slackmojis.com/emojis/images/1542340471/4979/thinking.gif?1542340471", animate = FALSE)`
+
+.font130[
+Can you think of an easy way to do the following:
+
+1. for each destination airport,
+2. compute the median of all variables that contain "delay",
+3. re-order the destinations in descending order based on all delay statistics
+
+]
+
+--
+
+```{r summarize-at-approach}
+flights %>%
+  group_by(dest) %>%
+  summarize_at(vars(contains("delay")), median, na.rm = TRUE) %>%
+  arrange_if(is.numeric, desc)
+```
+
+---
+
+# Thinking out loud `r anicon::cia("https://emojis.slackmojis.com/emojis/images/1542340471/4979/thinking.gif?1542340471", animate = FALSE)`
+
+.font130[
+Can you think of an easy way to do the following:
+
+1. for each destination airport,
+2. compute the median of all variables that contain "delay",
+3. re-order the destinations in descending order based on all delay statistics
+
+]
+
+.center.font130.red[Any `select()` helper function can be used in `vars()`!]
+
+--
+
+.center.font110.red[and we can combine them just like we do in `select()`]
+
+```{r summarize-at-with-helpers}
+flights %>%
+  group_by(dest) %>%
+  summarize_at(vars(contains("delay"), ends_with("time")), median, na.rm = TRUE)
+```
+
+---
+
+# Computing .red[multiple] functions
+
+.pull-left-30[
+.font110[
+
+* We can also include multiple functions to be executed
+
+* Use the .red.bold[`funs()`] wrapper
+
+* Additional arguments must be relevant to ___all___ functions
+
+* Applicable to `*_all()`, `*_if()`, and `*at_()`
+
+]
+]
+
+
+.pull-right-60[
+
+```{r}
+flights %>%
+  group_by(dest) %>%
+  summarize_at(vars(contains("delay")), funs(mean, sd), na.rm = TRUE)
+```
+
+]
+
+---
+class: yourturn
+
+# Your Turn!
+
+
+---
+
+# `filter_*()` .red[and its helpers]
+
+<br>
+.font120[
+
+* Sometimes we want to filter rows based on multiple variables
+
+* Until now, we have been discussing manipulation and summarization of multiple variables, but we also ossasionally need to filter by the same condition on multiple variables.
+
+* Common examples of this include:
+   - missing values
+   - infinite values
+   - removing outliers
+
+]
+
+---
+
+# Filter .red[all] rows
+
+
+
+.pull-left[
+
+
+
+]
+
+--
+
+.pull-right[
+
+
+]
+
+---
+
+# `group_by_*()` .red[and its helpers]
 
