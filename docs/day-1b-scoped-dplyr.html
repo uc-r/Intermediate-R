@@ -810,7 +810,63 @@ flights %&gt;%
 class: yourturn
 # Your Turn!
 
+.pull-left[
 
+### Challenge
+
+Using the `flights` data:
+
+1. convert month and day variables to type character
+2. group by month and day
+3. select all variables containing "time" and "delay"
+4. compute the mean of all "time" and "delay" variables
+
+```r
+# hint
+flights %&gt;%
+  mutate(____) %&gt;%
+  group_by(____) %&gt;%
+  select(____) %&gt;%
+  summarize_all(____) 
+```
+   
+]
+
+--
+
+.pull-right[
+
+### Solution
+
+
+```r
+flights %&gt;%
+  mutate(
+    month = as.character(month),
+    day   = as.character(day)
+  ) %&gt;%
+  group_by(month, day) %&gt;%
+  select(contains("time"), contains("delay")) %&gt;%
+  summarize_all(mean, na.rm = TRUE)
+## # A tibble: 365 x 10
+## # Groups:   month [?]
+##    month day   dep_time sched_dep_time arr_time sched_arr_time air_time
+##    &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;          &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;    &lt;dbl&gt;
+##  1 1     1        1385.          1372.    1562.          1568.     170.
+##  2 1     10       1333.          1339.    1523.          1540.     147.
+##  3 1     11       1326.          1337.    1508.          1538.     149.
+##  4 1     12       1300.          1303.    1493.          1508.     148.
+##  5 1     13       1395.          1399.    1495.          1597.     154.
+##  6 1     14       1336.          1335.    1531.          1539.     155.
+##  7 1     15       1328.          1330.    1533.          1541.     153.
+##  8 1     16       1364.          1332.    1530.          1543.     161.
+##  9 1     17       1343.          1336.    1541.          1544.     155.
+## 10 1     18       1341.          1335.    1539.          1543.     149.
+## # … with 355 more rows, and 3 more variables: time_hour &lt;dttm&gt;,
+## #   dep_delay &lt;dbl&gt;, arr_delay &lt;dbl&gt;
+```
+
+]
 
 ---
 
@@ -889,7 +945,7 @@ Perform some operation on all variables that meet a condition
 
 # Transform .red[some] variables with .red[`*_if()`]
 
-Back to our problem of _wanting to standardize only .red[only numeric variables]_:
+Back to our problem of _wanting to standardize .red[only numeric variables]_:
 
 .font150.center[`df %&gt;% mutate_if(.predicate, .funs, ...)`]
 
@@ -1257,12 +1313,6 @@ flights %&gt;%
 ]
 
 ---
-class: yourturn
-
-# Your Turn!
-
-
----
 
 # `filter_*()` .red[and its helpers]
 
@@ -1282,13 +1332,35 @@ class: yourturn
 
 ---
 
-# Filter .red[all] rows
-
-
+# Filtering rows that meet certain conditions
 
 .pull-left[
 
+* The .red[`all_vars()`] function can be used to filter rows where .red[all variables meet the same logical condition]. &lt;br&gt;&lt;br&gt;
 
+
+```r
+# This will return rows where all variables containing "delay" are NA
+flights %&gt;% 
+  filter_at(vars(contains("delay")), all_vars(is.na(.)))
+## # A tibble: 8,255 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1       NA           1630        NA       NA
+##  2  2013     1     1       NA           1935        NA       NA
+##  3  2013     1     1       NA           1500        NA       NA
+##  4  2013     1     1       NA            600        NA       NA
+##  5  2013     1     2       NA           1540        NA       NA
+##  6  2013     1     2       NA           1620        NA       NA
+##  7  2013     1     2       NA           1355        NA       NA
+##  8  2013     1     2       NA           1420        NA       NA
+##  9  2013     1     2       NA           1321        NA       NA
+## 10  2013     1     2       NA           1545        NA       NA
+## # … with 8,245 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
+```
 
 ]
 
@@ -1296,12 +1368,192 @@ class: yourturn
 
 .pull-right[
 
+* The .red[`any_vars()`] function can be used to filter rows where .red[at least one variable meets the logical condition]. 
+
+
+```r
+# This will return rows where any variable containing "delay" is NA
+flights %&gt;% 
+  filter_at(vars(contains("delay")), any_vars(is.na(.)))
+## # A tibble: 9,430 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1     1525           1530        -5     1934
+##  2  2013     1     1     1528           1459        29     2002
+##  3  2013     1     1     1740           1745        -5     2158
+##  4  2013     1     1     1807           1738        29     2251
+##  5  2013     1     1     1939           1840        59       29
+##  6  2013     1     1     1952           1930        22     2358
+##  7  2013     1     1     2016           1930        46       NA
+##  8  2013     1     1       NA           1630        NA       NA
+##  9  2013     1     1       NA           1935        NA       NA
+## 10  2013     1     1       NA           1500        NA       NA
+## # … with 9,420 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
+```
 
 ]
 
 ---
 
 # `group_by_*()` .red[and its helpers]
+
+Say we wanted to compute the median delay values for carriers by month and in doing so, we wanted to treat both `carrier` and `month` as factors.
+
+.pull-left[
+
+.center.font120.bold[Option A]
+
+
+```r
+flights %&gt;%
+  mutate( 
+    carrier = as.factor(carrier),
+    month   = as.factor(month)
+  ) %&gt;%
+  group_by(carrier, month) %&gt;%
+  summarize_at(vars(contains("delay")), median, na.rm = TRUE)
+## # A tibble: 185 x 4
+## # Groups:   carrier [?]
+##    carrier month dep_delay arr_delay
+##    &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 9E      1            -2        -4
+##  2 9E      2            -3        -6
+##  3 9E      3            -3       -11
+##  4 9E      4            -3        -8
+##  5 9E      5            -1        -8
+##  6 9E      6             3        -2
+##  7 9E      7             3        -1
+##  8 9E      8             0        -8
+##  9 9E      9            -4       -15
+## 10 9E      10           -3       -10
+## # … with 175 more rows
+```
+
+]
+
+--
+
+.pull-right[
+
+.center.font120.bold[Option B]
+
+
+```r
+flights %&gt;%
+  group_by_at(vars(carrier, month), as.factor) %&gt;%
+  summarize_at(vars(contains("delay")), median, na.rm = TRUE)
+## # A tibble: 185 x 4
+## # Groups:   carrier [?]
+##    carrier month dep_delay arr_delay
+##    &lt;fct&gt;   &lt;fct&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 9E      1            -2        -4
+##  2 9E      2            -3        -6
+##  3 9E      3            -3       -11
+##  4 9E      4            -3        -8
+##  5 9E      5            -1        -8
+##  6 9E      6             3        -2
+##  7 9E      7             3        -1
+##  8 9E      8             0        -8
+##  9 9E      9            -4       -15
+## 10 9E      10           -3       -10
+## # … with 175 more rows
+```
+
+]
+
+---
+class: yourturn
+
+# Last Challenge!
+
+### Challenge
+
+Fill in the blanks and select the right .red[`filter_*()`] to filter for those flights where .red[either] departure .red[delay] (`dep_delay`) .red[or] arrival .red[delay] (`arr_delay`) exceeded the 99th percentile (hint: `quantile(x, .99)` provides the 99th percentile for variable `x`).
+
+
+```r
+flights %&gt;%
+  filter_xxx(vars(contains("_____")), any_vars(___ &gt; quantile(___, .99, na.rm = TRUE)))
+```
+
+---
+class: yourturn
+
+# Last Challenge!
+
+### Challenge
+
+Fill in the blanks and select the right .red[`filter_*()`] to filter for those flights where .red[either] departure .red[delay] (`dep_delay`) .red[or] arrival .red[delay] (`arr_delay`) exceeded the 99th percentile (hint: `quantile(x, .99)` provides the 99th percentile for variable `x`).
+
+
+```r
+flights %&gt;%
+  filter_at(vars(contains("delay")), any_vars(. &gt; quantile(., .99, na.rm = TRUE)))
+## # A tibble: 3,777 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      848           1835       853     1001
+##  2  2013     1     1     1815           1325       290     2120
+##  3  2013     1     1     1842           1422       260     1958
+##  4  2013     1     1     2006           1630       216     2230
+##  5  2013     1     1     2115           1700       255     2330
+##  6  2013     1     1     2205           1720       285       46
+##  7  2013     1     1     2312           2000       192       21
+##  8  2013     1     1     2343           1724       379      314
+##  9  2013     1     2     1244            900       224     1431
+## 10  2013     1     2     1332            904       268     1616
+## # … with 3,767 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
+```
+
+---
+
+# Key things to remember
+
+.pull-left-60[
+
+* dplyr scoped variants:
+   - .bold[`*_all()`]: execute function(s) on all variables or...
+   - .bold[`*_if()`]: on variables that meet a certain condition or...
+   - .bold[`*_at()`]: for pre-specified variables
+
+* argument functions within scoped variants:
+   - .bold[`vars()`]: specify the variables to be executed on
+   - .bold[`funs()`]: specify the functions to be executed
+
+* helper functions for `filter_*()`
+   - .bold[`all_vars()`]: filter for rows where all variables meet the specified condition
+   - .bold[`any_vars()`]: filter for rows where at least one variable meets the specified condition
+
+]
+
+.pull-right-40[
+
+&lt;br&gt;&lt;br&gt;
+&lt;img src="images/information-overload.jpg" width="640" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+# Key things to remember
+
+&lt;img src="images/cheatsheet-dplyr.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+.center[.content-box-gray[.bold[`Help &gt;&gt; Cheatsheets &gt;&gt; Data Transformation with dplyr`]]]
+
+---
+
+# Questions?
+
+&lt;br&gt;
+
+&lt;img src="images/questions.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
     </textarea>
 <script src="libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

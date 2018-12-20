@@ -15,18 +15,18 @@ training:
 **Day
 1**
 
-| Topic                                                                    |     Time      |
-| :----------------------------------------------------------------------- | :-----------: |
-| Breakfast / Social time                                                  |  8:00 - 9:00  |
-| [Introductions](https://uc-r.github.io/Intermediate-R/day-1a-intro.html) |  9:00 - 9:30  |
-| Scoped variable transformations                                          | 9:30 - 10:45  |
-| Break                                                                    | 10:45 - 11:00 |
-| Control flow                                                             | 11:00 - 12:00 |
-| Lunch                                                                    | 12:00 - 1:00  |
-| Work flow                                                                |  1:00 - 2:30  |
-| Break                                                                    |  2:30 - 2:45  |
-| Case study                                                               |  2:45 - 4:00  |
-| Q\&A                                                                     |  4:00 - 4:30  |
+| Topic                                                                                             |     Time      |
+| :------------------------------------------------------------------------------------------------ | :-----------: |
+| Breakfast / Social time                                                                           |  8:00 - 9:00  |
+| [Introductions](https://uc-r.github.io/Intermediate-R/day-1a-intro.html)                          |  9:00 - 9:30  |
+| [Scoped variable transformations](https://uc-r.github.io/Intermediate-R/day-1b-scoped-dplyr.html) | 9:30 - 10:45  |
+| Break                                                                                             | 10:45 - 11:00 |
+| Control flow                                                                                      | 11:00 - 12:00 |
+| Lunch                                                                                             | 12:00 - 1:00  |
+| Work flow                                                                                         |  1:00 - 2:30  |
+| Break                                                                                             |  2:30 - 2:45  |
+| Case study                                                                                        |  2:45 - 4:00  |
+| Q\&A                                                                                              |  4:00 - 4:30  |
 
 **Day 2**
 
