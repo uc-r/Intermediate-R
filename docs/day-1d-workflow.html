@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Workflow</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="scrollable.css" type="text/css" />
+    <link rel="stylesheet" href="mtheme_max.css" type="text/css" />
+    <link rel="stylesheet" href="fonts_mtheme_max.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: clear, center, middle
+
+background-image: url(https://static1.squarespace.com/static/5840371f3e00befa6e8e6739/58e4c75e414fb56455f504a0/58e4c75e414fb56455f5049f/1486220365319/Workflow-logo.png)
+
+---
+
+# Workflow considerations
+
+&lt;br&gt;&lt;br&gt;
+.font200[
+
+1. Managing your projects
+
+2. Efficient &amp; reproducible deliverables
+
+3. Version control
+
+]
+
+---
+class: clear, center, middle
+background-image: url(images/working-directories.jpg)
+background-size: cover
+
+&lt;br&gt;
+.font300.bold.white[Managing Your Projects]
+
+.white[___“Organization is what you do before you do something, so that when you do it, it is not all mixed up.”___ - A.A. Milne]
+
+---
+
+# When first learning R...
+
+.pull-left[
+
+- open R
+
+- start with a .R script
+
+- if we remember, we set the working directory
+
+- `path/to/my/wd/which/only/works/on/my/current/computer`
+
+]
+
+--
+
+.pull-right[
+
+- often results in disorganization
+
+- we find `setwd()` and `rm()` at the top of the script
+
+- image of Jenny Bryan's tweet
+
+]
+
+.center[.content-box-gray[.bold[There is a better way!]]]
+
+---
+
+# R Projects (`.RProj`)
+
+.pull-left[
+
+.font120.bold.center[Creating]
+
+]
+
+--
+
+.pull-right[
+
+.font120.bold.center[Benefits]
+
+]
+
+---
+
+# Referring to subdirectory locations
+
+.pull-left[
+
+.font120.bold.center[Explicit]
+
+]
+
+--
+
+.pull-right[
+
+.font120.bold.center[here Package]
+
+]
+
+---
+
+# Some extra thoughts
+
+.pull-left[
+
+.font120.bold.center[When to use]
+
+]
+
+.pull-right[
+
+.font120.bold.center[When not (required) to use]
+
+- One time analysis, for your own use, and you're 100% sure you will never need to reproduce later on 
+
+- Server setting where workflow is pre-set
+
+- Productionalized scripts
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+set up project
+
+---
+class: clear, center, middle
+background-image: url(images/rmarkdown-image1.png)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+.font300.bold[Deliverables with R]
+
+___Fully reproducible approach to turn your analyses into high quality documents, reports, presentations and dashboards.___
+
+---
+
+# Typical approach
+
+show workflow of code, results, copy and paste to word doc, write some text, get new results, copy new results, add more or revise text, show to boss, boss says redo with updated monthly sales, ..., get pissed!
+
+.center[.content-box-gray[.bold[There is a better way!]]]
+
+---
+
+# R Markdown
+
+General idea of R Markdown
+
+---
+
+# R Markdown exercise
+
+* Do a detailed exercise to produce an HTML, PDF, and Word report
+
+* Do a shorter exercise to produce slides
+
+---
+
+# Format options
+
+Show a variety of output options
+
+- HTML documents
+- PDF documents
+- Word documents
+- Slides
+- Bookdown
+- Blogdown
+
+---
+
+# Learn More
+
+.pull-left[
+
+https://bookdown.org/yihui/rmarkdown/
+
+]
+
+.pull-right[
+
+&lt;img src="images/definitive-guide-rmarkdown.png" width="65%" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+---
+class: clear, center, middle
+background-image: url(images/github-mark.png)
+
+.font200.bold[Version Control]
+
+---
+
+# It can be painful but learn it!
+
+.center[
+We do not have time to cover version control but you should definitely start by reading this book:
+
+http://happygitwithr.com/
+]
+&lt;img src="images/happy-git-with-r.png" width="80%" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
