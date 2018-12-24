@@ -369,7 +369,7 @@ rm(echo)
 .center.font130[Loops]
 
 ```{r repeat-until-condition-is-met}
-# flip a coin until we get 5 heads in a row
+# flip a coin until we get 10 heads in a row
 results <- NULL
 repeat{
   # flip coin & add to results vector
