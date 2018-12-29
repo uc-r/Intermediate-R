@@ -49,7 +49,7 @@ background-image: url(https://static1.squarespace.com/static/5840371f3e00befa6e8
 <br><br>
 .font200[
 
-1. Managing your projects
+1. Project-oriented Workflow
 
 2. Efficient & reproducible deliverables
 
@@ -63,7 +63,7 @@ background-image: url(images/working-directories.jpg)
 background-size: cover
 
 <br>
-.font300.bold.white[Managing Your Projects]
+.font300.bold.white[Project-oriented Workflow]
 
 .white[___“Organization is what you do before you do something, so that when you do it, it is not all mixed up.”___ - A.A. Milne]
 
@@ -73,29 +73,93 @@ background-size: cover
 
 .pull-left[
 
-- open R
+- Open R
 
-- start with a .R script
+- start a new .R script or open an existing one
 
-- if we remember, we set the working directory
+- set the working directory or, add `setwd("C:\Users\Brad\path\only\I\have")` at the beginning of the script.
 
-- `path/to/my/wd/which/only/works/on/my/current/computer`
+- many times you will finish one project and then start working on another analysis in the same R session so you add `rm(list = ls())` at the top of your scripts.
 
 ]
 
---
+.pull-right[
+<br><br>
+```{r, echo=FALSE}
+knitr::include_graphics("images/jenny-bryan-tweet.png")
+```
+
+.font70.center[[_Courtesy Hadley Wickham tweet (Dec 2017)_](https://twitter.com/hadleywickham/status/940021008764846080)]
+
+]
+
+
+---
+
+# What's wrong with these?
+
+.pull-left[
+
+### `setwd()`
+
+- Is only specific to your current computer set up
+
+- Nearly 0% chance working for anyone else or
+
+- For you in 2 years when you have a new computer
+
+- Increases chance of project leakage when manually switching between projects in the same R session
+]
 
 .pull-right[
 
-- often results in disorganization
+### `rm(list = ls())`
 
-- we find `setwd()` and `rm()` at the top of the script
+- Only removes user deleted objects created 
 
-- image of Jenny Bryan's tweet
+- Does not create a fresh R session
+
+- Does not reset options you may have changed (i.e. `stringsAsFactors = FALSE`)
+
+- Does not unload packages you previously loaded
 
 ]
 
-.center[.content-box-gray[.bold[There is a better way!]]]
+.center[.content-box-gray[.bold[Reduces organization & reproducibility; there is a better way!]]]
+
+---
+# Differentiating Workflow vs Product
+
+
+* __Workflow__: things you do because of personal taste and habits
+
+   - Code/text editor
+   - Directory paths
+   - Operating system
+   - Code you ran prior to the current project
+
+* __Product__: the logic and output that is the essence of your project
+
+    - The R code someone needs to run on your raw data to get your results, including the explicit `library()` calls to load necessary packages.
+    - Raw data leveraged in the project
+
+<br>
+
+Ideally, you ___don’t hardwire anything about your workflow into your product___. Workflow-related operations should be executed by you interactively, using whatever means is appropriate to your setup, but not built into the scripts themselves.
+
+---
+# Best practice
+
+<br>
+
+- Organize each data analysis into its own project: a folder on your computer that holds all the files relevant to that particular piece of work
+
+- Any resident R script is written assuming that it will be run from a fresh R environment. .red[Do not save `.RData` when you quit R and don’t load `.RData` when you fire up R.]
+
+- The working directory is set to the project directory and all dependent directory paths are subfolders of the main project directory
+
+<br><br><br>
+.center.bold[This convention guarantees that the project can be moved around on your computer or onto other computers and will still “just work”]
 
 ---
 
@@ -105,23 +169,184 @@ background-size: cover
 
 .font120.bold.center[Creating]
 
-]
+`File >> New Project`:
 
---
+```{r, echo=FALSE}
+knitr::include_graphics("images/create-r-project.png")
+```
+
+
+]
 
 .pull-right[
 
 .font120.bold.center[Benefits]
 
+RStudio projects make it straightforward to divide your work into individual projects, each with their own:
+
+- working directory
+
+- source documents
+
+- workspace
+
+- history
+
+
 ]
+
+---
+class: yourturn
+# Your Turn!
+
+<br><br>
+.font130.center[
+Go ahead and create an R Project for this workshop.  Create this project in an ___Existing Directory___ and save it in the folder you downloaded for this workshop.
+]
+
+---
+# So what's different?
+
+.pull-left[
+
+<br>
+```{r, echo=FALSE}
+knitr::include_graphics("images/r-project-window.png")
+```
+
+]
+
+.pull-right[
+When a project is opened:
+
+- A new R session is started
+- The current working directory is set to the project directory
+- The .Rprofile file in the project's main directory is sourced
+- <s>The .RData file in the project's main directory is loaded</s>
+- The .Rhistory file in the project's main director is loaded
+- Previously edited source docs are restored to the editor tab
+- Other RStudio settings (active tabs, splitter positions, etc) are restored
+]
+
+<br>
+.center.bold[.content-box-gray[We can also work with multiple projects at one time]]
 
 ---
 
 # Referring to subdirectory locations
 
+- When you open an R Project, your working directory is the folder where .RProj resides
+
+- What if you want to refer to a subdirectory within your R script?
+
 .pull-left[
 
-.font120.bold.center[Explicit]
+Example 1: script is in the main directory but data is in a subdirectory
+
+```{r, echo=FALSE, out.width="30%"}
+knitr::include_graphics("images/r-project-example1.png")
+```
+
+
+]
+
+.pull-right[
+
+Example 2: script and data are in two separate subdirectories
+
+```{r, echo=FALSE, out.width="30%"}
+knitr::include_graphics("images/r-project-example2.png")
+```
+
+]
+
+---
+
+# Referring to subdirectories
+
+Example 1: script is in the main directory but data is in a subdirectory
+
+.pull-left[
+
+```{r, echo=FALSE, out.width="40%"}
+knitr::include_graphics("images/r-project-example1.png")
+```
+
+]
+
+.pull-right[
+
+```{r}
+readr::read_csv("data/Month-01.csv")
+```
+
+
+]
+
+---
+# Referring to subdirectories
+
+Example 2: script and data are in two separate subdirectories
+
+.pull-left[
+
+```{r, echo=FALSE, out.width="40%"}
+knitr::include_graphics("images/r-project-example2.png")
+```
+
+]
+
+.pull-right[
+
+
+```{r, eval=FALSE}
+readr::read_csv("../data/Month-01.csv")
+## # A tibble: 54,535 x 10
+##    Account_ID Transaction_Timest… Factor_A Factor_B Factor_C Factor_D
+##         <int> <dttm>                 <int>    <int> <chr>       <int>
+##  1          5 2009-01-08 00:16:41        2        6 VI             20
+##  2         16 2009-01-20 22:40:08        2        6 VI             20
+##  3         28 2009-01-19 13:24:55        2        6 VI             21
+##  4         40 2009-01-05 16:10:58        2        6 VI             20
+##  5         62 2009-01-21 19:13:13        2        6 VI             20
+##  6         64 2009-01-01 18:53:02        7        6 MC             20
+##  7         69 2009-01-08 00:15:19        2        6 VI             20
+##  8         69 2009-01-19 09:33:22        2        6 VI             20
+##  9         70 2009-01-05 12:07:47        2        6 VI             20
+## 10         79 2009-01-07 19:41:18        7        6 MC             20
+## # … with 54,525 more rows, and 4 more variables: Factor_E <chr>,
+## #   Response <int>, Transaction_Status <chr>, Month <chr>
+```
+
+]
+
+---
+# Referring to subdirectories
+
+
+.pull-left[
+
+.center.font120.bold[Explicit]
+
+```{r, eval=FALSE}
+# refer to first level subdirectory
+"/data/file.csv"
+
+# refer to second level subdirectory
+"/folder/data/file.csv"
+
+# refer to another subdirectory
+"../data/file.csv"
+
+# refer to a subdirectory up two levels then down one
+"../../data/file.csv"
+```
+
+Two problems:
+
+1. Windows (`"\\"`) vs Mac & Linux (`"/"`)
+
+2. Can get confusing
 
 ]
 
@@ -129,7 +354,22 @@ background-size: cover
 
 .pull-right[
 
-.font120.bold.center[here Package]
+.center.bold[ .font150[`here`] .font120[package]]
+
+```{r}
+# automatically provides path to .RProj file
+here::here()
+
+# get path to a "data" subdirectory
+here::here("data")
+
+# get path to specific csv file
+here::here("data", "Month-01.csv")
+```
+
+* Agnostic to OS
+
+* But all references must be at the same level or a subdirectory of the `.RProj` file
 
 ]
 
@@ -138,12 +378,6 @@ background-size: cover
 # Some extra thoughts
 
 .pull-left[
-
-.font120.bold.center[When to use]
-
-]
-
-.pull-right[
 
 .font120.bold.center[When not (required) to use]
 
@@ -155,11 +389,58 @@ background-size: cover
 
 ]
 
+.pull-right[
+
+.font120.bold.center[When to use]
+
+- All other times!
+
+]
+
 ---
 class: yourturn
 # Your Turn!
 
-set up project
+.pull-left[
+
+### Challenge
+
+1. Use `here::here()` to get the path to the "Month-09.csv" file in the "data" subfolder of your R project.
+
+2. Use #1 within `readr::read_csv()` to import that .csv file into your current R session.
+
+]
+
+--
+
+.pull-right[
+
+### Solution
+
+```{r, eval=FALSE}
+# 1
+here::here("data", "Month-09.csv")
+## [1] "/Users/b294776/Desktop/Training/UC/Intermediate-R/data/Month-09.csv"
+
+# 2
+readr::read_csv(here::here("data", "Month-09.csv"))
+## # A tibble: 71,855 x 10
+##    Account_ID Transaction_Timest… Factor_A Factor_B Factor_C Factor_D Factor_E Response
+##         <int> <dttm>                 <int>    <int> <chr>       <int> <chr>       <int>
+##  1         38 2009-09-12 09:51:42       10        6 DI             20 NULL         1020
+##  2         44 2009-09-28 17:04:10        8       23 AX             21 NULL         1020
+##  3         46 2009-09-13 14:27:57        2        6 VI             20 C            1020
+##  4         47 2009-09-11 10:01:57       10        6 DI             20 NULL         1020
+##  5         48 2009-09-11 18:22:22        2        6 VI             20 B            1020
+##  6         48 2009-09-23 21:40:03        2        6 VI             20 B            1020
+##  7         54 2009-09-18 04:35:50        2        6 VI             20 A            1020
+##  8         59 2009-09-20 14:35:43       10        6 DI             20 NULL         1020
+##  9         72 2009-09-21 18:53:42        7       15 MC             20 MCW          1020
+## 10         72 2009-09-28 16:53:15        7       15 MC             20 MCW          1020
+## # … with 71,845 more rows, and 2 more variables: Transaction_Status <chr>, Month <chr>
+```
+
+]
 
 ---
 class: clear, center, middle
@@ -168,13 +449,35 @@ background-image: url(images/rmarkdown-image1.png)
 <br><br><br>
 .font300.bold[Deliverables with R]
 
-___Fully reproducible approach to turn your analyses into high quality documents, reports, presentations and dashboards.___
+.grey[___Fully reproducible approach to turn your analyses into high quality documents, reports, presentations and dashboards.___]
 
 ---
 
-# Typical approach
+# Project deliverables
+
+<br>
+
+.pull-left[
+
+Typically, our analytic projects result in some type of deliverable...
+
+* Research report
+
+* Academic paper
+
+* Presentation to a decision maker
+
+* Dashboard or app for interactive use
+
+]
+
+.pull-right[
 
 show workflow of code, results, copy and paste to word doc, write some text, get new results, copy new results, add more or revise text, show to boss, boss says redo with updated monthly sales, ..., get pissed!
+
+]
+
+<br>
 
 .center[.content-box-gray[.bold[There is a better way!]]]
 
