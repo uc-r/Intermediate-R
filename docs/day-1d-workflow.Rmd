@@ -473,39 +473,109 @@ Typically, our analytic projects result in some type of deliverable...
 
 .pull-right[
 
-show workflow of code, results, copy and paste to word doc, write some text, get new results, copy new results, add more or revise text, show to boss, boss says redo with updated monthly sales, ..., get pissed!
+.center.bold.font120[.red[Traditional] Deliverable Workflow]
+
+```{r echo=FALSE, out.width="65%"}
+knitr::include_graphics("images/traditional-deliverable-workflow.png")
+```
+
 
 ]
 
+---
+
+# Project deliverables
+
 <br>
 
-.center[.content-box-gray[.bold[There is a better way!]]]
+.pull-left[
+
+Typically, our analytic projects result in some type of deliverable...
+
+* Research report
+
+* Academic paper
+
+* Presentation to a decision maker
+
+* Dashboard or app for interactive use
+
+]
+
+.pull-right[
+
+.center.bold.font120[.green[Integrated] Deliverable Workflow]
+
+```{r echo=FALSE, out.width="65%"}
+knitr::include_graphics("images/integrated-deliverable-workflow.png")
+```
+
+
+]
 
 ---
 
 # R Markdown
 
-General idea of R Markdown
+.font120[General idea of R Markdown]
+
+.pull-left[
+
+* 1 file that contains
+   - Text
+   - Code
+
+* 1 common process to create
+   - PDF
+   - Word
+   - HTML
+   - Slides
+   
+* Simple typesetting code but if you know $\LaTeX$ or HTML you can highly customize  
+
+]
+
+.pull-right[
+
+<br><br>
+```{r echo=FALSE}
+knitr::include_graphics("images/idea-of-rmarkdown.png")
+```
+
+]
 
 ---
 
 # R Markdown exercise
 
-* Do a detailed exercise to produce an HTML, PDF, and Word report
+<br>
+.font120[
 
-* Do a shorter exercise to produce slides
+* We're going to create an R Markdown report together
+   - Code: Open stock-code.R file
+   - Text: Open stock-text.docx file
+
+* Leverage the Markdown Quick Reference guide
+   - `Help >> Markdown Quick Reference guide`
+
+]
 
 ---
 
 # Format options
 
-Show a variety of output options
+Examples of the variety of output options
 
 - HTML documents
+
 - PDF documents
+
 - Word documents
+
 - Slides
-- Bookdown
+
+- Bookdown: 
+
 - Blogdown
 
 ---
@@ -514,6 +584,7 @@ Show a variety of output options
 
 .pull-left[
 
+<br><br><br><br><br>
 https://bookdown.org/yihui/rmarkdown/
 
 ]
