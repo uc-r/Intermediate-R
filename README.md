@@ -23,7 +23,7 @@ training:
 | Break                                                                                             | 10:45 - 11:00 |
 | [Control statements](https://uc-r.github.io/Intermediate-R/day-1c-control-flow.html)              | 11:00 - 12:00 |
 | Lunch                                                                                             | 12:00 - 1:00  |
-| Work flow                                                                                         |  1:00 - 2:30  |
+| [Workflow](https://uc-r.github.io/Intermediate-R/day-1d-workflow.html)                            |  1:00 - 2:30  |
 | Break                                                                                             |  2:30 - 2:45  |
 | Case study                                                                                        |  2:45 - 4:00  |
 | Q\&A                                                                                              |  4:00 - 4:30  |

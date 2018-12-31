@@ -16,7 +16,7 @@ output:
 
 ```{r setup, include=FALSE, cache=FALSE}
 # set working directory to docs folder
-setwd(here::here("docs"))
+#setwd(here::here("docs"))
 
 # Set global R options
 options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
@@ -546,10 +546,215 @@ knitr::include_graphics("images/idea-of-rmarkdown.png")
 
 ---
 
-# R Markdown exercise
+# Create Your First R Markdown File
+
+.center.bold[File » New File » R Markdown]
+
+```{r echo=FALSE}
+knitr::include_graphics("images/rmarkdown-create.gif")
+```
+
+---
+
+# Primary Components of an R Markdown File
+
+There are .red[three general components] of an R Markdown file that you will eventually become accustomed to:
+
+.pull-left[
+
+* YAML
+
+* general markdown (or text) component
+
+* code chunks
+
+]
+
+.pull-right[
+
+
+
+]
+
+---
+
+# Primary Components of an R Markdown File
+
+There are .red[three general components] of an R Markdown file that you will eventually become accustomed to:
+
+.pull-left[
+
+* .bold.red[YAML]
+
+* general markdown (or text) component
+
+* code chunks
+
+]
+
+.pull-right[
+
+```{r echo=FALSE}
+knitr::include_graphics("images/rmarkdown-components-yaml.png")
+```
+
+]
+
+---
+
+# Primary Components of an R Markdown File
+
+There are .red[three general components] of an R Markdown file that you will eventually become accustomed to:
+
+.pull-left[
+
+* YAML
+
+* .bold.red[general markdown (or text) component]
+
+* code chunks
+
+]
+
+.pull-right[
+
+```{r echo=FALSE}
+knitr::include_graphics("images/rmarkdown-components-text.png")
+```
+
+]
+
+---
+
+# Primary Components of an R Markdown File
+
+There are .red[three general components] of an R Markdown file that you will eventually become accustomed to:
+
+.pull-left[
+
+* YAML
+
+* general markdown (or text) component
+
+* .bold.red[code chunks]
+
+]
+
+.pull-right[
+
+```{r echo=FALSE}
+knitr::include_graphics("images/rmarkdown-components-code.png")
+```
+
+]
+
+---
+
+# YAML
+
+.pull-left[
+
+* First few lines in the R Markdown file
+
+* Starts and ends with `---`
+
+* Update this R Markdown template with
+
+   ```{r, eval = FALSE}
+   ---
+   title: "R Markdown Demo"
+   author: "Brad Boehmke"
+   date: "`r Sys.Date()`"
+   output: html_document
+   ---
+   ```
+
+]
+
+--
+
+.pull-right[
+
+```{r echo=FALSE}
+knitr::include_graphics("images/updated-yaml.png")
+```
+
+]
+
+---
+
+# Text Formatting
+
+.pull-left[
+
+For the text component, much of your writing is similar to when you type a Word document; however, to perform many of the basic text formatting you use basic markdown code such as as that shown in
+
+.center[`Help >> Markdown Quick Reference`]
 
 <br>
+.red[
+See if you can:
+
+- italicize a word
+- ddd a third level header
+- create an unordered list
+]
+]
+
+.pull-right[
+
+```{r echo=FALSE, out.width="75%"}
+knitr::include_graphics("images/markdown-text-reference.png")
+```
+
+]
+
+---
+
+# Code Chunks
+
+.pull-left[
+
+* code chunks can be used as a means to render R output into documents or to simply display code for illustration. 
+
+* start with the following line: ` ```{r chunk_name}` and end with <code>```</code>
+
+* keyboard shortcut Cmd + Option + I (Windows Ctrl + Alt + I).
+
+* You can run an individual code chunk by pressing `r anicon::faa("play", animate = FALSE, colour = "green")` at the far right hand side of the code chunk.
+
+* .red[Go ahead and run each code chunk in your initial R markdown file]
+
+]
+
+.pull-right[
+
+<br><br>
+
+```{r echo=FALSE}
+knitr::include_graphics("images/run-code-chunk.gif")
+```
+
+
+]
+
+---
+
+# Knitting the R Markdown File
+
+When you are all done writing your .Rmd document you can click the drop down arrow next to the knit button on the RStudio toolbar, select the document format (HTML, PDF, Word) and your report will be developed.
+
+```{r echo=FALSE}
+knitr::include_graphics("images/rmarkdown-generate.gif")
+```
+
+---
+class: yourturn
+# R Markdown exercise
+
 .font120[
+
+Now that you know the basics:
 
 * We're going to create an R Markdown report together
    - Code: Open stock-code.R file
@@ -558,25 +763,50 @@ knitr::include_graphics("images/idea-of-rmarkdown.png")
 * Leverage the Markdown Quick Reference guide
    - `Help >> Markdown Quick Reference guide`
 
+* If you don't have a Tex operator (for PDF reports) run
+
+   ```r
+   install.packages("tinytex")
+   tinytex::install_tinytex()
+   ```
+
 ]
 
 ---
 
-# Format options
+# `r anicon::nia("LOTS", animate = "tada", colour = "red")` of options
 
-Examples of the variety of output options
+The following output formats are available to use with R Markdown.
 
-- HTML documents
+.scrollable90[
 
-- PDF documents
+* Documents
+   - [html_notebook](http://rmarkdown.rstudio.com/r_notebooks.html) - Interactive R Notebooks
+   - [html_document](http://rmarkdown.rstudio.com/html_document_format.html) - HTML document w/ Bootstrap CSS
+   - [pdf_document](http://rmarkdown.rstudio.com/pdf_document_format.html) - PDF document (via LaTeX template)
+   - [word_document](http://rmarkdown.rstudio.com/word_document_format.html) - Microsoft Word document (docx)
+   - [odt_document](http://rmarkdown.rstudio.com/odt_document_format.html) - OpenDocument Text document
+   - [rtf_document](http://rmarkdown.rstudio.com/rtf_document_format.html) - Rich Text Format document
+   - [md_document](http://rmarkdown.rstudio.com/markdown_document_format.html) - Markdown document (various flavors)
 
-- Word documents
+* Presentations (slides)
+   - [xaringan::moon_reader](https://github.com/yihui/xaringan) - HTML presentation with remark.js
+   - [ioslides_presentation](http://rmarkdown.rstudio.com/ioslides_presentation_format.html) - HTML presentation with ioslides
+   - [revealjs::revealjs_presentation](http://rmarkdown.rstudio.com/revealjs_presentation_format.html) - HTML presentation with reveal.js
+   - [slidy_presentation](http://rmarkdown.rstudio.com/slidy_presentation_format.html) - HTML presentation with W3C Slidy
+   - [beamer_presentation](https://bookdown.org/yihui/rmarkdown/beamer-presentation.html) - PDF presentation with LaTeX Beamer
 
-- Slides
+* More
+   - [flexdashboard::flex_dashboard](http://rmarkdown.rstudio.com/flexdashboard/) - Interactive dashboards
+   - [tufte::tufte_handout](http://rmarkdown.rstudio.com/tufte_handout_format.html) - PDF handouts in the style of Edward Tufte
+   - [tufte::tufte_html](http://rmarkdown.rstudio.com/tufte_handout_format.html) - HTML handouts in the style of Edward Tufte
+   - [tufte::tufte_book](http://rmarkdown.rstudio.com/tufte_handout_format.html) - PDF books in the style of Edward Tufte
+   - [html_vignette](http://rmarkdown.rstudio.com/package_vignette_format.html) - R package vignette (HTML)
+   - [github_document](http://rmarkdown.rstudio.com/github_document_format.html) - GitHub Flavored Markdown document
+   - [bookdown](https://bookdown.org/) - Write HTML, PDF, ePub, and Kindle books with R Markdown
+   - [blogdown](https://bookdown.org/yihui/blogdown/) - Create websites using R Markdown and Hugo
 
-- Bookdown: 
-
-- Blogdown
+]
 
 ---
 
@@ -617,4 +847,28 @@ http://happygitwithr.com/
 knitr::include_graphics("images/happy-git-with-r.png")
 ```
 
+---
+# Summary
 
+<br>
+
+.font130[
+
+* R Projects (`.RProj`) for Project-oriented Workflow
+
+* `here::here()` for generalized paths
+
+* R Markdown for efficient & reproducible deliverables
+
+* Integrated Git for version control
+
+]
+
+---
+# Questions
+
+<br>
+
+```{r questions-control-flow, echo=FALSE, out.height="450", out.width="450"}
+knitr::include_graphics("images/questions.png")
+```
