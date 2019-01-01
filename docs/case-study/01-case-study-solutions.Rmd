@@ -1,0 +1,158 @@
+---
+title: "Day 1 Case Study"
+author: "Brad Boehmke"
+date: "2019-01-31"
+output: html_notebook
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE
+  )
+
+library(dplyr)
+```
+
+
+## Prerequisites
+
+Download this folder and save it as "Intermediate-R-Case-Study-Day-1" (I know, 
+I couldn't think of a longer name).  This folder will contain a "\data" subfolder
+that contains all the data required for this case study and a .Rmd file with
+the exercises.
+
+## Exercise 1
+
+Create a self-contained R Project for this case study.  When creating the R 
+Project, you should choose the option to create in an "Existing Directory".
+
+
+## Exercise 2
+
+Open the R notebook saved as "01-case-study.Rmd".  An R notebook functions very 
+similarly to an R Markdown file. In fact, you will see two files in the directory,
+a 01-case-study.Rmd file and a 01-case-study.nb.html file.  Be sure to open the
+.Rmd file.  
+
+Go ahead and click the "Preview" button at the top of the RStudio window (next 
+to the round settings wheel where the knit button used to be).  As you edit this
+document, rather than pressing the knit but, you can just hit save and your 
+preview file will be automatically updated.  As you add a code chunk, run the
+code chunk and hit save and you see the results instantly updated in your preview.
+
+## Exercise 3
+
+Change the author of the .Rmd file to your name and add today's date.
+
+## Exercise 4
+
+Run the following code chunk.  This will automatically import all the data files
+and convert to a single data frame titled `df`.  Don't worry if you don't understand 
+all the code, we'll discuss this more tomorrow.
+
+```{r importing-data}
+# create empty data frame
+df <- data.frame(NULL)
+
+# import all data files into one data frame titled "df"
+for(i in 1:11) {
+  file_name <- paste0("../data/Month-", stringr::str_pad(i, 2, pad = "0"), ".csv")
+  df_import <- readr::read_csv(file_name, progress = FALSE)
+  df <- rbind(df, df_import)
+  rm(df_import, file_name)
+}
+
+glimpse(df)
+```
+
+## Exercise 5
+
+```{r}
+df <- df %>%
+  mutate(Factor_D = if_else(Factor_D == 26L, 25L, Factor_D))
+
+unique(df$Factor_D)
+```
+
+
+## Exercise 6
+
+Unfortunately, some of the "Factor_" variables have observations that contain the 
+value "NULL".  Use `filter_at()` to filter out any of these observations. Your 
+resulting data frame should have 489,537 rows after filtering.
+
+```{r filter-NULL-values}
+df <- df %>%
+  filter_at(vars(contains("Factor")), all_vars(. != "NULL"))
+
+glimpse(df)
+```
+
+
+## Exercise 7
+
+Using `mutate_at()` , convert all variables except for "Transaction_Timestamp"
+to factors.  However, make sure the "Month" variable is an ordered factor. 
+
+```{r convert-to-factor}
+df <- df %>%
+  mutate_at(
+    vars(-matches("Timestamp|Month")),
+    as.factor        
+    ) %>%
+  mutate(Month = factor(Month, levels = month.abb))
+
+glimpse(df)
+```
+
+
+## Exercise 8
+
+Excluding "Transaction_Timestamp", how many unique values are there for all the
+other variables in our data set?  
+
+```{r n-unique-values}
+df %>%
+  summarize_if(is.factor, n_distinct)
+```
+
+If you group by "Transaction_Status", are there approximately equal distributions
+of unique values across all the variables?
+
+```{r}
+df %>%
+  group_by(Transaction_Status) %>%
+  summarize_if(is.factor, n_distinct)
+```
+
+## Exercise 9
+
+Use 
+
+```{r create-quarter-variable}
+df <- df %>%
+  mutate(Quarter = case_when(
+    as.numeric(Month) <= 3 ~ "Q1",
+    as.numeric(Month) <= 6 ~ "Q2",
+    as.numeric(Month) <= 9 ~ "Q3",
+    TRUE                   ~ "Q4"
+  ))
+
+table(df$Quarter)
+```
+
+## Exercise 10 
+
+Open up the "01-case-study-presentation.Rpres" file, click the "Preview" button, 
+and compare your results to mine.  In many cases, you could've gotten the same 
+results but using a different method.  This is fine but your should look to see 
+where you code could've been more efficient (or maybe you did it more efficiently 
+than me and if so, please share!).
+
+Also, take some time to see how the code to create the R presentation works. This
+is also built on top of R Markdown and the primary difference is how you use
+"========" to separate slides and the slide title precedes "========".
+
+
