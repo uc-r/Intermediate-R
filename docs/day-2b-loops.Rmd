@@ -1,0 +1,101 @@
+---
+title: "Iterating with Loops"
+output:
+  xaringan::moon_reader:
+    css: ["scrollable.css", "mtheme_max.css", "fonts_mtheme_max.css"]
+    self_contained: false
+    lib_dir: libs
+    chakra: libs/remark-latest.min.js
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false   
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+# Set global R options
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+
+# Set global knitr chunk options
+knitr::opts_chunk$set(
+  fig.align = "center", 
+  cache = TRUE,
+  error = FALSE,
+  message = FALSE, 
+  warning = FALSE, 
+  collapse = TRUE 
+)
+
+# This is good for getting the ggplot background consistent with
+# the html background color
+library(ggplot2)
+thm <- theme_bw()
+theme_set(thm)
+```
+
+class: clear, center, middle
+
+background-image: url(http://static1.squarespace.com/static/57d161dc20099eb4bb0ccc05/t/57d69e61414fb51a88bd4798/1523877244472/)
+background-size: contain
+
+---
+# Intro
+
+.font120[
+Often, we need to execute repetitive code statements a particular number of times. Or, we may even need to execute code for an undetermined number of times and only until a certain condition no longer holds.
+]
+
+--
+
+.font120[
+
+* .font140[`for`] loops:
+
+* .font140[`while`] & .font140[`repeat`] loops:
+
+* .font140[`next`] & .font140[`break`]:
+
+]
+
+--
+
+<br>
+.center.bold[There are additional iterating functions which we'll learn about in the functional programming module]
+
+---
+# `for` loop
+
+
+---
+# Controlling sequences
+
+- `next`
+- `break`
+
+---
+# `while` loop
+
+
+---
+# `repeat` loop
+
+
+---
+# Summary
+
+
+---
+# Questions
+
+
+
+
+
+
+
+
+
+
+
