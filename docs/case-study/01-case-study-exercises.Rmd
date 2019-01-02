@@ -1,11 +1,11 @@
-Day 1 Case Study
-========================================================
-author: "Brad Boehmke"
-date: "2019-01-31"
-autosize: true
+---
+title: "Day 1 Case Study Exercises"
+output: github_document
+---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
   echo = TRUE,
   warning = FALSE,
   message = FALSE,
@@ -15,30 +15,21 @@ knitr::opts_chunk$set(
 library(dplyr)
 ```
 
-Prerequisites
-========================================================
+
+## Prerequisites
 
 Download this folder and save it as "Intermediate-R-Case-Study-Day-1" (I know, 
 I couldn't think of a longer name).  This folder will contain a "data" subfolder
 that contains all the data required for this case study and a .Rmd file with
 the exercises.
 
-Exercise 1
-========================================================
+## Exercise 1
 
 Create a self-contained R Project for this case study.  When creating the R 
 Project, you should choose the option to create in an "Existing Directory".
 
-## Solution
 
-1. File,
-2. New Project,
-3. Existing Directory,
-4. select folder you just downloaded,
-5. Click "Create Project".
-
-Exercise 2
-========================================================
+## Exercise 2
 
 Open the R notebook saved as "01-case-study.Rmd".  An R notebook functions very 
 similarly to an R Markdown file. In fact, you will see two files in the directory,
@@ -52,34 +43,15 @@ can just hit save and your preview file will be automatically updated.  As you
 add a code chunk, run the code chunk and hit save and you will see the results 
 instantly updated in your preview.
 
-Exercise 3
-========================================================
+## Exercise 3
 
 Change the author of the .Rmd file to your name and add today's date.
 
-## Solution
-
-```r
----
-title: "Day 1 Case Study"
-author: "Your name here"
-date: "2019-01-31"
-output: html_notebook
----
-```
-
-Exercise 4
-========================================================
+## Exercise 4
 
 Run the following code chunk.  This will automatically import all the data files
 and convert to a single data frame titled `df`.  Don't worry if you don't understand 
 all the code, we'll discuss this more tomorrow.
-
-
-## Solution
-
-Run by pressing the green "play" button at the top right hand side of the code chunk
-
 
 ```{r importing-data}
 # create empty data frame
@@ -96,14 +68,11 @@ for(i in 1:11) {
 glimpse(df)
 ```
 
-Exercise 5
-========================================================
+## Exercise 5
 
 The "Factor_D" variable contains 15 unique values (i.e. 10, 15, 20, 21, ..., 85, 90).  There is at least one single observation where `Factor_D = 26` (possibly more).  Assume these observations were improperly recorded and, in fact, the value should be 25.  
 
 Using `ifelse()` (or __dplyr__'s `if_else()`) inside `mutate()`, recode any values where `Factor_D == 26` to be 25.
-
-## Solution
 
 ```{r convert-factor-d-values}
 # unique values of Factor D before being re-coded
@@ -111,83 +80,68 @@ sort(unique(df$Factor_D))
 
 # recode Factor D
 df <- df %>%
-  mutate(Factor_D = if_else(Factor_D == 26L, 25L, Factor_D))
+  mutate(Factor_D = if_else(_____ == _____, _____, _____))
 
 # unique values of Factor D after being re-coded
 sort(unique(df$Factor_D))
 ```
 
-Exercise 6
-========================================================
+
+## Exercise 6
 
 Unfortunately, some of the "Factor_" variables have observations that contain the 
 value "NULL" (they are recorded as a character string, not the actual `NULL` value.  
 Use `filter_at()` to filter out any of these observations. Your resulting data frame 
 should have 489,537 rows after filtering.
 
-## Solution
-
 ```{r filter-NULL-values}
 # filter out any observations where the "Factor_" variables contain "NULL"
 df <- df %>%
-  filter_at(vars(contains("Factor")), all_vars(. != "NULL"))
+  filter_at(_____, _____)
 
 # your resulting data frame should have 489,537 rows.
 nrow(df)
 ```
 
-Exercise 7
-========================================================
+
+## Exercise 7
 
 Using `mutate_at()` , convert all variables except for "Transaction_Timestamp"
-to factors.  However, make sure the "Month" variable is an ordered factor. 
-
-## Solution
+to factors.  However, make sure the "Month" variable is an ordered factor. This
+may require you to do two seperate `mutate()` statements.
 
 ```{r convert-to-factor}
 df <- df %>%
-  mutate_at(
-    vars(-matches("Timestamp|Month")),
-    as.factor        
-    ) %>%
-  mutate(Month = factor(Month, levels = month.abb))
-
-# make sure the Month variable is an ordered factor
-levels(df$Month)
+  mutate_at(_____, _____) %>%
+  mutate(Month = factor(_____, levels = _____))
 
 # make sure all features are changed to factors
 glimpse(df)
+
+# make sure the Month variable is an ordered factor
+levels(df$Month)
 ```
 
-Exercise 8
-========================================================
+
+## Exercise 8
 
 Excluding "Transaction_Timestamp", how many unique values are there for all the
-other variables in our data set?  Hint: use `summarize_if()`
-
-## Solution
+other variables in our data set?  Hint: use `n_distinct()` inside `summarize_if()`
 
 ```{r n-unique-values}
-df %>%
-  summarize_if(is.factor, n_distinct)
+df %>% summarize_if(_____, _____)
 ```
-
-Exercise 8 continued
-========================================================
 
 If you group by "Transaction_Status", are there approximately equal distributions
 of unique values across all the variables?
 
-## Solution
-
-```{r grouped-n-unique-values}
+```{r}
 df %>%
-  group_by(Transaction_Status) %>%
-  summarize_if(is.factor, n_distinct)
+  group_by(_____) %>%
+  summarize_if(_____, _____)
 ```
 
-Exercise 9
-========================================================
+## Exercise 9
 
 Fill in the blanks for `case_when()` so that you create a new variable named
 "Quarter" where:
@@ -197,24 +151,23 @@ Fill in the blanks for `case_when()` so that you create a new variable named
 - When Month is Jul-Sep, Quarter = "Q3"
 - When Month is Oct-Dec, Quarter = "Q4"
 
-## Solution
+You should have 85,588 obs in Q1, 100,227 in Q2, 161,071 in Q3, and 142,651 in Q4.
 
 ```{r create-quarter-variable}
 # Use mutate and case_when to create new Quarter variable
 df <- df %>%
   mutate(Quarter = case_when(
-    as.numeric(Month) <= 3 ~ "Q1",
-    as.numeric(Month) <= 6 ~ "Q2",
-    as.numeric(Month) <= 9 ~ "Q3",
-    TRUE                   ~ "Q4"
+    _____ ~ "Q1",
+    _____ ~ "Q2",
+    _____ ~ "Q3",
+    _____ ~ "Q4"
   ))
 
-# You should have 85588 obs in Q1, 100227 in Q2, 161071 in Q3, and 142651 in Q4.
+# assess how many observations you have in each quarter
 table(df$Quarter)
 ```
 
-Exercise 10
-========================================================
+## Exercise 10 
 
 Open up the "01-case-study-presentation.Rpres" file, click the "Preview" button, 
 and compare your results to mine.  In many cases, you could've gotten the same 
@@ -226,6 +179,3 @@ Also, take some time to see how the code to create the R presentation works. Thi
 is also built on top of R Markdown and the primary difference is how you use
 "========" to separate slides and the slide title precedes "========".
 
-## Solution
-
-If you've gotten this far in the presentation then you've completed this exercise!

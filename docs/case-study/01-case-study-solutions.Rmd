@@ -1,5 +1,5 @@
 ---
-title: "Day 1 Case Study"
+title: "Day 1 Case Study Solutions"
 author: "Brad Boehmke"
 date: "2019-01-31"
 output: html_notebook
@@ -91,8 +91,9 @@ sort(unique(df$Factor_D))
 ## Exercise 6
 
 Unfortunately, some of the "Factor_" variables have observations that contain the 
-value "NULL".  Use `filter_at()` to filter out any of these observations. Your 
-resulting data frame should have 489,537 rows after filtering.
+value "NULL" (they are recorded as a character string, not the actual `NULL` value.  
+Use `filter_at()` to filter out any of these observations. Your resulting data frame 
+should have 489,537 rows after filtering.
 
 ```{r filter-NULL-values}
 # filter out any observations where the "Factor_" variables contain "NULL"
@@ -138,7 +139,7 @@ df %>%
 If you group by "Transaction_Status", are there approximately equal distributions
 of unique values across all the variables?
 
-```{r}
+```{r grouped-n-unique-values}
 df %>%
   group_by(Transaction_Status) %>%
   summarize_if(is.factor, n_distinct)
