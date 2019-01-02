@@ -1,0 +1,44 @@
+---
+title: "Day 1 Case Study"
+output:
+  xaringan::moon_reader:
+    css: ["scrollable.css", "mtheme_max.css", "fonts_mtheme_max.css"]
+    self_contained: false
+    lib_dir: libs
+    chakra: libs/remark-latest.min.js
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false   
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+# Set global R options
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+
+# Set global knitr chunk options
+knitr::opts_chunk$set(
+  fig.align = "center"
+)
+```
+
+
+# Case Study
+
+<br><br><br><br><br><br>
+.center.font200.bold[http://bit.ly/2F7lyal]
+
+---
+
+# Day 1...done `r anicon::faa("check", animate = "pulse", speed = "slow", colour = "red")`
+
+<br>
+
+```{r questions-end-of-day1, echo=FALSE, out.height="450", out.width="450"}
+knitr::include_graphics("images/exhausted.png")
+```
+
+
+

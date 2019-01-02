@@ -3,10 +3,11 @@ Day 1 Case Study Exercises
 
 ## Prerequisites
 
-Download this folder and save it as “Intermediate-R-Case-Study-Day-1” (I
-know, I couldn’t think of a longer name). This folder will contain a
-“data” subfolder that contains all the data required for this case
-study and a .Rmd file with the exercises.
+Download [this folder](http://bit.ly/2BTQ3gr) and save it as
+“Intermediate-R-Case-Study-Day-1” (I know, I couldn’t think of a
+longer name). This folder will contain a “data” subfolder that contains
+all the data required for this case study and a .Rmd file with the
+exercises.
 
 ## Exercise 1
 
