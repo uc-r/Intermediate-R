@@ -8,20 +8,14 @@ Prerequisites
 ========================================================
 
 Download this folder and save it as "Intermediate-R-Case-Study-Day-1" (I know, 
-I couldn't think of a longer name).  This folder will contain a "\data" subfolder
+I couldn't think of a longer name).  This folder will contain a "data" subfolder
 that contains all the data required for this case study and a .Rmd file with
 the exercises.
 
-Slide With Code
+Exercise 1
 ========================================================
 
-```{r}
-summary(cars)
-```
+Create a self-contained R Project for this case study.  When creating the R 
+Project, you should choose the option to create in an "Existing Directory".
 
-Slide With Plot
-========================================================
 
-```{r, echo=FALSE}
-plot(cars)
-```

@@ -1707,7 +1707,7 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
-<p>Download this folder and save it as “Intermediate-R-Case-Study-Day-1” (I know, I couldn’t think of a longer name). This folder will contain a “” subfolder that contains all the data required for this case study and a .Rmd file with the exercises.</p>
+<p>Download this folder and save it as “Intermediate-R-Case-Study-Day-1” (I know, I couldn’t think of a longer name). This folder will contain a “data” subfolder that contains all the data required for this case study and a .Rmd file with the exercises.</p>
 </div>
 <div id="exercise-1" class="section level2">
 <h2>Exercise 1</h2>
@@ -1716,7 +1716,7 @@ $(document).ready(function () {
 <div id="exercise-2" class="section level2">
 <h2>Exercise 2</h2>
 <p>Open the R notebook saved as “01-case-study.Rmd”. An R notebook functions very similarly to an R Markdown file. In fact, you will see two files in the directory, a 01-case-study.Rmd file and a 01-case-study.nb.html file. Be sure to open the .Rmd file.</p>
-<p>Go ahead and click the “Preview” button at the top of the RStudio window (next to the round settings wheel where the knit button used to be). As you edit this document, rather than pressing the knit but, you can just hit save and your preview file will be automatically updated. As you add a code chunk, run the code chunk and hit save and you see the results instantly updated in your preview.</p>
+<p>After you’ve opened the .Rmd file, go ahead and click the “Preview” button at the top of the RStudio window (next to the round settings wheel where the knit button used to be). As you edit this document, rather than pressing the knit but, you can just hit save and your preview file will be automatically updated. As you add a code chunk, run the code chunk and hit save and you will see the results instantly updated in your preview.</p>
 </div>
 <div id="exercise-3" class="section level2">
 <h2>Exercise 3</h2>
@@ -1741,33 +1741,46 @@ for(i in 1:11) {
 
 glimpse(df)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiA2OTgsMTU5XG5WYXJpYWJsZXM6IDEwXG4kIEFjY291bnRfSUQgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSA1LCAxNiwgMjgsIDQwLCA2MiwgNjQsIDY5LCA2OSwgNzAsIDc5LCA4OCwgOTAsIOKAplxuJCBUcmFuc2FjdGlvbl9UaW1lc3RhbXAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxkdHRtPlx1MDAxYlszOW1cdTAwMWJbMjNtIDIwMDktMDEtMDggMDA6MTY6NDEsIDIwMDktMDEtMjAgMjI6NDA6MDgsIDIwMDnigKZcbiQgRmFjdG9yX0EgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08aW50Plx1MDAxYlszOW1cdTAwMWJbMjNtIDIsIDIsIDIsIDIsIDIsIDcsIDIsIDIsIDIsIDcsIDgsIDEwLCAxMCwgMiwgMiwg4oCmXG4kIEZhY3Rvcl9CICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCAxOCwgNiwgNiwgNiwgNiwgNuKAplxuJCBGYWN0b3JfQyAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxjaHI+XHUwMDFiWzM5bVx1MDAxYlsyM20gXCJWSVwiLCBcIlZJXCIsIFwiVklcIiwgXCJWSVwiLCBcIlZJXCIsIFwiTUNcIiwgXCJWSVwiLCBcIlZJXCIs4oCmXG4kIEZhY3Rvcl9EICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAyMCwgMjAsIDIxLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLOKAplxuJCBGYWN0b3JfRSAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxjaHI+XHUwMDFiWzM5bVx1MDAxYlsyM20gXCJBXCIsIFwiSFwiLCBcIk5VTExcIiwgXCJIXCIsIFwiQlwiLCBcIk5VTExcIiwgXCJIXCIsIFwiSFwiLCBcIuKAplxuJCBSZXNwb25zZSAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxpbnQ+XHUwMDFiWzM5bVx1MDAxYlsyM20gMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCzigKZcbiQgVHJhbnNhY3Rpb25fU3RhdHVzICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08Y2hyPlx1MDAxYlszOW1cdTAwMWJbMjNtIFwiQXBwcm92ZWRcIiwgXCJBcHByb3ZlZFwiLCBcIkFwcHJvdmVkXCIsIFwiQXBwcm92ZWRcIizigKZcbiQgTW9udGggICAgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08Y2hyPlx1MDAxYlszOW1cdTAwMWJbMjNtIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCLigKZcbiJ9 -->
+<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiA2OTgsMTU5XG5WYXJpYWJsZXM6IDEwXG4kIEFjY291bnRfSUQgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSA1LCAxNiwgMjgsIDQwLCA2MiwgNjQsIDY5LCA2OSwgNzAsIDc5LCA4OCwgOTAsIDkwLCA5NSwgMTAxLCAxMDEsIDEw4oCmXG4kIFRyYW5zYWN0aW9uX1RpbWVzdGFtcCBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGR0dG0+XHUwMDFiWzM5bVx1MDAxYlsyM20gMjAwOS0wMS0wOCAwMDoxNjo0MSwgMjAwOS0wMS0yMCAyMjo0MDowOCwgMjAwOS0wMS0xOSAxMzoyNDo1NSwgMjAw4oCmXG4kIEZhY3Rvcl9BICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAyLCAyLCAyLCAyLCAyLCA3LCAyLCAyLCAyLCA3LCA4LCAxMCwgMTAsIDIsIDIsIDIsIDIsIDIsIDIsIDcsIDcsIDcs4oCmXG4kIEZhY3Rvcl9CICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCAxOCwgNiwgNiwgNiwgNiwgNiwgNiwgNiwgNiwgNiwgNiwgNiwg4oCmXG4kIEZhY3Rvcl9DICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGNocj5cdTAwMWJbMzltXHUwMDFiWzIzbSBcIlZJXCIsIFwiVklcIiwgXCJWSVwiLCBcIlZJXCIsIFwiVklcIiwgXCJNQ1wiLCBcIlZJXCIsIFwiVklcIiwgXCJWSVwiLCBcIk1DXCIsIFwiQVhcIiwgXCLigKZcbiQgRmFjdG9yX0QgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08aW50Plx1MDAxYlszOW1cdTAwMWJbMjNtIDIwLCAyMCwgMjEsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCzigKZcbiQgRmFjdG9yX0UgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08Y2hyPlx1MDAxYlszOW1cdTAwMWJbMjNtIFwiQVwiLCBcIkhcIiwgXCJOVUxMXCIsIFwiSFwiLCBcIkJcIiwgXCJOVUxMXCIsIFwiSFwiLCBcIkhcIiwgXCJCXCIsIFwiTlVMTFwiLCBcIk5VTExcIiwg4oCmXG4kIFJlc3BvbnNlICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAx4oCmXG4kIFRyYW5zYWN0aW9uX1N0YXR1cyAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGNocj5cdTAwMWJbMzltXHUwMDFiWzIzbSBcIkFwcHJvdmVkXCIsIFwiQXBwcm92ZWRcIiwgXCJBcHByb3ZlZFwiLCBcIkFwcHJvdmVkXCIsIFwiQXBwcm92ZWRcIiwgXCJBcHByb3bigKZcbiQgTW9udGggICAgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08Y2hyPlx1MDAxYlszOW1cdTAwMWJbMjNtIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFuXCIsIFwiSmFu4oCmXG4ifQ== -->
 <pre><code>Observations: 698,159
 Variables: 10
-$ Account_ID            [3m[38;5;246m&lt;int&gt;[39m[23m 5, 16, 28, 40, 62, 64, 69, 69, 70, 79, 88, 90, …
-$ Transaction_Timestamp [3m[38;5;246m&lt;dttm&gt;[39m[23m 2009-01-08 00:16:41, 2009-01-20 22:40:08, 2009…
-$ Factor_A              [3m[38;5;246m&lt;int&gt;[39m[23m 2, 2, 2, 2, 2, 7, 2, 2, 2, 7, 8, 10, 10, 2, 2, …
-$ Factor_B              [3m[38;5;246m&lt;int&gt;[39m[23m 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 18, 6, 6, 6, 6, 6…
-$ Factor_C              [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;MC&quot;, &quot;VI&quot;, &quot;VI&quot;,…
-$ Factor_D              [3m[38;5;246m&lt;int&gt;[39m[23m 20, 20, 21, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
-$ Factor_E              [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;A&quot;, &quot;H&quot;, &quot;NULL&quot;, &quot;H&quot;, &quot;B&quot;, &quot;NULL&quot;, &quot;H&quot;, &quot;H&quot;, &quot;…
-$ Response              [3m[38;5;246m&lt;int&gt;[39m[23m 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020,…
-$ Transaction_Status    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approved&quot;,…
-$ Month                 [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;…</code></pre>
+$ Account_ID            [3m[38;5;246m&lt;int&gt;[39m[23m 5, 16, 28, 40, 62, 64, 69, 69, 70, 79, 88, 90, 90, 95, 101, 101, 10…
+$ Transaction_Timestamp [3m[38;5;246m&lt;dttm&gt;[39m[23m 2009-01-08 00:16:41, 2009-01-20 22:40:08, 2009-01-19 13:24:55, 200…
+$ Factor_A              [3m[38;5;246m&lt;int&gt;[39m[23m 2, 2, 2, 2, 2, 7, 2, 2, 2, 7, 8, 10, 10, 2, 2, 2, 2, 2, 2, 7, 7, 7,…
+$ Factor_B              [3m[38;5;246m&lt;int&gt;[39m[23m 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 18, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, …
+$ Factor_C              [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;MC&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;MC&quot;, &quot;AX&quot;, &quot;…
+$ Factor_D              [3m[38;5;246m&lt;int&gt;[39m[23m 20, 20, 21, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
+$ Factor_E              [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;A&quot;, &quot;H&quot;, &quot;NULL&quot;, &quot;H&quot;, &quot;B&quot;, &quot;NULL&quot;, &quot;H&quot;, &quot;H&quot;, &quot;B&quot;, &quot;NULL&quot;, &quot;NULL&quot;, …
+$ Response              [3m[38;5;246m&lt;int&gt;[39m[23m 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1…
+$ Transaction_Status    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approv…
+$ Month                 [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan…</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="exercise-5" class="section level2">
 <h2>Exercise 5</h2>
+<p>The “Factor_D” variable contains 15 unique values (i.e. 10, 15, 20, 21, …, 85, 90). There is at least one single observation where <code>Factor_D = 26</code> (possibly more). Assume these observations were improperly recorded and, in fact, the value should be 25.</p>
+<p>Using <code>ifelse()</code> (or <strong>dplyr</strong>’s <code>if_else()</code>) inside <code>mutate()</code>, recode any values where <code>Factor_D == 26</code> to be 25.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW5pcXVlKGRmJEZhY3Rvcl9EKVxuXG5gYGAifQ== -->
-<pre class="r"><code>unique(df$Factor_D)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyB1bmlxdWUgdmFsdWVzIG9mIEZhY3RvciBEIGJlZm9yZSBiZWluZyByZS1jb2RlZFxuc29ydCh1bmlxdWUoZGYkRmFjdG9yX0QpKVxuYGBgIn0= -->
+<pre class="r"><code># unique values of Factor D before being re-coded
+sort(unique(df$Factor_D))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAyMCAyMSAzMCAyNSAzNSA1NSA1MCA5MCAxMCAxNSA4NSA3MCA0MCAzMVxuIn0= -->
-<pre><code> [1] 20 21 30 25 35 55 50 90 10 15 85 70 40 31</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAxMCAxNSAyMCAyMSAyNSAyNiAzMCAzMSAzNSA0MCA1MCA1NSA3MCA4NSA5MFxuIn0= -->
+<pre><code> [1] 10 15 20 21 25 26 30 31 35 40 50 55 70 85 90</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByZWNvZGUgRmFjdG9yIERcbmRmIDwtIGRmICU+JVxuICBtdXRhdGUoRmFjdG9yX0QgPSBpZl9lbHNlKEZhY3Rvcl9EID09IDI2TCwgMjVMLCBGYWN0b3JfRCkpXG5cbiMgdW5pcXVlIHZhbHVlcyBvZiBGYWN0b3IgRCBhZnRlciBiZWluZyByZS1jb2RlZFxuc29ydCh1bmlxdWUoZGYkRmFjdG9yX0QpKVxuYGBgIn0= -->
+<pre class="r"><code># recode Factor D
+df &lt;- df %&gt;%
+  mutate(Factor_D = if_else(Factor_D == 26L, 25L, Factor_D))
+
+# unique values of Factor D after being re-coded
+sort(unique(df$Factor_D))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAxMCAxNSAyMCAyMSAyNSAzMCAzMSAzNSA0MCA1MCA1NSA3MCA4NSA5MFxuIn0= -->
+<pre><code> [1] 10 15 20 21 25 30 31 35 40 50 55 70 85 90</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1777,25 +1790,16 @@ $ Month                 [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Jan&quot;, &q
 <p>Unfortunately, some of the “Factor_” variables have observations that contain the value “NULL”. Use <code>filter_at()</code> to filter out any of these observations. Your resulting data frame should have 489,537 rows after filtering.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gZGYgJT4lXG4gIGZpbHRlcl9hdCh2YXJzKGNvbnRhaW5zKFwiRmFjdG9yXCIpKSwgYWxsX3ZhcnMoLiAhPSBcIk5VTExcIikpXG5cbmdsaW1wc2UoZGYpXG5gYGAifQ== -->
-<pre class="r"><code>df &lt;- df %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmaWx0ZXIgb3V0IGFueSBvYnNlcnZhdGlvbnMgd2hlcmUgdGhlIFwiRmFjdG9yX1wiIHZhcmlhYmxlcyBjb250YWluIFwiTlVMTFwiXG5kZiA8LSBkZiAlPiVcbiAgZmlsdGVyX2F0KHZhcnMoY29udGFpbnMoXCJGYWN0b3JcIikpLCBhbGxfdmFycyguICE9IFwiTlVMTFwiKSlcblxuIyB5b3VyIHJlc3VsdGluZyBkYXRhIGZyYW1lIHNob3VsZCBoYXZlIDQ4OSw1Mzcgcm93cy5cbm5yb3coZGYpXG5gYGAifQ== -->
+<pre class="r"><code># filter out any observations where the &quot;Factor_&quot; variables contain &quot;NULL&quot;
+df &lt;- df %&gt;%
   filter_at(vars(contains(&quot;Factor&quot;)), all_vars(. != &quot;NULL&quot;))
 
-glimpse(df)</code></pre>
+# your resulting data frame should have 489,537 rows.
+nrow(df)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiA0ODksNTM3XG5WYXJpYWJsZXM6IDEwXG4kIEFjY291bnRfSUQgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSA1LCAxNiwgNDAsIDYyLCA2OSwgNjksIDcwLCA5NSwgMTAxLCAxMDEsIDEwMiwgMeKAplxuJCBUcmFuc2FjdGlvbl9UaW1lc3RhbXAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxkdHRtPlx1MDAxYlszOW1cdTAwMWJbMjNtIDIwMDktMDEtMDggMDA6MTY6NDEsIDIwMDktMDEtMjAgMjI6NDA6MDgsIDIwMDnigKZcbiQgRmFjdG9yX0EgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08aW50Plx1MDAxYlszOW1cdTAwMWJbMjNtIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIs4oCmXG4kIEZhY3Rvcl9CICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LOKAplxuJCBGYWN0b3JfQyAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxjaHI+XHUwMDFiWzM5bVx1MDAxYlsyM20gXCJWSVwiLCBcIlZJXCIsIFwiVklcIiwgXCJWSVwiLCBcIlZJXCIsIFwiVklcIiwgXCJWSVwiLCBcIlZJXCIs4oCmXG4kIEZhY3Rvcl9EICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLOKAplxuJCBGYWN0b3JfRSAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxjaHI+XHUwMDFiWzM5bVx1MDAxYlsyM20gXCJBXCIsIFwiSFwiLCBcIkhcIiwgXCJCXCIsIFwiSFwiLCBcIkhcIiwgXCJCXCIsIFwiR1wiLCBcIkcyXCIsIFwi4oCmXG4kIFJlc3BvbnNlICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLOKAplxuJCBUcmFuc2FjdGlvbl9TdGF0dXMgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxjaHI+XHUwMDFiWzM5bVx1MDAxYlsyM20gXCJBcHByb3ZlZFwiLCBcIkFwcHJvdmVkXCIsIFwiQXBwcm92ZWRcIiwgXCJBcHByb3ZlZFwiLOKAplxuJCBNb250aCAgICAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxjaHI+XHUwMDFiWzM5bVx1MDAxYlsyM20gXCJKYW5cIiwgXCJKYW5cIiwgXCJKYW5cIiwgXCJKYW5cIiwgXCJKYW5cIiwgXCJKYW5cIiwgXCJKYW5cIuKAplxuIn0= -->
-<pre><code>Observations: 489,537
-Variables: 10
-$ Account_ID            [3m[38;5;246m&lt;int&gt;[39m[23m 5, 16, 40, 62, 69, 69, 70, 95, 101, 101, 102, 1…
-$ Transaction_Timestamp [3m[38;5;246m&lt;dttm&gt;[39m[23m 2009-01-08 00:16:41, 2009-01-20 22:40:08, 2009…
-$ Factor_A              [3m[38;5;246m&lt;int&gt;[39m[23m 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
-$ Factor_B              [3m[38;5;246m&lt;int&gt;[39m[23m 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,…
-$ Factor_C              [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;, &quot;VI&quot;,…
-$ Factor_D              [3m[38;5;246m&lt;int&gt;[39m[23m 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
-$ Factor_E              [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;A&quot;, &quot;H&quot;, &quot;H&quot;, &quot;B&quot;, &quot;H&quot;, &quot;H&quot;, &quot;B&quot;, &quot;G&quot;, &quot;G2&quot;, &quot;…
-$ Response              [3m[38;5;246m&lt;int&gt;[39m[23m 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020,…
-$ Transaction_Status    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approved&quot;, &quot;Approved&quot;,…
-$ Month                 [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;, &quot;Jan&quot;…</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ4OTUzN1xuIn0= -->
+<pre><code>[1] 489537</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1805,7 +1809,7 @@ $ Month                 [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Jan&quot;, &q
 <p>Using <code>mutate_at()</code> , convert all variables except for “Transaction_Timestamp” to factors. However, make sure the “Month” variable is an ordered factor.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gZGYgJT4lXG4gIG11dGF0ZV9hdChcbiAgICB2YXJzKC1tYXRjaGVzKFwiVGltZXN0YW1wfE1vbnRoXCIpKSxcbiAgICBhcy5mYWN0b3IgICAgICAgIFxuICAgICkgJT4lXG4gIG11dGF0ZShNb250aCA9IGZhY3RvcihNb250aCwgbGV2ZWxzID0gbW9udGguYWJiKSlcblxuZ2xpbXBzZShkZilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gZGYgJT4lXG4gIG11dGF0ZV9hdChcbiAgICB2YXJzKC1tYXRjaGVzKFwiVGltZXN0YW1wfE1vbnRoXCIpKSxcbiAgICBhcy5mYWN0b3IgICAgICAgIFxuICAgICkgJT4lXG4gIG11dGF0ZShNb250aCA9IGZhY3RvcihNb250aCwgbGV2ZWxzID0gbW9udGguYWJiKSlcblxuIyBtYWtlIHN1cmUgYWxsIGZlYXR1cmVzIGFyZSBjaGFuZ2VkIHRvIGZhY3RvcnNcbmdsaW1wc2UoZGYpXG5gYGAifQ== -->
 <pre class="r"><code>df &lt;- df %&gt;%
   mutate_at(
     vars(-matches(&quot;Timestamp|Month&quot;)),
@@ -1813,35 +1817,43 @@ $ Month                 [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Jan&quot;, &q
     ) %&gt;%
   mutate(Month = factor(Month, levels = month.abb))
 
+# make sure all features are changed to factors
 glimpse(df)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiA0ODksNTM3XG5WYXJpYWJsZXM6IDEwXG4kIEFjY291bnRfSUQgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSA1LCAxNiwgNDAsIDYyLCA2OSwgNjksIDcwLCA5NSwgMTAxLCAxMDEsIDEwMiwgMeKAplxuJCBUcmFuc2FjdGlvbl9UaW1lc3RhbXAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxkdHRtPlx1MDAxYlszOW1cdTAwMWJbMjNtIDIwMDktMDEtMDggMDA6MTY6NDEsIDIwMDktMDEtMjAgMjI6NDA6MDgsIDIwMDnigKZcbiQgRmFjdG9yX0EgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08ZmN0Plx1MDAxYlszOW1cdTAwMWJbMjNtIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIsIDIs4oCmXG4kIEZhY3Rvcl9CICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LOKAplxuJCBGYWN0b3JfQyAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxmY3Q+XHUwMDFiWzM5bVx1MDAxYlsyM20gVkksIFZJLCBWSSwgVkksIFZJLCBWSSwgVkksIFZJLCBWSSwgVkksIFZJLCBWSSzigKZcbiQgRmFjdG9yX0QgICAgICAgICAgICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08ZmN0Plx1MDAxYlszOW1cdTAwMWJbMjNtIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAs4oCmXG4kIEZhY3Rvcl9FICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSBBLCBILCBILCBCLCBILCBILCBCLCBHLCBHMiwgRzIsIEEsIEEsIEMsIEEsIEEsIOKAplxuJCBSZXNwb25zZSAgICAgICAgICAgICAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxmY3Q+XHUwMDFiWzM5bVx1MDAxYlsyM20gMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCwgMTAyMCzigKZcbiQgVHJhbnNhY3Rpb25fU3RhdHVzICAgIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08ZmN0Plx1MDAxYlszOW1cdTAwMWJbMjNtIEFwcHJvdmVkLCBBcHByb3ZlZCwgQXBwcm92ZWQsIEFwcHJvdmVkLCBBcHByb3Zl4oCmXG4kIE1vbnRoICAgICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSBKYW4sIEphbiwgSmFuLCBKYW4sIEphbiwgSmFuLCBKYW4sIEphbiwgSmFuLCBKYeKAplxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiA0ODksNTM3XG5WYXJpYWJsZXM6IDEwXG4kIEFjY291bnRfSUQgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSA1LCAxNiwgNDAsIDYyLCA2OSwgNjksIDcwLCA5NSwgMTAxLCAxMDEsIDEwMiwgMTAyLCAxMDgsIDExNSwgMTE1LCAx4oCmXG4kIFRyYW5zYWN0aW9uX1RpbWVzdGFtcCBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGR0dG0+XHUwMDFiWzM5bVx1MDAxYlsyM20gMjAwOS0wMS0wOCAwMDoxNjo0MSwgMjAwOS0wMS0yMCAyMjo0MDowOCwgMjAwOS0wMS0wNSAxNjoxMDo1OCwgMjAw4oCmXG4kIEZhY3Rvcl9BICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAyLCAy4oCmXG4kIEZhY3Rvcl9CICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA2LCA24oCmXG4kIEZhY3Rvcl9DICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSBWSSwgVkksIFZJLCBWSSwgVkksIFZJLCBWSSwgVkksIFZJLCBWSSwgVkksIFZJLCBWSSwgVkksIFZJLCBWSSwgVkks4oCmXG4kIEZhY3Rvcl9EICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAsIDIwLCAyMCwgMjAs4oCmXG4kIEZhY3Rvcl9FICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSBBLCBILCBILCBCLCBILCBILCBCLCBHLCBHMiwgRzIsIEEsIEEsIEMsIEEsIEEsIEEsIEgsIEMsIEMsIFMxLCBCLCBC4oCmXG4kIFJlc3BvbnNlICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAxMDIwLCAx4oCmXG4kIFRyYW5zYWN0aW9uX1N0YXR1cyAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSBBcHByb3ZlZCwgQXBwcm92ZWQsIEFwcHJvdmVkLCBBcHByb3ZlZCwgQXBwcm92ZWQsIEFwcHJvdmVkLCBBcHByb3Zl4oCmXG4kIE1vbnRoICAgICAgICAgICAgICAgICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGZjdD5cdTAwMWJbMzltXHUwMDFiWzIzbSBKYW4sIEphbiwgSmFuLCBKYW4sIEphbiwgSmFuLCBKYW4sIEphbiwgSmFuLCBKYW4sIEphbiwgSmFuLCBKYW4sIEph4oCmXG4ifQ== -->
 <pre><code>Observations: 489,537
 Variables: 10
-$ Account_ID            [3m[38;5;246m&lt;fct&gt;[39m[23m 5, 16, 40, 62, 69, 69, 70, 95, 101, 101, 102, 1…
-$ Transaction_Timestamp [3m[38;5;246m&lt;dttm&gt;[39m[23m 2009-01-08 00:16:41, 2009-01-20 22:40:08, 2009…
-$ Factor_A              [3m[38;5;246m&lt;fct&gt;[39m[23m 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
-$ Factor_B              [3m[38;5;246m&lt;fct&gt;[39m[23m 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,…
-$ Factor_C              [3m[38;5;246m&lt;fct&gt;[39m[23m VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI,…
-$ Factor_D              [3m[38;5;246m&lt;fct&gt;[39m[23m 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
-$ Factor_E              [3m[38;5;246m&lt;fct&gt;[39m[23m A, H, H, B, H, H, B, G, G2, G2, A, A, C, A, A, …
-$ Response              [3m[38;5;246m&lt;fct&gt;[39m[23m 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020,…
-$ Transaction_Status    [3m[38;5;246m&lt;fct&gt;[39m[23m Approved, Approved, Approved, Approved, Approve…
-$ Month                 [3m[38;5;246m&lt;fct&gt;[39m[23m Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Ja…</code></pre>
+$ Account_ID            [3m[38;5;246m&lt;fct&gt;[39m[23m 5, 16, 40, 62, 69, 69, 70, 95, 101, 101, 102, 102, 108, 115, 115, 1…
+$ Transaction_Timestamp [3m[38;5;246m&lt;dttm&gt;[39m[23m 2009-01-08 00:16:41, 2009-01-20 22:40:08, 2009-01-05 16:10:58, 200…
+$ Factor_A              [3m[38;5;246m&lt;fct&gt;[39m[23m 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+$ Factor_B              [3m[38;5;246m&lt;fct&gt;[39m[23m 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6…
+$ Factor_C              [3m[38;5;246m&lt;fct&gt;[39m[23m VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI, VI,…
+$ Factor_D              [3m[38;5;246m&lt;fct&gt;[39m[23m 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
+$ Factor_E              [3m[38;5;246m&lt;fct&gt;[39m[23m A, H, H, B, H, H, B, G, G2, G2, A, A, C, A, A, A, H, C, C, S1, B, B…
+$ Response              [3m[38;5;246m&lt;fct&gt;[39m[23m 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1…
+$ Transaction_Status    [3m[38;5;246m&lt;fct&gt;[39m[23m Approved, Approved, Approved, Approved, Approved, Approved, Approve…
+$ Month                 [3m[38;5;246m&lt;fct&gt;[39m[23m Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Jan, Ja…</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBtYWtlIHN1cmUgdGhlIE1vbnRoIHZhcmlhYmxlIGlzIGFuIG9yZGVyZWQgZmFjdG9yXG5sZXZlbHMoZGYkTW9udGgpXG5gYGAifQ== -->
+<pre class="r"><code># make sure the Month variable is an ordered factor
+levels(df$Month)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIkphblwiIFwiRmViXCIgXCJNYXJcIiBcIkFwclwiIFwiTWF5XCIgXCJKdW5cIiBcIkp1bFwiIFwiQXVnXCIgXCJTZXBcIiBcIk9jdFwiIFwiTm92XCIgXCJEZWNcIlxuIn0= -->
+<pre><code> [1] &quot;Jan&quot; &quot;Feb&quot; &quot;Mar&quot; &quot;Apr&quot; &quot;May&quot; &quot;Jun&quot; &quot;Jul&quot; &quot;Aug&quot; &quot;Sep&quot; &quot;Oct&quot; &quot;Nov&quot; &quot;Dec&quot;</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="exercise-8" class="section level2">
 <h2>Exercise 8</h2>
-<p>Excluding “Transaction_Timestamp”, how many unique values are there for all the other variables in our data set?</p>
+<p>Excluding “Transaction_Timestamp”, how many unique values are there for all the other variables in our data set? Hint: use <code>summarize_if()</code></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgJT4lXG4gIHN1bW1hcml6ZV9pZihpcy5mYWN0b3IsIG5fZGlzdGluY3QpXG5gYGAifQ== -->
 <pre class="r"><code>df %&gt;%
   summarize_if(is.factor, n_distinct)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6OSwibnJvdyI6MX0sInJkZiI6Ikg0c0lBQUFBQUFBQUEzMVJ5MDdETUJCMFhyUUpGQkRjK1lQbXdBY2dGUW9TaDNJb0hIcUxUREJwcExBT3RrTTU4czE4UU1zNjlVSmxxZVJnejR6WDN0bkpmTHE0ekJZWll5eGtVUkt3TUVJWWg3Z0VMR2FwM1Q4Wmk4NFJXRExhSG53Ly9HSjc4UTlIZS9TakhYeTFneS8yMUI5NkpoTGdiMElqT08yTmJNVnNVcGF5QTFQY1Q1MHl2T09sa2FxWWVQemE0emNlOSsvZkVwOEwzVXJRd3ZHeko4VkJZMDB0b1hnMDNIU2FETTRrbUtYdnVteTRKdGNrWmkvYzhQeFY0VUJlZWFya0txZEJiUkxoRnk0Yi9IQmJlOFVEMlZvWFdCcmFuek8wTDd2d0FxOWpvRHpoQk1ZZDFPK2RHSC93cHV2YjBWMzJEeDd0dkU4NDNkb0tONjdGMExXSVJibVVEaDhJcUdxZ0RKT0dQNHVHcHNCaE5hL29iTERpQ21xb0hEM0dRUG84OGxiVllDaEFWSFZ1cE9IMFNsYktocFErS2JiK0FmR0R3WjdZQWdBQSJ9 -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6OSwibnJvdyI6MX0sInJkZiI6Ikg0c0lBQUFBQUFBQUEzMVJ5MDdETUJCMFhyUUpGQkRjK1lQbXdBY2dGUW9TQnpnVURyMVZTekJwcExBT3RrTTU4czE4UU1zbXpaYklVdkhCbmhudjJ1UHhiRHEvVE9hSkVNSVhRZVFKUHlBWStqUjVJaFJ4czM0SkVad1RhTWhvdS9IenVNTk40eDhPOXVoSFBYelZ3eGQ3Nmc4ZEV4SEN1elFFVGxzald6R1paSm1xMFM3dXA1MHl2SVBNS3IyWU9QemE0VGNPZC90dm1jK2txUlFhMmZHelp3MW9xS1pRdUhpeVlHdkRCaDhVMnFYck9pdkJzR3NXazFld2tMNXBlcEJUSG11MVN2bWhUUkwrTjAwYkdyU3NuZUtCcWhvWFZPcno1eVJkZUo2RCs3ZDcyaEZPY0Z4ajhWSEw4U2VVZFhzMTk0cC84S2gzUHVONGE5SGZPUDgwekZSWlFyVkxNWlRaVW5YNFFHSmVJTzlFSmJ6SWtsOUlRUmpJZVcrd0FvMEY1aDA5cHJEYXJOSktGMmc1WEZKTmFwVUZQaVdoeTFscFV4VHJYMkxPUmJUMEFnQUEifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["Account_ID"],"name":[1],"type":["int"],"align":["right"]},{"label":["Factor_A"],"name":[2],"type":["int"],"align":["right"]},{"label":["Factor_B"],"name":[3],"type":["int"],"align":["right"]},{"label":["Factor_C"],"name":[4],"type":["int"],"align":["right"]},{"label":["Factor_D"],"name":[5],"type":["int"],"align":["right"]},{"label":["Factor_E"],"name":[6],"type":["int"],"align":["right"]},{"label":["Response"],"name":[7],"type":["int"],"align":["right"]},{"label":["Transaction_Status"],"name":[8],"type":["int"],"align":["right"]},{"label":["Month"],"name":[9],"type":["int"],"align":["right"]}],"data":[{"1":"324174","2":"2","3":"3","4":"2","5":"12","6":"62","7":"30","8":"2","9":"11"}],"options":{"columns":{"min":{},"max":[10],"total":[9]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
@@ -1858,7 +1870,7 @@ $ Month                 [3m[38;5;246m&lt;fct&gt;[39m[23m Jan, Jan, Jan, Jan,
   group_by(Transaction_Status) %&gt;%
   summarize_if(is.factor, n_distinct)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6OSwibnJvdyI6Mn0sInJkZiI6Ikg0c0lBQUFBQUFBQUEzMVN2VTdETUJCMmZrcWJRQUhCeWlzMEF3TUlNUlVLRWdOTFllaFdHZGR0STRJZDJVN0x5RHZ5Smp4QXd6bkpwZFFJaHJQdnV6L2ZkNzd4YUhJZVQySkNpRStDamtmOEFOVFFoOE1qSVlucy9VNUljQW9LZ0tCZkJWcG5kZThFN21WOHhUTU4ybkhscmEyOVlaNHJ1ZUl6eENQT3NsUUEzczN1c0l4cVRHNUx6aWt6VW9HMkFha2ZEejhQQ0xuNGF2RldFQWVOL09YZmJ3VHhOY2lWRTMvMk85NjJHNVJPaC9HTUdwck1GWDNqTGlFQk5pUVVOY2FUWjBXRkJsS3BGTk1uUTAyaHNkQ1FNVmtJTTMwWTRhVHVLL0xUb1lOdkhIenJZRGYvRHZHWTYxd0t6YkhCUnluTTB1azZVbktkWU9mVkFEN2dLTXR5VTMvQ1RuQlg1cFlJaFBwMlFYcVdSck1jbmpNblR6bUdvMExZWjJZRHRpekU2K0R5Unk3NVIrOXZsNi9WbzdxdEVQK20xendSY3JhVXVFbGNMR0Rya0hwR1gzaUdMSUNzcGd2MGRkZFVpVlFzR25nSUE2bm1rZVFxRlFaL0M2dzZNZEpRckJJem1hR2xYdGZOTi9HUTFRRmNBd0FBIn0= -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6OSwibnJvdyI6Mn0sInJkZiI6Ikg0c0lBQUFBQUFBQUEzMVNTMDdETUJCMVBxVk5vSUJneXhVYUNSWklpRldoSUxGZ1UxaDBWeG5YYlNPTUhkbE9ZY2tkdVFrSGFKaDhKbTJOWURIMnZQbDU1bm5HbzhsRlBJa0pJVDRKT2g3eEExQkRIdzZQaENRcTd3OUNnbE5RQUFUOUtyQjBWdmRPNEo3Z0t5NE1hTWVWdDdiMmhsbW0xWXJQRUk4NEU2a0V2SnZkWVlJYVRHNUx6aW16U29PMkJxa2ZENzhPQ0xuOGJ2RkdFQWVOL09YZmJ3VHhOY2lWRTMvMk83NXNOeWljRHVNWnRUU1phL3JHM1lFazJIQ2dxREdlUEdzcURReVZLamw5c3RUbUJnc05HVk81dE5PSEVUSjFYdzAvSFRyNHhzRzNEbmJ6N3hDUHVjbVVOQndiZkZUU0xwMnVJNjNlRSt5OEl1QVRqcUlvMXZVbjdBUjNWVllPQXFGK3N5QWticGJEYy9SdHpqenRHSTV5V1Q0NUc3QmxMbDhINTF1NTVCKzl2MW5FVm8vcUZrUDhKeVMreDVRUU5HdUhEemxiS3R3eUxoZXdrVWlMb0M5YzRJUkFoS0VMOUhYZnFaYXBYRFR3RU1pcXVFb3luVXFMUHdsV2sxaGxLVmFKNFhHMDFLdTgvZ0VvRzJUSmVBTUFBQT09In0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["Transaction_Status"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Account_ID"],"name":[2],"type":["int"],"align":["right"]},{"label":["Factor_A"],"name":[3],"type":["int"],"align":["right"]},{"label":["Factor_B"],"name":[4],"type":["int"],"align":["right"]},{"label":["Factor_C"],"name":[5],"type":["int"],"align":["right"]},{"label":["Factor_D"],"name":[6],"type":["int"],"align":["right"]},{"label":["Factor_E"],"name":[7],"type":["int"],"align":["right"]},{"label":["Response"],"name":[8],"type":["int"],"align":["right"]},{"label":["Month"],"name":[9],"type":["int"],"align":["right"]}],"data":[{"1":"Approved","2":"316172","3":"2","4":"3","5":"2","6":"11","7":"59","8":"2","9":"11"},{"1":"Declined","2":"14066","3":"2","4":"3","5":"2","6":"11","7":"57","8":"28","9":"11"}],"options":{"columns":{"min":{},"max":[10],"total":[9]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
@@ -1870,18 +1882,27 @@ $ Month                 [3m[38;5;246m&lt;fct&gt;[39m[23m Jan, Jan, Jan, Jan,
 </div>
 <div id="exercise-9" class="section level2">
 <h2>Exercise 9</h2>
-<p>Use</p>
+<p>Fill in the blanks for <code>case_when()</code> so that you create a new variable named “Quarter” where:</p>
+<ul>
+<li>When Month is Jan-Mar, Quarter = “Q1”</li>
+<li>When Month is Apr-Jun, Quarter = “Q2”</li>
+<li>When Month is Jul-Sep, Quarter = “Q3”</li>
+<li>When Month is Oct-Dec, Quarter = “Q4”</li>
+</ul>
+<p>You should have 85,588 obs in Q1, 100,227 in Q2, 161,071 in Q3, and 142,651 in Q4.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gZGYgJT4lXG4gIG11dGF0ZShRdWFydGVyID0gY2FzZV93aGVuKFxuICAgIGFzLm51bWVyaWMoTW9udGgpIDw9IDMgfiBcIlExXCIsXG4gICAgYXMubnVtZXJpYyhNb250aCkgPD0gNiB+IFwiUTJcIixcbiAgICBhcy5udW1lcmljKE1vbnRoKSA8PSA5IH4gXCJRM1wiLFxuICAgIFRSVUUgICAgICAgICAgIH4gXCJRNFwiXG4gICkpXG5cbnRhYmxlKGRmJFF1YXJ0ZXIpXG5gYGAifQ== -->
-<pre class="r"><code>df &lt;- df %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBVc2UgbXV0YXRlIGFuZCBjYXNlX3doZW4gdG8gY3JlYXRlIG5ldyBRdWFydGVyIHZhcmlhYmxlXG5kZiA8LSBkZiAlPiVcbiAgbXV0YXRlKFF1YXJ0ZXIgPSBjYXNlX3doZW4oXG4gICAgYXMubnVtZXJpYyhNb250aCkgPD0gMyB+IFwiUTFcIixcbiAgICBhcy5udW1lcmljKE1vbnRoKSA8PSA2IH4gXCJRMlwiLFxuICAgIGFzLm51bWVyaWMoTW9udGgpIDw9IDkgfiBcIlEzXCIsXG4gICAgVFJVRSAgICAgICAgICAgICAgICAgICB+IFwiUTRcIlxuICApKVxuXG4jIGFzc2VzcyBob3cgbWFueSBvYnNlcnZhdGlvbnMgeW91IGhhdmUgaW4gZWFjaCBxdWFydGVyXG50YWJsZShkZiRRdWFydGVyKVxuYGBgIn0= -->
+<pre class="r"><code># Use mutate and case_when to create new Quarter variable
+df &lt;- df %&gt;%
   mutate(Quarter = case_when(
     as.numeric(Month) &lt;= 3 ~ &quot;Q1&quot;,
     as.numeric(Month) &lt;= 6 ~ &quot;Q2&quot;,
     as.numeric(Month) &lt;= 9 ~ &quot;Q3&quot;,
-    TRUE           ~ &quot;Q4&quot;
+    TRUE                   ~ &quot;Q4&quot;
   ))
 
+# assess how many observations you have in each quarter
 table(df$Quarter)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiXG4gICAgUTEgICAgIFEyICAgICBRMyAgICAgUTQgXG4gODU1ODggMTAwMjI3IDE2MTA3MSAxNDI2NTEgXG4ifQ== -->
@@ -1894,12 +1915,12 @@ table(df$Quarter)</code></pre>
 </div>
 <div id="exercise-10" class="section level2">
 <h2>Exercise 10</h2>
-<p>Open up the “01-case-study-presentation.Rpres” file, click the “Preview” button, and compare your results to mine. In many cases, you could’ve gotten the same results but using a different method. This is fine but your should look to see where you code could’ve been more efficient (or maybe you did it more efficiently than me and if so, please share!).</p>
+<p>Open up the “01-case-study-presentation.Rpres” file, click the “Preview” button, and compare your results to mine. In many cases, you could’ve gotten the same results by using a different method. This is fine but you should look to see where you code could’ve been more efficient (or maybe you did it more efficiently than me and if so, please share!).</p>
 <p>Also, take some time to see how the code to create the R presentation works. This is also built on top of R Markdown and the primary difference is how you use “========” to separate slides and the slide title precedes “========”.</p>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDEgQ2FzZSBTdHVkeSIKYXV0aG9yOiAiQnJhZCBCb2VobWtlIgpkYXRlOiAiMjAxOS0wMS0zMSIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3Igc2V0dXAsIGluY2x1ZGUgPSBGQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KAogIGVjaG8gPSBUUlVFLAogIHdhcm5pbmcgPSBGQUxTRSwKICBtZXNzYWdlID0gRkFMU0UKICApCgpsaWJyYXJ5KGRwbHlyKQpgYGAKCgojIyBQcmVyZXF1aXNpdGVzCgpEb3dubG9hZCB0aGlzIGZvbGRlciBhbmQgc2F2ZSBpdCBhcyAiSW50ZXJtZWRpYXRlLVItQ2FzZS1TdHVkeS1EYXktMSIgKEkga25vdywgCkkgY291bGRuJ3QgdGhpbmsgb2YgYSBsb25nZXIgbmFtZSkuICBUaGlzIGZvbGRlciB3aWxsIGNvbnRhaW4gYSAiXGRhdGEiIHN1YmZvbGRlcgp0aGF0IGNvbnRhaW5zIGFsbCB0aGUgZGF0YSByZXF1aXJlZCBmb3IgdGhpcyBjYXNlIHN0dWR5IGFuZCBhIC5SbWQgZmlsZSB3aXRoCnRoZSBleGVyY2lzZXMuCgojIyBFeGVyY2lzZSAxCgpDcmVhdGUgYSBzZWxmLWNvbnRhaW5lZCBSIFByb2plY3QgZm9yIHRoaXMgY2FzZSBzdHVkeS4gIFdoZW4gY3JlYXRpbmcgdGhlIFIgClByb2plY3QsIHlvdSBzaG91bGQgY2hvb3NlIHRoZSBvcHRpb24gdG8gY3JlYXRlIGluIGFuICJFeGlzdGluZyBEaXJlY3RvcnkiLgoKCiMjIEV4ZXJjaXNlIDIKCk9wZW4gdGhlIFIgbm90ZWJvb2sgc2F2ZWQgYXMgIjAxLWNhc2Utc3R1ZHkuUm1kIi4gIEFuIFIgbm90ZWJvb2sgZnVuY3Rpb25zIHZlcnkgCnNpbWlsYXJseSB0byBhbiBSIE1hcmtkb3duIGZpbGUuIEluIGZhY3QsIHlvdSB3aWxsIHNlZSB0d28gZmlsZXMgaW4gdGhlIGRpcmVjdG9yeSwKYSAwMS1jYXNlLXN0dWR5LlJtZCBmaWxlIGFuZCBhIDAxLWNhc2Utc3R1ZHkubmIuaHRtbCBmaWxlLiAgQmUgc3VyZSB0byBvcGVuIHRoZQouUm1kIGZpbGUuICAKCkdvIGFoZWFkIGFuZCBjbGljayB0aGUgIlByZXZpZXciIGJ1dHRvbiBhdCB0aGUgdG9wIG9mIHRoZSBSU3R1ZGlvIHdpbmRvdyAobmV4dCAKdG8gdGhlIHJvdW5kIHNldHRpbmdzIHdoZWVsIHdoZXJlIHRoZSBrbml0IGJ1dHRvbiB1c2VkIHRvIGJlKS4gIEFzIHlvdSBlZGl0IHRoaXMKZG9jdW1lbnQsIHJhdGhlciB0aGFuIHByZXNzaW5nIHRoZSBrbml0IGJ1dCwgeW91IGNhbiBqdXN0IGhpdCBzYXZlIGFuZCB5b3VyIApwcmV2aWV3IGZpbGUgd2lsbCBiZSBhdXRvbWF0aWNhbGx5IHVwZGF0ZWQuICBBcyB5b3UgYWRkIGEgY29kZSBjaHVuaywgcnVuIHRoZQpjb2RlIGNodW5rIGFuZCBoaXQgc2F2ZSBhbmQgeW91IHNlZSB0aGUgcmVzdWx0cyBpbnN0YW50bHkgdXBkYXRlZCBpbiB5b3VyIHByZXZpZXcuCgojIyBFeGVyY2lzZSAzCgpDaGFuZ2UgdGhlIGF1dGhvciBvZiB0aGUgLlJtZCBmaWxlIHRvIHlvdXIgbmFtZSBhbmQgYWRkIHRvZGF5J3MgZGF0ZS4KCiMjIEV4ZXJjaXNlIDQKClJ1biB0aGUgZm9sbG93aW5nIGNvZGUgY2h1bmsuICBUaGlzIHdpbGwgYXV0b21hdGljYWxseSBpbXBvcnQgYWxsIHRoZSBkYXRhIGZpbGVzCmFuZCBjb252ZXJ0IHRvIGEgc2luZ2xlIGRhdGEgZnJhbWUgdGl0bGVkIGBkZmAuICBEb24ndCB3b3JyeSBpZiB5b3UgZG9uJ3QgdW5kZXJzdGFuZCAKYWxsIHRoZSBjb2RlLCB3ZSdsbCBkaXNjdXNzIHRoaXMgbW9yZSB0b21vcnJvdy4KCmBgYHtyIGltcG9ydGluZy1kYXRhfQojIGNyZWF0ZSBlbXB0eSBkYXRhIGZyYW1lCmRmIDwtIGRhdGEuZnJhbWUoTlVMTCkKCiMgaW1wb3J0IGFsbCBkYXRhIGZpbGVzIGludG8gb25lIGRhdGEgZnJhbWUgdGl0bGVkICJkZiIKZm9yKGkgaW4gMToxMSkgewogIGZpbGVfbmFtZSA8LSBwYXN0ZTAoIi4uL2RhdGEvTW9udGgtIiwgc3RyaW5ncjo6c3RyX3BhZChpLCAyLCBwYWQgPSAiMCIpLCAiLmNzdiIpCiAgZGZfaW1wb3J0IDwtIHJlYWRyOjpyZWFkX2NzdihmaWxlX25hbWUsIHByb2dyZXNzID0gRkFMU0UpCiAgZGYgPC0gcmJpbmQoZGYsIGRmX2ltcG9ydCkKICBybShkZl9pbXBvcnQsIGZpbGVfbmFtZSkKfQoKZ2xpbXBzZShkZikKYGBgCgojIyBFeGVyY2lzZSA1CgpgYGB7cn0KZGYgPC0gZGYgJT4lCiAgbXV0YXRlKEZhY3Rvcl9EID0gaWZfZWxzZShGYWN0b3JfRCA9PSAyNkwsIDI1TCwgRmFjdG9yX0QpKQoKdW5pcXVlKGRmJEZhY3Rvcl9EKQpgYGAKCgojIyBFeGVyY2lzZSA2CgpVbmZvcnR1bmF0ZWx5LCBzb21lIG9mIHRoZSAiRmFjdG9yXyIgdmFyaWFibGVzIGhhdmUgb2JzZXJ2YXRpb25zIHRoYXQgY29udGFpbiB0aGUgCnZhbHVlICJOVUxMIi4gIFVzZSBgZmlsdGVyX2F0KClgIHRvIGZpbHRlciBvdXQgYW55IG9mIHRoZXNlIG9ic2VydmF0aW9ucy4gWW91ciAKcmVzdWx0aW5nIGRhdGEgZnJhbWUgc2hvdWxkIGhhdmUgNDg5LDUzNyByb3dzIGFmdGVyIGZpbHRlcmluZy4KCmBgYHtyIGZpbHRlci1OVUxMLXZhbHVlc30KZGYgPC0gZGYgJT4lCiAgZmlsdGVyX2F0KHZhcnMoY29udGFpbnMoIkZhY3RvciIpKSwgYWxsX3ZhcnMoLiAhPSAiTlVMTCIpKQoKZ2xpbXBzZShkZikKYGBgCgoKIyMgRXhlcmNpc2UgNwoKVXNpbmcgYG11dGF0ZV9hdCgpYCAsIGNvbnZlcnQgYWxsIHZhcmlhYmxlcyBleGNlcHQgZm9yICJUcmFuc2FjdGlvbl9UaW1lc3RhbXAiCnRvIGZhY3RvcnMuICBIb3dldmVyLCBtYWtlIHN1cmUgdGhlICJNb250aCIgdmFyaWFibGUgaXMgYW4gb3JkZXJlZCBmYWN0b3IuIAoKYGBge3IgY29udmVydC10by1mYWN0b3J9CmRmIDwtIGRmICU+JQogIG11dGF0ZV9hdCgKICAgIHZhcnMoLW1hdGNoZXMoIlRpbWVzdGFtcHxNb250aCIpKSwKICAgIGFzLmZhY3RvciAgICAgICAgCiAgICApICU+JQogIG11dGF0ZShNb250aCA9IGZhY3RvcihNb250aCwgbGV2ZWxzID0gbW9udGguYWJiKSkKCmdsaW1wc2UoZGYpCmBgYAoKCiMjIEV4ZXJjaXNlIDgKCkV4Y2x1ZGluZyAiVHJhbnNhY3Rpb25fVGltZXN0YW1wIiwgaG93IG1hbnkgdW5pcXVlIHZhbHVlcyBhcmUgdGhlcmUgZm9yIGFsbCB0aGUKb3RoZXIgdmFyaWFibGVzIGluIG91ciBkYXRhIHNldD8gIAoKYGBge3Igbi11bmlxdWUtdmFsdWVzfQpkZiAlPiUKICBzdW1tYXJpemVfaWYoaXMuZmFjdG9yLCBuX2Rpc3RpbmN0KQpgYGAKCklmIHlvdSBncm91cCBieSAiVHJhbnNhY3Rpb25fU3RhdHVzIiwgYXJlIHRoZXJlIGFwcHJveGltYXRlbHkgZXF1YWwgZGlzdHJpYnV0aW9ucwpvZiB1bmlxdWUgdmFsdWVzIGFjcm9zcyBhbGwgdGhlIHZhcmlhYmxlcz8KCmBgYHtyfQpkZiAlPiUKICBncm91cF9ieShUcmFuc2FjdGlvbl9TdGF0dXMpICU+JQogIHN1bW1hcml6ZV9pZihpcy5mYWN0b3IsIG5fZGlzdGluY3QpCmBgYAoKIyMgRXhlcmNpc2UgOQoKVXNlIAoKYGBge3IgY3JlYXRlLXF1YXJ0ZXItdmFyaWFibGV9CmRmIDwtIGRmICU+JQogIG11dGF0ZShRdWFydGVyID0gY2FzZV93aGVuKAogICAgYXMubnVtZXJpYyhNb250aCkgPD0gMyB+ICJRMSIsCiAgICBhcy5udW1lcmljKE1vbnRoKSA8PSA2IH4gIlEyIiwKICAgIGFzLm51bWVyaWMoTW9udGgpIDw9IDkgfiAiUTMiLAogICAgVFJVRSAgICAgICAgICAgICAgICAgICB+ICJRNCIKICApKQoKdGFibGUoZGYkUXVhcnRlcikKYGBgCgojIyBFeGVyY2lzZSAxMCAKCk9wZW4gdXAgdGhlICIwMS1jYXNlLXN0dWR5LXByZXNlbnRhdGlvbi5ScHJlcyIgZmlsZSwgY2xpY2sgdGhlICJQcmV2aWV3IiBidXR0b24sIAphbmQgY29tcGFyZSB5b3VyIHJlc3VsdHMgdG8gbWluZS4gIEluIG1hbnkgY2FzZXMsIHlvdSBjb3VsZCd2ZSBnb3R0ZW4gdGhlIHNhbWUgCnJlc3VsdHMgYnV0IHVzaW5nIGEgZGlmZmVyZW50IG1ldGhvZC4gIFRoaXMgaXMgZmluZSBidXQgeW91ciBzaG91bGQgbG9vayB0byBzZWUgCndoZXJlIHlvdSBjb2RlIGNvdWxkJ3ZlIGJlZW4gbW9yZSBlZmZpY2llbnQgKG9yIG1heWJlIHlvdSBkaWQgaXQgbW9yZSBlZmZpY2llbnRseSAKdGhhbiBtZSBhbmQgaWYgc28sIHBsZWFzZSBzaGFyZSEpLgoKQWxzbywgdGFrZSBzb21lIHRpbWUgdG8gc2VlIGhvdyB0aGUgY29kZSB0byBjcmVhdGUgdGhlIFIgcHJlc2VudGF0aW9uIHdvcmtzLiBUaGlzCmlzIGFsc28gYnVpbHQgb24gdG9wIG9mIFIgTWFya2Rvd24gYW5kIHRoZSBwcmltYXJ5IGRpZmZlcmVuY2UgaXMgaG93IHlvdSB1c2UKIj09PT09PT09IiB0byBzZXBhcmF0ZSBzbGlkZXMgYW5kIHRoZSBzbGlkZSB0aXRsZSBwcmVjZWRlcyAiPT09PT09PT0iLgoKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDEgQ2FzZSBTdHVkeSIKYXV0aG9yOiAiQnJhZCBCb2VobWtlIgpkYXRlOiAiMjAxOS0wMS0zMSIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3Igc2V0dXAsIGluY2x1ZGUgPSBGQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KAogIGVjaG8gPSBUUlVFLAogIHdhcm5pbmcgPSBGQUxTRSwKICBtZXNzYWdlID0gRkFMU0UsCiAgY29sbGFwc2UgPSBUUlVFCiAgKQoKbGlicmFyeShkcGx5cikKYGBgCgoKIyMgUHJlcmVxdWlzaXRlcwoKRG93bmxvYWQgdGhpcyBmb2xkZXIgYW5kIHNhdmUgaXQgYXMgIkludGVybWVkaWF0ZS1SLUNhc2UtU3R1ZHktRGF5LTEiIChJIGtub3csIApJIGNvdWxkbid0IHRoaW5rIG9mIGEgbG9uZ2VyIG5hbWUpLiAgVGhpcyBmb2xkZXIgd2lsbCBjb250YWluIGEgImRhdGEiIHN1YmZvbGRlcgp0aGF0IGNvbnRhaW5zIGFsbCB0aGUgZGF0YSByZXF1aXJlZCBmb3IgdGhpcyBjYXNlIHN0dWR5IGFuZCBhIC5SbWQgZmlsZSB3aXRoCnRoZSBleGVyY2lzZXMuCgojIyBFeGVyY2lzZSAxCgpDcmVhdGUgYSBzZWxmLWNvbnRhaW5lZCBSIFByb2plY3QgZm9yIHRoaXMgY2FzZSBzdHVkeS4gIFdoZW4gY3JlYXRpbmcgdGhlIFIgClByb2plY3QsIHlvdSBzaG91bGQgY2hvb3NlIHRoZSBvcHRpb24gdG8gY3JlYXRlIGluIGFuICJFeGlzdGluZyBEaXJlY3RvcnkiLgoKCiMjIEV4ZXJjaXNlIDIKCk9wZW4gdGhlIFIgbm90ZWJvb2sgc2F2ZWQgYXMgIjAxLWNhc2Utc3R1ZHkuUm1kIi4gIEFuIFIgbm90ZWJvb2sgZnVuY3Rpb25zIHZlcnkgCnNpbWlsYXJseSB0byBhbiBSIE1hcmtkb3duIGZpbGUuIEluIGZhY3QsIHlvdSB3aWxsIHNlZSB0d28gZmlsZXMgaW4gdGhlIGRpcmVjdG9yeSwKYSAwMS1jYXNlLXN0dWR5LlJtZCBmaWxlIGFuZCBhIDAxLWNhc2Utc3R1ZHkubmIuaHRtbCBmaWxlLiAgQmUgc3VyZSB0byBvcGVuIHRoZQouUm1kIGZpbGUuICAKCkFmdGVyIHlvdSd2ZSBvcGVuZWQgdGhlIC5SbWQgZmlsZSwgZ28gYWhlYWQgYW5kIGNsaWNrIHRoZSAiUHJldmlldyIgYnV0dG9uIGF0IHRoZSAKdG9wIG9mIHRoZSBSU3R1ZGlvIHdpbmRvdyAobmV4dCB0byB0aGUgcm91bmQgc2V0dGluZ3Mgd2hlZWwgd2hlcmUgdGhlIGtuaXQgYnV0dG9uIAp1c2VkIHRvIGJlKS4gIEFzIHlvdSBlZGl0IHRoaXMgZG9jdW1lbnQsIHJhdGhlciB0aGFuIHByZXNzaW5nIHRoZSBrbml0IGJ1dCwgeW91IApjYW4ganVzdCBoaXQgc2F2ZSBhbmQgeW91ciBwcmV2aWV3IGZpbGUgd2lsbCBiZSBhdXRvbWF0aWNhbGx5IHVwZGF0ZWQuICBBcyB5b3UgCmFkZCBhIGNvZGUgY2h1bmssIHJ1biB0aGUgY29kZSBjaHVuayBhbmQgaGl0IHNhdmUgYW5kIHlvdSB3aWxsIHNlZSB0aGUgcmVzdWx0cyAKaW5zdGFudGx5IHVwZGF0ZWQgaW4geW91ciBwcmV2aWV3LgoKIyMgRXhlcmNpc2UgMwoKQ2hhbmdlIHRoZSBhdXRob3Igb2YgdGhlIC5SbWQgZmlsZSB0byB5b3VyIG5hbWUgYW5kIGFkZCB0b2RheSdzIGRhdGUuCgojIyBFeGVyY2lzZSA0CgpSdW4gdGhlIGZvbGxvd2luZyBjb2RlIGNodW5rLiAgVGhpcyB3aWxsIGF1dG9tYXRpY2FsbHkgaW1wb3J0IGFsbCB0aGUgZGF0YSBmaWxlcwphbmQgY29udmVydCB0byBhIHNpbmdsZSBkYXRhIGZyYW1lIHRpdGxlZCBgZGZgLiAgRG9uJ3Qgd29ycnkgaWYgeW91IGRvbid0IHVuZGVyc3RhbmQgCmFsbCB0aGUgY29kZSwgd2UnbGwgZGlzY3VzcyB0aGlzIG1vcmUgdG9tb3Jyb3cuCgpgYGB7ciBpbXBvcnRpbmctZGF0YX0KIyBjcmVhdGUgZW1wdHkgZGF0YSBmcmFtZQpkZiA8LSBkYXRhLmZyYW1lKE5VTEwpCgojIGltcG9ydCBhbGwgZGF0YSBmaWxlcyBpbnRvIG9uZSBkYXRhIGZyYW1lIHRpdGxlZCAiZGYiCmZvcihpIGluIDE6MTEpIHsKICBmaWxlX25hbWUgPC0gcGFzdGUwKCIuLi9kYXRhL01vbnRoLSIsIHN0cmluZ3I6OnN0cl9wYWQoaSwgMiwgcGFkID0gIjAiKSwgIi5jc3YiKQogIGRmX2ltcG9ydCA8LSByZWFkcjo6cmVhZF9jc3YoZmlsZV9uYW1lLCBwcm9ncmVzcyA9IEZBTFNFKQogIGRmIDwtIHJiaW5kKGRmLCBkZl9pbXBvcnQpCiAgcm0oZGZfaW1wb3J0LCBmaWxlX25hbWUpCn0KCmdsaW1wc2UoZGYpCmBgYAoKIyMgRXhlcmNpc2UgNQoKVGhlICJGYWN0b3JfRCIgdmFyaWFibGUgY29udGFpbnMgMTUgdW5pcXVlIHZhbHVlcyAoaS5lLiAxMCwgMTUsIDIwLCAyMSwgLi4uLCA4NSwgOTApLiAgVGhlcmUgaXMgYXQgbGVhc3Qgb25lIHNpbmdsZSBvYnNlcnZhdGlvbiB3aGVyZSBgRmFjdG9yX0QgPSAyNmAgKHBvc3NpYmx5IG1vcmUpLiAgQXNzdW1lIHRoZXNlIG9ic2VydmF0aW9ucyB3ZXJlIGltcHJvcGVybHkgcmVjb3JkZWQgYW5kLCBpbiBmYWN0LCB0aGUgdmFsdWUgc2hvdWxkIGJlIDI1LiAgCgpVc2luZyBgaWZlbHNlKClgIChvciBfX2RwbHlyX18ncyBgaWZfZWxzZSgpYCkgaW5zaWRlIGBtdXRhdGUoKWAsIHJlY29kZSBhbnkgdmFsdWVzIHdoZXJlIGBGYWN0b3JfRCA9PSAyNmAgdG8gYmUgMjUuCgpgYGB7ciBjb252ZXJ0LWZhY3Rvci1kLXZhbHVlc30KIyB1bmlxdWUgdmFsdWVzIG9mIEZhY3RvciBEIGJlZm9yZSBiZWluZyByZS1jb2RlZApzb3J0KHVuaXF1ZShkZiRGYWN0b3JfRCkpCgojIHJlY29kZSBGYWN0b3IgRApkZiA8LSBkZiAlPiUKICBtdXRhdGUoRmFjdG9yX0QgPSBpZl9lbHNlKEZhY3Rvcl9EID09IDI2TCwgMjVMLCBGYWN0b3JfRCkpCgojIHVuaXF1ZSB2YWx1ZXMgb2YgRmFjdG9yIEQgYWZ0ZXIgYmVpbmcgcmUtY29kZWQKc29ydCh1bmlxdWUoZGYkRmFjdG9yX0QpKQpgYGAKCgojIyBFeGVyY2lzZSA2CgpVbmZvcnR1bmF0ZWx5LCBzb21lIG9mIHRoZSAiRmFjdG9yXyIgdmFyaWFibGVzIGhhdmUgb2JzZXJ2YXRpb25zIHRoYXQgY29udGFpbiB0aGUgCnZhbHVlICJOVUxMIi4gIFVzZSBgZmlsdGVyX2F0KClgIHRvIGZpbHRlciBvdXQgYW55IG9mIHRoZXNlIG9ic2VydmF0aW9ucy4gWW91ciAKcmVzdWx0aW5nIGRhdGEgZnJhbWUgc2hvdWxkIGhhdmUgNDg5LDUzNyByb3dzIGFmdGVyIGZpbHRlcmluZy4KCmBgYHtyIGZpbHRlci1OVUxMLXZhbHVlc30KIyBmaWx0ZXIgb3V0IGFueSBvYnNlcnZhdGlvbnMgd2hlcmUgdGhlICJGYWN0b3JfIiB2YXJpYWJsZXMgY29udGFpbiAiTlVMTCIKZGYgPC0gZGYgJT4lCiAgZmlsdGVyX2F0KHZhcnMoY29udGFpbnMoIkZhY3RvciIpKSwgYWxsX3ZhcnMoLiAhPSAiTlVMTCIpKQoKIyB5b3VyIHJlc3VsdGluZyBkYXRhIGZyYW1lIHNob3VsZCBoYXZlIDQ4OSw1Mzcgcm93cy4KbnJvdyhkZikKYGBgCgoKIyMgRXhlcmNpc2UgNwoKVXNpbmcgYG11dGF0ZV9hdCgpYCAsIGNvbnZlcnQgYWxsIHZhcmlhYmxlcyBleGNlcHQgZm9yICJUcmFuc2FjdGlvbl9UaW1lc3RhbXAiCnRvIGZhY3RvcnMuICBIb3dldmVyLCBtYWtlIHN1cmUgdGhlICJNb250aCIgdmFyaWFibGUgaXMgYW4gb3JkZXJlZCBmYWN0b3IuIAoKYGBge3IgY29udmVydC10by1mYWN0b3J9CmRmIDwtIGRmICU+JQogIG11dGF0ZV9hdCgKICAgIHZhcnMoLW1hdGNoZXMoIlRpbWVzdGFtcHxNb250aCIpKSwKICAgIGFzLmZhY3RvciAgICAgICAgCiAgICApICU+JQogIG11dGF0ZShNb250aCA9IGZhY3RvcihNb250aCwgbGV2ZWxzID0gbW9udGguYWJiKSkKCiMgbWFrZSBzdXJlIGFsbCBmZWF0dXJlcyBhcmUgY2hhbmdlZCB0byBmYWN0b3JzCmdsaW1wc2UoZGYpCgojIG1ha2Ugc3VyZSB0aGUgTW9udGggdmFyaWFibGUgaXMgYW4gb3JkZXJlZCBmYWN0b3IKbGV2ZWxzKGRmJE1vbnRoKQpgYGAKCgojIyBFeGVyY2lzZSA4CgpFeGNsdWRpbmcgIlRyYW5zYWN0aW9uX1RpbWVzdGFtcCIsIGhvdyBtYW55IHVuaXF1ZSB2YWx1ZXMgYXJlIHRoZXJlIGZvciBhbGwgdGhlCm90aGVyIHZhcmlhYmxlcyBpbiBvdXIgZGF0YSBzZXQ/ICBIaW50OiB1c2UgYHN1bW1hcml6ZV9pZigpYAoKYGBge3Igbi11bmlxdWUtdmFsdWVzfQpkZiAlPiUKICBzdW1tYXJpemVfaWYoaXMuZmFjdG9yLCBuX2Rpc3RpbmN0KQpgYGAKCklmIHlvdSBncm91cCBieSAiVHJhbnNhY3Rpb25fU3RhdHVzIiwgYXJlIHRoZXJlIGFwcHJveGltYXRlbHkgZXF1YWwgZGlzdHJpYnV0aW9ucwpvZiB1bmlxdWUgdmFsdWVzIGFjcm9zcyBhbGwgdGhlIHZhcmlhYmxlcz8KCmBgYHtyfQpkZiAlPiUKICBncm91cF9ieShUcmFuc2FjdGlvbl9TdGF0dXMpICU+JQogIHN1bW1hcml6ZV9pZihpcy5mYWN0b3IsIG5fZGlzdGluY3QpCmBgYAoKIyMgRXhlcmNpc2UgOQoKRmlsbCBpbiB0aGUgYmxhbmtzIGZvciBgY2FzZV93aGVuKClgIHNvIHRoYXQgeW91IGNyZWF0ZSBhIG5ldyB2YXJpYWJsZSBuYW1lZAoiUXVhcnRlciIgd2hlcmU6CgotIFdoZW4gTW9udGggaXMgSmFuLU1hciwgUXVhcnRlciA9ICJRMSIKLSBXaGVuIE1vbnRoIGlzIEFwci1KdW4sIFF1YXJ0ZXIgPSAiUTIiCi0gV2hlbiBNb250aCBpcyBKdWwtU2VwLCBRdWFydGVyID0gIlEzIgotIFdoZW4gTW9udGggaXMgT2N0LURlYywgUXVhcnRlciA9ICJRNCIKCllvdSBzaG91bGQgaGF2ZSA4NSw1ODggb2JzIGluIFExLCAxMDAsMjI3IGluIFEyLCAxNjEsMDcxIGluIFEzLCBhbmQgMTQyLDY1MSBpbiBRNC4KCmBgYHtyIGNyZWF0ZS1xdWFydGVyLXZhcmlhYmxlfQojIFVzZSBtdXRhdGUgYW5kIGNhc2Vfd2hlbiB0byBjcmVhdGUgbmV3IFF1YXJ0ZXIgdmFyaWFibGUKZGYgPC0gZGYgJT4lCiAgbXV0YXRlKFF1YXJ0ZXIgPSBjYXNlX3doZW4oCiAgICBhcy5udW1lcmljKE1vbnRoKSA8PSAzIH4gIlExIiwKICAgIGFzLm51bWVyaWMoTW9udGgpIDw9IDYgfiAiUTIiLAogICAgYXMubnVtZXJpYyhNb250aCkgPD0gOSB+ICJRMyIsCiAgICBUUlVFICAgICAgICAgICAgICAgICAgIH4gIlE0IgogICkpCgojIGFzc2VzcyBob3cgbWFueSBvYnNlcnZhdGlvbnMgeW91IGhhdmUgaW4gZWFjaCBxdWFydGVyCnRhYmxlKGRmJFF1YXJ0ZXIpCmBgYAoKIyMgRXhlcmNpc2UgMTAgCgpPcGVuIHVwIHRoZSAiMDEtY2FzZS1zdHVkeS1wcmVzZW50YXRpb24uUnByZXMiIGZpbGUsIGNsaWNrIHRoZSAiUHJldmlldyIgYnV0dG9uLCAKYW5kIGNvbXBhcmUgeW91ciByZXN1bHRzIHRvIG1pbmUuICBJbiBtYW55IGNhc2VzLCB5b3UgY291bGQndmUgZ290dGVuIHRoZSBzYW1lIApyZXN1bHRzIGJ5IHVzaW5nIGEgZGlmZmVyZW50IG1ldGhvZC4gIFRoaXMgaXMgZmluZSBidXQgeW91IHNob3VsZCBsb29rIHRvIHNlZSAKd2hlcmUgeW91IGNvZGUgY291bGQndmUgYmVlbiBtb3JlIGVmZmljaWVudCAob3IgbWF5YmUgeW91IGRpZCBpdCBtb3JlIGVmZmljaWVudGx5IAp0aGFuIG1lIGFuZCBpZiBzbywgcGxlYXNlIHNoYXJlISkuCgpBbHNvLCB0YWtlIHNvbWUgdGltZSB0byBzZWUgaG93IHRoZSBjb2RlIHRvIGNyZWF0ZSB0aGUgUiBwcmVzZW50YXRpb24gd29ya3MuIFRoaXMKaXMgYWxzbyBidWlsdCBvbiB0b3Agb2YgUiBNYXJrZG93biBhbmQgdGhlIHByaW1hcnkgZGlmZmVyZW5jZSBpcyBob3cgeW91IHVzZQoiPT09PT09PT0iIHRvIHNlcGFyYXRlIHNsaWRlcyBhbmQgdGhlIHNsaWRlIHRpdGxlIHByZWNlZGVzICI9PT09PT09PSIuCgoK</div>
 
 
 
