@@ -28,8 +28,7 @@ knitr::opts_chunk$set(
   collapse = TRUE 
 )
 
-# This is good for getting the ggplot background consistent with
-# the html background color
+# set ggplot theme in case I do any plotting
 library(ggplot2)
 thm <- theme_bw()
 theme_set(thm)
@@ -44,35 +43,470 @@ background-size: contain
 # Intro
 
 .font120[
-Often, we need to execute repetitive code statements a particular number of times. Or, we may even need to execute code for an undetermined number of times and only until a certain condition no longer holds.
+Often, we need to execute repetitive code statements a particular number of times. Or, we may even need to execute code for an undetermined number of times until a certain condition no longer holds.
 ]
 
 --
 
-.font120[
+* .font130[`for`] loops: execute code for a prescribed number of times (Rule of `r emo::ji("+1")`, 3x).
 
-* .font140[`for`] loops:
+* .font130[`while`] & .font130[`repeat`] loops: repeat code while condition holds
 
-* .font140[`while`] & .font140[`repeat`] loops:
-
-* .font140[`next`] & .font140[`break`]:
-
-]
+* .font130[`next`] & .font130[`break`]: additional clauses to control flow
 
 --
 
 <br>
+
 .center.bold[There are additional iterating functions which we'll learn about in the functional programming module]
 
 ---
-# `for` loop
+# `for` loop: syntax
 
+.pull-left[
+.font120[
+* For each element in sequence (1-100) perform some defined task
+]
+]
+
+.pull-right[
+
+```{r, eval=FALSE}
+for(i in 1:100) {
+  <do stuff here with i>
+}
+```
+
+]
+
+---
+# `for` loop: syntax
+
+.pull-left[
+* For each element in sequence (1-100) perform some defined task
+
+* .red[What will this .font120[`for`] loop do?]
+]
+
+.pull-right[
+
+```{r, eval=FALSE}
+for(i in 1:100) {
+  <do stuff here with i>
+}
+```
+
+```{r, eval=FALSE}
+for (i in 2010:2017) {
+  print(paste("The year is", i))
+}
+```
+]
+
+---
+# `for` loop: syntax
+
+.pull-left[
+* For each element in sequence (1-100) perform some defined task
+
+* .red[What will this .font120[`for`] loop do?]
+]
+
+.pull-right[
+
+```{r, eval=FALSE}
+for(i in 1:100) {
+  <do stuff here with i>
+}
+```
+
+```{r}
+for (i in 2010:2017) {
+  print(paste("The year is", i))
+}
+```
+]
+
+---
+# `for` loop: sequence input
+
+.pull-left[
+* Often, the length of the sequence is determined by some pre-defined variable
+
+* For example, say we have a variable .font120.blue[`x`] and we want to iterate over each element and do something
+
+* We can do this two ways
+
+]
+
+.pull-right[
+
+```{r, eval=FALSE}
+x <- 2010:2017 #<<
+
+# option 1
+for(i in 1:length(x)) {
+  <do stuff here with i>
+}
+
+# option 2
+for(i in seq_along(x)) {
+  <do stuff here with i>
+}
+```
+
+]
+
+<br>
+.center.bold.red[Talk to your neighbor. Do you prefer one over the other? `r anicon::cia("https://emojis.slackmojis.com/emojis/images/1504806416/2885/thinking-face-rotating.gif?1504806416", animate = FALSE, size = 2)`
+]
+
+---
+# `for` loop: sequence input
+
+.pull-left[
+* Often, the length of the sequence is determined by some pre-defined variable
+
+* For example, say we have a variable .font120.blue[`x`] and we want to iterate over each element and do something
+
+* We can do this two ways
+
+* But `seq_along(x)` is safer for edge cases where the sequence has length zero
+
+]
+
+.pull-right[
+
+```{r}
+x <- c()
+
+# option 1: executes although it shouldn't
+for(i in 1:length(x)) {
+  print(i)
+}
+
+# option 2: does not execute
+for(i in seq_along(x)) {
+  print(i)
+}
+```
+
+]
+
+<br>
+
+.center.bold.red[Beware iterating over `1:length(x)`. This will fail in unhelpful ways if `x` has length 0]
+
+---
+# `for` loop: generating output
+
+.pull-left[
+
+* Often we are generating output from the `for` loop that we want to use later
+
+* We can do this by either .bold.red[growing] or .bold.green[filling] the output
+
+* Pre-allocating the output and .bold.green[filling] in the results is more efficient
+
+]
+
+.pull-right[
+
+.code70[
+```{r}
+# Let's create 100 different vectors w/10,000 obs
+means <- seq(0, 100, by = 1)
+
+# Growing the output
+out <- list()
+system.time({
+  for(i in seq_along(means)) {
+    # generate data
+    gen_data <- rnorm(10000, means[[i]])
+    # grow list output
+    out <- c(out, gen_data)
+  }
+})
+
+
+# Pre-allocating and filling
+out <- vector("list", length(means))
+system.time({
+  for(i in seq_along(means)) {
+    # generate & fill output
+    out[[i]] <- rnorm(10000, means[[i]])
+  }
+})
+```
+]
+]
+
+---
+class: yourturn
+# Your Turn: Challenge
+
+* We can see all data sets that we have in the "data" folder with `list.files()`
+
+.code70[
+```{r}
+list.files("data")
+```
+]
+
+.pull-left[
+
+* Say we wanted to import one of these files into R
+
+```{r}
+# here's a single file
+(first_df <- list.files("data")[1])
+
+# create path and import this single file
+df <- readr::read_csv(paste0("data/", first_df))
+
+# create a new name for file
+(new_name <- stringr::str_sub(first_df, end = -5))
+
+# dynamically rename file
+assign(new_name, df)
+```
+
+]
+
+--
+
+.pull-right[
+
+* Can you incorporate these procedures into a `for` loop to import all the data files?
+
+```{r, eval=FALSE}
+for(i in _____) {
+  # 1: import data
+  df <- readr::read_csv(_____)
+  
+  # 2: remove ".csv" of name
+  new_name <- _____
+  
+  # 3: dynamically rename file
+  assign(_____, _____)
+}
+```
+
+
+]
+
+
+---
+class: yourturn
+# Your Turn: Solution
+
+.pull-left[
+
+1. Import ith data file
+
+2. Make a new name without ".csv" (i.e. "Month-01")
+
+3. Dynamically rename file with `assign()`
+
+4. Remove unnecessary duplicate
+
+]
+
+.pull-right[
+
+```{r}
+for(i in list.files("data")) {
+  # 1: import data
+  df <- readr::read_csv(paste0("data/", i))
+  
+  # 2: remove ".csv" of name
+  new_name <- stringr::str_sub(i, end = -5)
+  
+  # 3: dynamically rename file
+  assign(new_name, df)
+  
+  # 4: remove unnecessary object
+  rm(df)
+}
+```
+
+]
 
 ---
 # Controlling sequences
 
-- `next`
-- `break`
+.pull-left[
+
+There are two ways to control the progression of a loop:
+
+.font120[
+
+* `next`: terminates the current iteration and advances to the next.
+
+]
+]
+
+.pull-right[
+
+```{r}
+x <- c(1, 2, NA, 3)
+
+# use next to skip an iteration
+for (i in x) {
+  if (is.na(i)) next    # if NA don't execute #<<
+
+  print(i)
+}
+```
+
+]
+
+---
+# Controlling sequences
+
+.pull-left[
+
+There are two ways to control the progression of a loop:
+
+* `next`: terminates the current iteration and advances to the next.
+
+* `break`: exits the entire `for` loop.
+
+]
+
+.pull-right[
+
+```{r}
+x <- c(1, 2, NA, 3)
+
+# use next to skip an iteration
+for (i in x) {
+  if (is.na(i)) next
+
+  print(i)
+}
+```
+
+
+```{r}
+# use break to stop
+for (i in x) {
+  if (is.na(i)) break     # if NA stop! #<<
+
+  print(i)
+}
+```
+
+]
+
+--
+
+.center.red[_both are used in conjunction with `if` statements_]
+
+---
+class: yourturn
+# Your Turn: Challenge!
+
+.pull-left[
+
+The following code identifies the month of the data set:
+
+```{r}
+# data files
+(data_files <- list.files("data"))
+
+# extract month number
+as.numeric(stringr::str_extract(data_files, "\\d+"))
+```
+
+]
+
+--
+
+.pull-right[
+
+Modify the following `for` loop with a `next` or `break` statement to:
+
+1. only import `Month-01` through `Month-07`
+2. only import `Month-08` through `Month-10`
+
+```{r, eval=FALSE}
+# Modify this code chunk with you next/break statement
+for(i in list.files("data")) {
+  # steps to import each data set
+  df <- readr::read_csv(paste0("data/", i))
+  new_name <- stringr::str_sub(i, end = -5)
+  assign(new_name, df)
+  rm(df)
+}
+```
+
+
+]
+
+---
+class: yourturn
+# Your Turn: Solution!
+
+.pull-left[
+
+.center[\#1: only import `Month-01` through `Month-07`]
+
+```{r, echo=FALSE, cache=FALSE}
+rm(list = ls())
+```
+
+
+```{r, cache=FALSE}
+for(i in list.files("data")) {
+  
+  # break if month is greater than 7; although #<<
+  # this requires knowledge of month order  #<<
+  month <- as.numeric(stringr::str_extract(i, "\\d+")) #<<
+  if(month > 7) break #<<
+  
+  # steps to import each data set
+  df <- readr::read_csv(paste0("data/", i))
+  new_name <- stringr::str_sub(i, end = -5)
+  assign(new_name, df)
+  rm(df)
+
+}
+
+# we've only imported months 1-7
+ls(pattern = "Month")
+```
+
+]
+
+.pull-right[
+
+.center[\#2: only import `Month-08` through `Month-10`]
+
+```{r, echo=FALSE, cache=FALSE}
+rm(list = ls())
+```
+
+```{r, cache=FALSE}
+for(i in list.files("data")) {
+  
+  # skip importing file if month value is not 8-10 #<<
+  month <- as.numeric(stringr::str_extract(i, "\\d+")) #<<
+  if(month < 8 | month > 10) next #<<
+  
+  # steps to import each data set
+  df <- readr::read_csv(paste0("data/", i))
+  new_name <- stringr::str_sub(i, end = -5)
+  assign(new_name, df)
+  rm(df)
+  
+}
+
+# we've only imported months 1-7
+ls(pattern = "Month")
+```
+
+]
 
 ---
 # `while` loop
