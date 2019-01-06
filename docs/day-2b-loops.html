@@ -39,7 +39,7 @@ Often, we need to execute repetitive code statements a particular number of time
 
 &lt;br&gt;
 
-.center.bold[There are additional iterating functions which we'll learn about in the functional programming module]
+.center.bold[R is a vectorized and functional programming language, which minimizes the use of loops.  You will learn alternative iterating options in the functional programming module; however, you still should understand the basics of loops.]
 
 ---
 # `for` loop: syntax
@@ -93,7 +93,9 @@ for (i in 2010:2017) {
 .pull-left[
 * For each element in sequence (1-100) perform some defined task
 
-* .red[What will this .font120[`for`] loop do?]
+* What will this .font120[`for`] loop do?
+
+* .red[`i` takes on the value of the numbers in the sequence]
 ]
 
 .pull-right[
@@ -141,12 +143,12 @@ for (i in 2010:2017) {
 
 # option 1
 for(i in 1:length(x)) {
-  &lt;do stuff here with i&gt;
+  &lt;do stuff here with x[i]&gt;
 }
 
 # option 2
 for(i in seq_along(x)) {
-  &lt;do stuff here with i&gt;
+  &lt;do stuff here with x[i]&gt;
 }
 ```
 
@@ -326,6 +328,9 @@ class: yourturn
 .pull-right[
 
 
+
+
+
 ```r
 for(i in list.files("data")) {
   # 1: import data
@@ -340,6 +345,11 @@ for(i in list.files("data")) {
   # 4: remove unnecessary object
   rm(df)
 }
+
+# we have imported 11 files
+ls(pattern = "Month")
+##  [1] "Month-01" "Month-02" "Month-03" "Month-04" "Month-05" "Month-06"
+##  [7] "Month-07" "Month-08" "Month-09" "Month-10" "Month-11"
 ```
 
 ]
@@ -651,11 +661,11 @@ repeat {
 ---
 # Repeating code for undefined number of iterations
 
-The probability of flipping 10 coins and getting all heads or tails is `\((\frac{1}{2})^{10} = 0.0009765625\)` or 1 in 1024 tries. 
-
-Can we beat these odds?
+The probability of flipping 10 coins and getting all heads or tails is `\((\frac{1}{2})^{10} = 0.0009765625\)` (1 in 1024 tries). How quickly can we achieve this accomplishment?
 
 .pull-left[
+
+.center[Using `while`]
 
 
 ```r
@@ -678,9 +688,9 @@ n_tries
 
 ]
 
---
-
 .pull-right[
+
+.center[Using `repeat`]
 
 
 ```r
@@ -780,7 +790,7 @@ repeat {
 
 What does a random walk look like? This example never reached 100.
 
-&lt;img src="day-2b-loops_files/figure-html/unnamed-chunk-30-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="day-2b-loops_files/figure-html/unnamed-chunk-31-1.png" style="display: block; margin: auto;" /&gt;
 
 In fact, it looks a little like the current stock market, eh?  
 
@@ -791,9 +801,34 @@ In fact, it looks a little like the current stock market, eh?
 ---
 # Summary
 
+.font90[
+* .font130[`for`] loops: execute code for a prescribed number of times (Rule of 👍, 3x).
+
+* .font130[`while`] &amp; .font130[`repeat`] loops: repeat code while condition holds
+
+* .font130[`next`] &amp; .font130[`break`]: additional clauses to control flow
+]
+--
+.font90[
+* You can rewrite any `for` loop to use `while` instead, and you can rewrite any `while` loop to use `repeat`, but the converses are not true. 
+
+* That means `while` is more flexible than `for`, and `repeat` is more flexible than `while`. ]
+.font110[
+* It's good practice to use the least-flexible (or more strict) solution to a problem, which means that you should use `for` where possible.
+]
+--
+.font90[
+* Generally speaking you can minimize the use of `for` loops in R since it is a vectorized and functional programming language.
+
+* Next you will learn about functional programming, which provides an even less flexible solution to most problems
+]
 
 ---
 # Questions
+
+&lt;br&gt;
+
+&lt;img src="images/questions.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
     </textarea>
 <script src="libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

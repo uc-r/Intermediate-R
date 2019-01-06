@@ -28,20 +28,21 @@ training:
 | [Case study](https://uc-r.github.io/Intermediate-R/day-1e-case-study.html)                        |  2:45 - 4:00  |
 | Q\&A                                                                                              |  4:00 - 4:30  |
 
-**Day 2**
+**Day
+2**
 
-| Topic                                 |     Time      |
-| :------------------------------------ | :-----------: |
-| Breakfast / Social time               |  8:00 - 9:00  |
-| Review                                |  9:00 - 9:30  |
-| Iteration with loops                  | 9:30 - 10:30  |
-| Break                                 | 10:30 - 10:45 |
-| Iteration with functional programming | 10:45 - 12:00 |
-| Lunch                                 | 12:00 - 1:00  |
-| Writing functions                     |  1:00 - 2:45  |
-| Break                                 |  2:45 - 3:00  |
-| Case study                            |  3:00 - 4:00  |
-| Q\&A                                  |  4:00 - 4:30  |
+| Topic                                                                           |     Time      |
+| :------------------------------------------------------------------------------ | :-----------: |
+| Breakfast / Social time                                                         |  8:00 - 9:00  |
+| Review                                                                          |  9:00 - 9:30  |
+| [Iteration with loops](https://uc-r.github.io/Intermediate-R/day-2b-loops.html) | 9:30 - 10:30  |
+| Break                                                                           | 10:30 - 10:45 |
+| Iteration with functional programming                                           | 10:45 - 12:00 |
+| Lunch                                                                           | 12:00 - 1:00  |
+| Writing functions                                                               |  1:00 - 2:45  |
+| Break                                                                           |  2:45 - 3:00  |
+| Case study                                                                      |  3:00 - 4:00  |
+| Q\&A                                                                            |  4:00 - 4:30  |
 
 ### Course Preparation
 

@@ -58,7 +58,7 @@ Often, we need to execute repetitive code statements a particular number of time
 
 <br>
 
-.center.bold[There are additional iterating functions which we'll learn about in the functional programming module]
+.center.bold[R is a vectorized and functional programming language, which minimizes the use of loops.  You will learn alternative iterating options in the functional programming module; however, you still should understand the basics of loops.]
 
 ---
 # `for` loop: syntax
@@ -109,7 +109,9 @@ for (i in 2010:2017) {
 .pull-left[
 * For each element in sequence (1-100) perform some defined task
 
-* .red[What will this .font120[`for`] loop do?]
+* What will this .font120[`for`] loop do?
+
+* .red[`i` takes on the value of the numbers in the sequence]
 ]
 
 .pull-right[
@@ -146,12 +148,12 @@ x <- 2010:2017 #<<
 
 # option 1
 for(i in 1:length(x)) {
-  <do stuff here with i>
+  <do stuff here with x[i]>
 }
 
 # option 2
 for(i in seq_along(x)) {
-  <do stuff here with i>
+  <do stuff here with x[i]>
 }
 ```
 
@@ -314,6 +316,11 @@ class: yourturn
 
 .pull-right[
 
+```{r, echo=FALSE}
+rm(list = ls())
+```
+
+
 ```{r}
 for(i in list.files("data")) {
   # 1: import data
@@ -328,6 +335,9 @@ for(i in list.files("data")) {
   # 4: remove unnecessary object
   rm(df)
 }
+
+# we have imported 11 files
+ls(pattern = "Month")
 ```
 
 ]
@@ -604,11 +614,11 @@ repeat {
 ---
 # Repeating code for undefined number of iterations
 
-The probability of flipping 10 coins and getting all heads or tails is $(\frac{1}{2})^{10} = 0.0009765625$ or 1 in 1024 tries. 
-
-Can we beat these odds?
+The probability of flipping 10 coins and getting all heads or tails is $(\frac{1}{2})^{10} = 0.0009765625$ (1 in 1024 tries). How quickly can we achieve this accomplishment?
 
 .pull-left[
+
+.center[Using `while`]
 
 ```{r}
 coin <- c("heads", "tails")
@@ -629,9 +639,9 @@ n_tries
 
 ]
 
---
-
 .pull-right[
+
+.center[Using `repeat`]
 
 ```{r}
 coin <- c("heads", "tails")
@@ -763,11 +773,36 @@ In fact, it looks a little like the current stock market, eh?
 ---
 # Summary
 
+.font90[
+* .font130[`for`] loops: execute code for a prescribed number of times (Rule of `r emo::ji("+1")`, 3x).
+
+* .font130[`while`] & .font130[`repeat`] loops: repeat code while condition holds
+
+* .font130[`next`] & .font130[`break`]: additional clauses to control flow
+]
+--
+.font90[
+* You can rewrite any `for` loop to use `while` instead, and you can rewrite any `while` loop to use `repeat`, but the converses are not true. 
+
+* That means `while` is more flexible than `for`, and `repeat` is more flexible than `while`. ]
+.font110[
+* It's good practice to use the least-flexible (or more strict) solution to a problem, which means that you should use `for` where possible.
+]
+--
+.font90[
+* Generally speaking you can minimize the use of `for` loops in R since it is a vectorized and functional programming language.
+
+* Next you will learn about functional programming, which provides an even less flexible solution to most problems
+]
 
 ---
 # Questions
 
+<br>
 
+```{r questions-loops, echo=FALSE, out.height="450", out.width="450"}
+knitr::include_graphics("images/questions.png")
+```
 
 
 
