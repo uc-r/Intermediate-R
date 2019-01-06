@@ -404,6 +404,52 @@ for (i in x) {
 .center.red[_both are used in conjunction with `if` statements_]
 
 ---
+# Warning `r anicon::faa("exclamation-triangle", animate = FALSE, color = "red")`
+
+Note that `break` and `next` only control the progression of the .red.bold[direct] loop environment they are in.
+
+.pull-left[
+
+.center[Break out of inner loop only]
+
+```{r}
+x <- 1:3
+y <- c("a", "b", NA)
+
+for(i in x) {
+  print(i)
+  for(j in y) {
+    if(is.na(j)) break # break out of inner loop #<<
+    print(j)
+  }
+}
+```
+
+
+]
+
+.pull-right[
+
+.center[Stop entire process.]
+
+```{r, error=TRUE}
+x <- 1:3
+y <- c("a", "b", NA)
+
+for(i in x) {
+  print(i)
+  for(j in y) {
+    if(is.na(j)) stop("break in inner loop") #<<
+    print(j)
+  }
+}
+```
+
+.center.font80.red[You'll learn more about `stop()` in the functions module!]
+
+]
+
+---
 class: yourturn
 # Your Turn: Challenge!
 
@@ -509,12 +555,210 @@ ls(pattern = "Month")
 ]
 
 ---
-# `while` loop
+# Repeating code for undefined number of iterations
 
+Sometimes we need to execute code for an undetermined number of times until a certain condition no longer holds.
+
+Two very similar options:
+
+--
+
+.pull-left[
+
+.center.bold[while loop]
+
+```{r, eval=FALSE}
+while(condition) {
+  <do stuff>
+}
+```
+
+<div style="height:15px;font-size:15px;">&nbsp;</div>
+
+* Test condition first
+
+* Then execute code
+
+]
+
+--
+
+.pull-right[
+
+.center.bold[repeat loop]
+
+```{r, eval=FALSE}
+repeat {
+  <do stuff>
+    
+  if(condition) break  
+}
+```
+
+* Execute code first
+
+* Then test condition
+
+]
 
 ---
-# `repeat` loop
+# Repeating code for undefined number of iterations
 
+The probability of flipping 10 coins and getting all heads or tails is $(\frac{1}{2})^{10} = 0.0009765625$ or 1 in 1024 tries. 
+
+Can we beat these odds?
+
+.pull-left[
+
+```{r}
+coin <- c("heads", "tails")
+n_tries <- 0
+flip <- NULL
+
+while(length(unique(flip)) != 1) {
+  # flip coin 10x
+  flip <- sample(coin, 10, replace = TRUE)
+  
+  # add to the number of tries
+  n_tries <- n_tries + 1
+}
+
+n_tries
+```
+
+
+]
+
+--
+
+.pull-right[
+
+```{r}
+coin <- c("heads", "tails")
+n_tries <- 0
+
+repeat {
+  # flip coin 10x
+  flip <- sample(coin, 10, replace = TRUE)
+  
+  # add to the number of tries
+  n_tries <- n_tries + 1
+  
+  # if current flip contains all heads or tails break
+  if(length(unique(flip)) == 1) {
+    print(n_tries)
+    break
+  }
+}
+```
+
+
+]
+
+---
+class: yourturn
+# Your Turn: Challenge!
+
+.pull-left[
+An elementary example of a random walk is the random walk on the integer number line, $\mathbb {Z}$ , which starts at 0 and at each step moves +1 or −1 with equal probability.
+
+See if you can do a random walk starting at 0, with each step either adding or subtracting 1.  Have you random walk stop if it exceeds 100 or if the number of steps taken exceeds 10,000.
+]
+
+--
+
+.pull-right[
+
+Fill in this incomplete code chunk:
+
+```{r, eval=FALSE}
+value <- 0
+step <- 0
+
+repeat {
+  # randomly add or subtract 1
+
+  # count step
+
+  # break once our walk exceeds 100
+  if(some_condition) {
+    print(step)
+    break
+  }
+}
+```
+
+]
+
+---
+class: yourturn
+# Your Turn: Solution!
+
+.pull-left[
+
+This example reached 100 in 5,666 steps
+
+```{r}
+value <- 0
+step <- 0
+
+repeat {
+  # randomly add or subtract 1
+  random_step <- sample(c(-1, 1), 1)
+  value <- value + random_step
+  
+  # count step
+  step <- step + 1
+  
+  # break once our walk exceeds 100
+  if(value == 100 | step > 10000) {
+    print(step)
+    break
+  }
+}
+```
+
+]
+
+--
+
+.pull-right[
+
+What does a random walk look like? This example never reached 100.
+
+```{r, echo=FALSE, fig.height=4}
+value <- 0
+step <- 0
+
+repeat {
+  # count step
+  step <- step + 1
+  
+  # randomly add or subtract 1
+  random_step <- sample(c(-1, 1), 1)
+  value[step + 1] <- value[step] + random_step
+  
+  # break once our walk exceeds 100
+  if(max(value) >= 100 | step > 10000) {
+    break
+  }
+}
+
+library(ggplot2)
+df <- data.frame(
+  step = c(0, seq_len(step)),
+  value = value
+)
+
+ggplot(df, aes(step, value)) +
+  geom_line()
+```
+
+In fact, it looks a little like the current stock market, eh?  
+
+.center[`r anicon::cia("https://emojis.slackmojis.com/emojis/images/1502933663/2802/homer_scream.jpg?1502933663", animate = FALSE, size = 2)`]
+
+]
 
 ---
 # Summary
