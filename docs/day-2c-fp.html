@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Iterating with Functional Programming</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="scrollable.css" type="text/css" />
+    <link rel="stylesheet" href="mtheme_max.css" type="text/css" />
+    <link rel="stylesheet" href="fonts_mtheme_max.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: clear, center, middle
+
+background-image: url("images/iterate-icon.jpg")
+background-size: contain
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+.center.font200[with functional programming]
+
+---
+# Functional Programming
+
+.pull-left[
+&lt;br&gt;&lt;br&gt;
+.font150.center[
+
+Iteration can be summed up as:
+
+FOR EACH &lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt; DO &lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt;
+
+]
+]
+
+--
+
+.pull-right[
+
+Illustrate with 
+
+- copy &amp; paste
+- for loop
+- functional programming
+
+]
+
+---
+# Introducing the purrr package
+
+
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+
+```r
+map(vector, function)
+```
+
+image
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+
+```r
+map(data.frame, function)
+```
+
+image
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+
+```r
+map(list, function)
+```
+
+image
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[`map( .x, .f, ...)`]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+
+* .font120.bold[`.x`]: input (vector, list, or data frame)
+
+* .font120.bold[`.f`]: function to apply
+
+* .font120.bold[`...`]: addtl parameters
+
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+&lt;img src="images/map-arg.png" width="1196" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# A family of .font120.red[`map()`] functions
+
+* map() returns a list, which makes it the most general of the “map” family because you can put anything in a list.
+
+* it is inconvenient to return a list when a simpler data structure would do
+
+* variants:
+
+   - map_dbl() returns a double vector 
+   - map_lgl() returns a logical vector 
+   - map_int() returns a integer vector 
+   - map_chr() returns a character vector
+   - map_df() returns a data frame
+
+---
+# A family of .font120.red[`map()`] functions
+
+demonstrate implementations
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+With the iris data set, use the map functions to answer these three questions:
+
+1. what is the class of each variable?
+
+2. what is the standard deviation for each variable?
+
+3. which variables have a mean value greater than 5
+
+]
+
+.pull-right[
+
+
+
+]
+
+---
+# Specifying .font120.red[`.f`]
+
+discuss shortcuts for specifying .f
+
+
+---
+class: yourturn
+# Your Turn!
+
+---
+# .red[ROAD].gray[`map()`]
+
+Strategy
+
+1. Do it for one element
+
+2. Turn it into a recipe
+
+3. Use `map_*()` to do it to all elements
+
+---
+# ROAD`map()`: .red[do it for one]
+
+use Charlotte Wickham's approach to demonstrate strategy
+
+---
+# ROAD`map()`: .red[turn it into a recipe]
+
+use Charlotte Wickham's approach to demonstrate strategy
+
+---
+# ROAD`map()`: .red[do it to all elements]
+
+use Charlotte Wickham's approach to demonstrate strategy
+
+
+---
+class: yourturn
+# Your Turn!
+
+---
+# But there are base R functionals?
+
+talk about differences between purrr and apply family
+
+
+---
+# Whetting your appetite
+
+demo `map2()` and `pmap()`
+
+
+---
+# Questions
+
+&lt;br&gt;
+
+&lt;img src="images/questions.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

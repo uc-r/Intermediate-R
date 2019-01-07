@@ -1,0 +1,237 @@
+---
+title: "Iterating with Functional Programming"
+output:
+  xaringan::moon_reader:
+    css: ["scrollable.css", "mtheme_max.css", "fonts_mtheme_max.css"]
+    self_contained: false
+    lib_dir: libs
+    chakra: libs/remark-latest.min.js
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false   
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+# Set global R options
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+
+# Set global knitr chunk options
+knitr::opts_chunk$set(
+  fig.align = "center", 
+  cache = TRUE,
+  error = FALSE,
+  message = FALSE, 
+  warning = FALSE, 
+  collapse = TRUE 
+)
+
+# set ggplot theme in case I do any plotting
+library(ggplot2)
+thm <- theme_bw()
+theme_set(thm)
+```
+
+class: clear, center, middle
+
+background-image: url("images/iterate-icon.jpg")
+background-size: contain
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+.center.font200[with functional programming]
+
+---
+# Functional Programming
+
+.pull-left[
+<br><br>
+.font150.center[
+
+Iteration can be summed up as:
+
+FOR EACH <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> DO <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+
+]
+]
+
+--
+
+.pull-right[
+
+Illustrate with 
+
+- copy & paste
+- for loop
+- functional programming
+
+]
+
+---
+# Introducing the purrr package
+
+
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+```{r eval=FALSE}
+map(vector, function)
+```
+
+image
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+```{r eval=FALSE}
+map(data.frame, function)
+```
+
+image
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+```{r eval=FALSE}
+map(list, function)
+```
+
+image
+
+---
+# Basics of the .font120.red[`map()`] functions
+
+.pull-left[
+
+<br>
+.center[.content-box-gray[.font200[`map( .x, .f, ...)`]
+
+.font150[for each element of <u>.x</u> do <u>.f</u>]
+]]
+
+
+* .font120.bold[`.x`]: input (vector, list, or data frame)
+
+* .font120.bold[`.f`]: function to apply
+
+* .font120.bold[`...`]: addtl parameters
+
+]
+
+.pull-right[
+
+<br>
+
+```{r, echo=FALSE}
+knitr::include_graphics("images/map-arg.png")
+```
+
+]
+
+---
+# A family of .font120.red[`map()`] functions
+
+* map() returns a list, which makes it the most general of the “map” family because you can put anything in a list.
+
+* it is inconvenient to return a list when a simpler data structure would do
+
+* variants:
+
+   - map_dbl() returns a double vector 
+   - map_lgl() returns a logical vector 
+   - map_int() returns a integer vector 
+   - map_chr() returns a character vector
+   - map_df() returns a data frame
+
+---
+# A family of .font120.red[`map()`] functions
+
+demonstrate implementations
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+With the iris data set, use the map functions to answer these three questions:
+
+1. what is the class of each variable?
+
+2. what is the standard deviation for each variable?
+
+3. which variables have a mean value greater than 5
+
+]
+
+.pull-right[
+
+```{r}
+
+```
+
+]
+
+---
+# Specifying .font120.red[`.f`]
+
+discuss shortcuts for specifying .f
+
+
+---
+class: yourturn
+# Your Turn!
+
+---
+# .red[ROAD].gray[`map()`]
+
+Strategy
+
+1. Do it for one element
+
+2. Turn it into a recipe
+
+3. Use `map_*()` to do it to all elements
+
+---
+# ROAD`map()`: .red[do it for one]
+
+use Charlotte Wickham's approach to demonstrate strategy
+
+---
+# ROAD`map()`: .red[turn it into a recipe]
+
+use Charlotte Wickham's approach to demonstrate strategy
+
+---
+# ROAD`map()`: .red[do it to all elements]
+
+use Charlotte Wickham's approach to demonstrate strategy
+
+
+---
+class: yourturn
+# Your Turn!
+
+---
+# But there are base R functionals?
+
+talk about differences between purrr and apply family
+
+
+---
+# Whetting your appetite
+
+demo `map2()` and `pmap()`
+
+
+---
+# Questions
+
+<br>
+
+```{r questions-fp, echo=FALSE, out.height="450", out.width="450"}
+knitr::include_graphics("images/questions.png")
+```
+
