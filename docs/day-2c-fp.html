@@ -25,7 +25,7 @@ background-size: contain
 # Functional Programming
 
 .pull-left[
-&lt;br&gt;&lt;br&gt;
+&lt;br&gt;
 .font150.center[
 
 Iteration can be summed up as:
@@ -33,54 +33,158 @@ Iteration can be summed up as:
 FOR EACH &lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt; DO &lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt;
 
 ]
+
 ]
 
 --
 
 .pull-right[
 
-Illustrate with 
+.center[You've probably done something like this with .bold.blue[copy &amp; paste]]
 
-- copy &amp; paste
-- for loop
-- functional programming
+
+```r
+df1 &lt;- readr::read_csv("data/Month-01.csv")
+df2 &lt;- readr::read_csv("data/Month-02.csv")
+df3 &lt;- readr::read_csv("data/Month-02.csv")
+df4 &lt;- readr::read_csv("data/Month-03.csv")
+df5 &lt;- readr::read_csv("data/Month-04.csv")
+...
+df11 &lt;- readr::read_csv("data/Month-11.csv")
+```
+
+&lt;br&gt;&lt;br&gt;
+.center.bold[.content-box-gray[error prone &amp; inefficient]]
 
 ]
 
 ---
+# Functional Programming
+
+.pull-left[
+&lt;br&gt;
+.font150.center[
+
+Iteration can be summed up as:
+
+FOR EACH &lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt; DO &lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt;
+
+]
+
+]
+
+.pull-right[
+
+.center[You've probably done something like this with .bold.blue[.font120[`for`] loops]]
+
+
+```r
+for(i in list.files("data")) {
+  # steps to import each data set
+  df &lt;- readr::read_csv(paste0("data/", i))
+  new_name &lt;- stringr::str_sub(i, end = -5)
+  assign(new_name, df)
+  rm(df)
+}
+```
+
+&lt;br&gt;&lt;br&gt;
+.center.bold[.content-box-gray[tough to focus on the intent]]
+
+]
+
+---
+# Functional Programming
+
+The intent of these approaches is 
+
+
+&lt;img src="images/for-each.png" width="90%" height="90%" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Functional Programming
+
+Functional programming turns this idea into a function:
+
+&lt;img src="images/fp-image1.png" width="90%" height="90%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+.center[.content-box-gray[which is more .bold.blue[efficient], .bold.blue[strict], and .bold.blue[explicit]!  .red.bold[But how?]]]
+
+
+---
 # Introducing the purrr package
 
+.pull-left[
 
+.font120[
+The __purr__ package provides functional programming tools that:
+
+1. for each element of x
+
+2. apply function f and
+
+3. provide consistent output
+
+]
+]
+
+.pull-right[
+
+&lt;img src="https://github.com/rstudio/hex-stickers/blob/master/PNG/purrr.png?raw=true" width="60%" height="60%" style="display: block; margin: auto;" /&gt;
+
+]
+
+&lt;br&gt;
+
+.center[.content-box-gray[Disclaimer: __purrr__ is part of the tidyverse: https://purrr.tidyverse.org/]]
 
 ---
-# Basics of the .font120.red[`map()`] functions
+# Prerequisites
+
+.pull-left[
+
+### Package requirements
 
 
 ```r
-map(vector, function)
+library(tidyverse)
 ```
 
-image
+]
 
----
-# Basics of the .font120.red[`map()`] functions
+--
+
+.pull-right[
+First introductions to __purrr__ typically revolve around the family of .font120.bold.red[`map()`] functions:
 
 
 ```r
-map(data.frame, function)
+lsf.str("package:purrr", pattern = "^map")
+## map : function (.x, .f, ...)  
+## map_at : function (.x, .at, .f, ...)  
+## map_call : function (.x, .f, ...)  
+## map_chr : function (.x, .f, ...)  
+## map_dbl : function (.x, .f, ...)  
+## map_df : function (.x, .f, ..., .id = NULL)  
+## map_dfc : function (.x, .f, ...)  
+## map_dfr : function (.x, .f, ..., .id = NULL)  
+## map_if : function (.x, .p, .f, ...)  
+## map_int : function (.x, .f, ...)  
+## map_lgl : function (.x, .f, ...)  
+## map2 : function (.x, .y, .f, ...)  
+## map2_chr : function (.x, .y, .f, ...)  
+## map2_dbl : function (.x, .y, .f, ...)  
+## map2_df : function (.x, .y, .f, ..., .id = NULL)  
+## map2_dfc : function (.x, .y, .f, ...)  
+## map2_dfr : function (.x, .y, .f, ..., .id = NULL)  
+## map2_int : function (.x, .y, .f, ...)  
+## map2_lgl : function (.x, .y, .f, ...)
 ```
 
-image
-
----
-# Basics of the .font120.red[`map()`] functions
-
-
-```r
-map(list, function)
-```
-
-image
+]
 
 ---
 # Basics of the .font120.red[`map()`] functions
@@ -94,7 +198,7 @@ image
 ]]
 
 
-* .font120.bold[`.x`]: input (vector, list, or data frame)
+* .font120.bold[`.x`]: input (vector, data frame, or list)
 
 * .font120.bold[`.f`]: function to apply
 
@@ -111,7 +215,348 @@ image
 ]
 
 ---
-# A family of .font120.red[`map()`] functions
+# The .red[inputs]
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[.opacity20[`map( `]`.x`.opacity20[`, .f, ...)`]]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+.font120[
+* .font120.bold[`.x`]: input (&lt;u&gt;vector&lt;/u&gt;, data frame, or list)
+]
+
+]
+
+.pull-right[
+
+When our input is a .red.bold[vector]
+
+
+```r
+map(vector, function)
+```
+
+&lt;img src="images/fp-vector-inputs.png" width="2204" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# The .red[inputs]
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[.opacity20[`map( `]`.x`.opacity20[`, .f, ...)`]]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+.font120[
+* .font120.bold[`.x`]: input (vector, &lt;u&gt;data frame&lt;/u&gt;, or list)
+]
+
+]
+
+.pull-right[
+
+When our input is a .red.bold[data frame]
+
+
+```r
+map(vector, function)
+```
+
+&lt;img src="images/fp-dataframe-inputs.png" width="2347" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# The .red[inputs]
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[.opacity20[`map( `]`.x`.opacity20[`, .f, ...)`]]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+.font120[
+* .font120.bold[`.x`]: input (vector, data frame, or &lt;u&gt;list&lt;/u&gt;)
+]
+
+]
+
+.pull-right[
+
+When our input is a .red.bold[list]
+
+
+```r
+map(vector, function)
+```
+
+&lt;img src="images/fp-list-inputs.png" width="2439" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+class: yourturn
+# Give me some examples!
+
+.pull-left[
+
+Run the following examples in your console.  Don't worry about understanding everything, but identify
+
+1. what is the input of each map function,
+
+2. what is the output of each map function, and
+
+3. talk to your neighbor about what you think each function is doing.
+
+&lt;br&gt;
+
+.center[.content-box-gray[Note how .font120[`purrr::map()`] is .font120[`%&gt;%`] friendly.]]
+
+]
+
+.pull-right[
+
+
+```r
+# 1.
+iris %&gt;% map(n_distinct)
+
+# 2.
+input &lt;- c(1, 5, 10)
+input %&gt;% map(runif, min = 1, max = 2)
+
+# 3.
+input %&gt;% map(~ sample(1:10, size = .x, replace = TRUE))
+```
+
+]
+
+---
+class: yourturn
+# Give me some examples!
+
+.pull-left[
+
+1. inputs:
+   1. data frame
+   2. vector
+   3. list
+
+2. outputs: by default `map()` consistently returns a list (we'll come back to this shortly)
+   
+3. functions applied: 
+   1. `n_distinct(.x)`
+   2. `runif(.x, min = 1, max = 2)`
+   3. `sample(1:10, size = .x, replace = TRUE)`
+   
+
+.center[___Note the different ways we can call a function!___]
+
+
+]
+
+.pull-right[
+
+
+```r
+# 1.
+iris %&gt;% map(n_distinct)
+
+# 2.
+input &lt;- c(1, 5, 10)
+input %&gt;% map(runif, min = 1, max = 2)
+
+# 3.
+input %&gt;% map(~ sample(1:10, size = .x, replace = TRUE))
+```
+
+]
+
+---
+# The .red[function call]
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[.opacity20[`map( .x, `]`.f, ...`.opacity20[`)`]]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+* .opacity20[.font120.bold[`.x`]: input (vector, data frame, or list)]
+
+* .font120.bold[`.f`]: function to apply
+
+* .font120.bold[`...`]: addtl parameters
+
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+We can make function calls in different ways:
+
+
+```r
+# function with default parameters, by default
+# .x will go in as the first argument
+map(input, runif)
+```
+
+]
+
+---
+# The .red[function call]
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[.opacity20[`map( .x, `]`.f, ...`.opacity20[`)`]]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+* .opacity20[.font120.bold[`.x`]: input (vector, data frame, or list)]
+
+* .font120.bold[`.f`]: function to apply
+
+* .font120.bold[`...`]: addtl parameters
+
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+We can make function calls in different ways:
+
+
+```r
+# function with default parameters, by default
+# .x will go in as the first argument
+map(input, runif)
+
+# same as above but supplying additional parameters
+map(input, runif, min = 1, max = 2)
+```
+
+]
+
+---
+# The .red[function call]
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[.opacity20[`map( .x, `]`.f, ...`.opacity20[`)`]]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+* .opacity20[.font120.bold[`.x`]: input (vector, data frame, or list)]
+
+* .font120.bold[`.f`]: function to apply
+
+* .font120.bold[`...`]: addtl parameters
+
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+We can make function calls in different ways:
+
+
+```r
+# function with default parameters, by default
+# .x will go in as the first argument
+map(input, runif)
+
+# same as above but supplying additional parameters
+map(input, runif, min = 1, max = 2)
+
+# anonymous function defined using formula shortcut
+# handy when .x is not first argument
+map(input, ~ sample(1:10, size = .x, replace = TRUE))
+```
+
+]
+
+---
+# The .red[function call]
+
+.pull-left[
+
+&lt;br&gt;
+.center[.content-box-gray[.font200[.opacity20[`map( .x, `]`.f, ...`.opacity20[`)`]]
+
+.font150[for each element of &lt;u&gt;.x&lt;/u&gt; do &lt;u&gt;.f&lt;/u&gt;]
+]]
+
+* .opacity20[.font120.bold[`.x`]: input (vector, data frame, or list)]
+
+* .font120.bold[`.f`]: function to apply
+
+* .font120.bold[`...`]: addtl parameters
+
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+We can make function calls in different ways:
+
+
+```r
+# function with default parameters, by default
+# .x will go in as the first argument
+map(input, runif)
+
+# same as above but supplying additional parameters
+map(input, runif, min = 1, max = 2)
+
+# anonymous function defined using formula shortcut
+# handy when .x is not first argument
+map(input, ~ sample(1:10, size = .x, replace = TRUE))
+
+# traditional approach to apply anonymous function
+*# TOO VERBOSE!
+map(input, function(x) sample(1:10, size = .x, replace = TRUE))
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+
+]
+
+.pull-right[
+
+
+
+
+]
+
+---
+# Different .font120.red[`map()`] functions for different .red[outputs]
 
 * map() returns a list, which makes it the most general of the “map” family because you can put anything in a list.
 
