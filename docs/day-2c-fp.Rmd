@@ -1162,12 +1162,12 @@ And if we have a procedure with $>2$ elements:
 Say we want to iterate over each of the following hyperparameters for a random forest model:
 
 ```{r}
-# list of hyper parameter inputs
-hyper_params <- list(
+# 27 combinations of hyper parameter inputs
+(hyper_params <- expand.grid(
   mtry = c(20, 25, 30),
   node_size = c(3, 6, 9),
   sample_size = c(.50, .632, .80)
-)
+))
 ```
 
 ]
@@ -1200,7 +1200,7 @@ ranger::ranger(
   )$prediction.error
 ```
 
-```{r}
+```{r pmap-example}
 # 3. do it for all
 pmap_dbl(
   hyper_params, 
