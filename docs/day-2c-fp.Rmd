@@ -43,6 +43,16 @@ background-size: contain
 .center.font200[with functional programming]
 
 ---
+class: clear, center, middle
+
+background-image: url("https://www.corporatecomplianceinsights.com/wp-content/uploads/2017/06/thinking-man.jpg")
+background-size: cover
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+.center.font200.bold.white[A mental model]
+
+---
 # Functional Programming
 
 .pull-left[
@@ -73,8 +83,9 @@ df5 <- readr::read_csv("data/Month-04.csv")
 df11 <- readr::read_csv("data/Month-11.csv")
 ```
 
-<br><br>
-.center.bold[.content-box-gray[error prone & inefficient]]
+<br>
+.center.bold[.content-box-gray[error prone, inefficient & eyes drawn to 
+what's the same rather than what's different]]
 
 ]
 
@@ -136,6 +147,16 @@ knitr::include_graphics("images/fp-image1.png")
 
 .center[.content-box-gray[which is more .bold.blue[efficient], .bold.blue[strict], and .bold.blue[explicit]!  .red.bold[But how?]]]
 
+---
+class: clear, center, middle
+
+```{r echo=FALSE, out.width="50%", out.height="50%"}
+knitr::include_graphics("https://media.mnn.com/assets/images/2013/05/grumpyCatComplain.jpg.838x0_q80.jpg")
+```
+
+<br>
+.center.font200.bold[Application]
+.center.font150[_What the hell does a cat have to do with this?_]
 
 ---
 # Introducing the purrr package
@@ -174,7 +195,8 @@ knitr::include_graphics("https://github.com/rstudio/hex-stickers/blob/master/PNG
 ### Package requirements
 
 ```{r message=TRUE, warning=TRUE}
-library(tidyverse)
+library(tidyverse)    # includes purrr and other pkgs we'll use
+library(repurrrsive)  # provides different data sets
 ```
 
 ]
@@ -642,7 +664,7 @@ class: yourturn
 # Your Turn!
 
 .pull-left[
-With the `airquality` data set, use the most appropriate map functions to answer these three questions:
+With the built-in `airquality` data set, use the most appropriate map functions to answer these three questions:
 
 1. how many `n_distinct` values are in each column?
 
@@ -684,9 +706,11 @@ You've been introduced to the main components of __purrr__ functional programmin
 
 So, right now you probably fall in one of two camps:
 
+--
+
 .pull-left[
 
-.center.bold[Experienced `for` loop user]
+.center.bold[Experienced .font120[`for`] loop user]
 
 Switching to functionals is typically a pattern matching exercise. You look at the for loop and find a functional that matches the basic form.
 
@@ -712,45 +736,578 @@ ___Don't worry, the following 3 steps will provide you with a strategy to simpli
 ---
 # .red[ROAD].gray[`map()`]
 
-Strategy
+<br>
 
+.font150.bold.blue[
+Strategy
+]
+
+.font130[
 1. Do it for one element
 
 2. Turn it into a recipe
 
 3. Use `map_*()` to do it to all elements
+]
 
 ---
-# ROAD`map()`: .red[do it for one]
+# How many films has each character been in?
 
-use Charlotte Wickham's approach to demonstrate strategy
+.pull-left[
+
+* the .font120[`sw_people`] data set contains all the characters from the Star Wars chronicles
+
+* What if we want to find how many .font120[`$films`] each character has been in?
+]
+
+.pull-right[
+
+```{r}
+glimpse(sw_people)
+```
+
+
+]
 
 ---
-# ROAD`map()`: .red[turn it into a recipe]
+# .red[\#1 Do it for one element]
 
-use Charlotte Wickham's approach to demonstrate strategy
+```{r}
+# do it for the first element
+x1 <- sw_people[[1]]
+length(x1$films)
+```
 
 ---
-# ROAD`map()`: .red[do it to all elements]
+# .red[\#1 Do it for one element]
 
-use Charlotte Wickham's approach to demonstrate strategy
+```{r}
+# do it for the first element
+x1 <- sw_people[[1]]
+length(x1$films)
 
+# do it for the second element
+x2 <- sw_people[[2]]
+length(x2$films)
+```
+
+---
+# .red[\#1 Do it for one element]
+
+```{r}
+# do it for the first element
+x1 <- sw_people[[1]]
+length(x1$films)
+
+# do it for the second element
+x2 <- sw_people[[2]]
+length(x2$films)
+
+# do it for the third element
+x3 <- sw_people[[3]]
+length(x3$films)
+```
+
+---
+# .red[\#1 Do it for one element]
+
+.pull-left[
+
+.center[Common function theme: <br>.font120[`length(`]<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.font120[`$films)`]]
+
+```{r}
+# do it for the first element
+x1 <- sw_people[[1]]
+length(x1$films) #<<
+
+# do it for the second element
+x2 <- sw_people[[2]]
+length(x2$films) #<<
+
+# do it for the third element
+x3 <- sw_people[[3]]
+length(x3$films) #<<
+```
+
+]
+
+--
+
+.pull-right[
+
+.center[Common output theme: <br>Integers]
+
+```{r eval=FALSE}
+# do it for the first element
+x1 <- sw_people[[1]]
+length(x1$films)
+## [1] 5 #<<
+
+# do it for the second element
+x2 <- sw_people[[2]]
+length(x2$films)
+## [1] 6 #<<
+
+# do it for the third element
+x3 <- sw_people[[3]]
+length(x3$films)
+## [1] 7 #<<
+```
+
+]
+
+---
+# .red[\#2 Turn it into a recipe]
+
+.pull-left[
+
+.center[
+Common function theme: <br>.font120[`length(`]<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.font120[`$films)`]
+
+<br>
+
+Resulting recipe:
+
+.font120[.blue[`~`]` length(`.red[`.x`]`$films)`]
+
+]
+
+<br>
+* .font120.blue[`~`]: anonymous function shortcut
+* .font120.red[`.x`]: one element of our vector
+
+]
+
+---
+# .red[\#3 Do it for all elements]
+
+.pull-left[
+
+.center[
+Common function theme: <br>.font120[`length(`]<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.font120[`$films)`]
+
+<br>
+
+Resulting recipe:
+
+.font120[.blue[`~`]` length(`.red[`.x`]`$films)`]
+
+]
+
+<br>
+* .font120.blue[`~`]: anonymous function shortcut
+* .font120.red[`.x`]: one element of our vector
+
+]
+
+.pull-right[
+
+.center[Common output theme: <br>Integers: use .font120[`map_int()`]]
+
+```{r}
+sw_people %>% map_int(~ length(.x$films))
+```
+
+]
 
 ---
 class: yourturn
 # Your Turn!
 
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+.pull-right[
+
+```{r}
+# 1. Extract the name of each character
+sw_people %>% map_chr(~ .x$name)
+```
+
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+.pull-right[
+
+```{r}
+# 2. Identify if the character is male
+sw_people %>% map_lgl(~ .x$gender == "male")
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+.pull-right[
+
+```{r}
+# 3. Identify the proportion of characters that are male
+sw_people %>% 
+  map_lgl(~ .x$gender == "male") %>%
+  mean()
+```
+
+]
+
+---
+class: clear, center, middle
+
+```{r echo=FALSE, out.width="50%", out.height="50%"}
+knitr::include_graphics("http://sanitarian.net/wp-content/uploads/2011/02/appetiters1.jpg")
+```
+
+.center.font150.bold[Some advanced features to whet your appetite for more!]
+
+---
+# Names are useful!
+
+.pull-left[
+.blue[Pro tip]: __purrr__ has a .font120[`set_names()`] function that makes renaming elements easy
+
+]
+
+.pull-right[
+
+```{r}
+sw_people %>% 
+  map_chr(~ .x$name) %>%          # get names of each character
+  set_names(sw_people, .) %>%     # set list names #<<
+  map_int(~ length(.x$films)) %>% # get number of films
+  sort(decreasing = TRUE) 
+```
+
+]
+
+---
+# Combining multiple functionals is powerful
+
+Say we wanted to compare the approval/disapproval ratio for .font120[`Transaction_Status`] across all our .font120[`Month-XX.csv`] files.
+
+--
+
+.pull-left[
+
+.center[We can accomplish this with a sequence of functionals as follows:]
+
+
+```{r}
+list.files("data") %>% 
+  paste0("data/", .) %>%
+  map(read_csv) %>%
+  set_names(., nm = list.files("data")) %>%
+  map(~ .x$Transaction_Status == "Approved") %>%
+  map_dbl(mean)
+```
+
+]
+
+--
+
+.pull-right[
+
+.center[Or with some initial functionals followed by __dplyr__]
+
+```{r}
+list.files("data") %>% 
+  paste0("data/", .) %>%
+  map_dfr(read_csv) %>%  # row bind list to data frame #<<
+  group_by(Month) %>%
+  summarize(Approval_ration = mean(Transaction_Status == "Approved"))
+```
+
+]
+
+---
+# .font120.red[`map2()`] for two input elements
+
+Say we have a procedure based on two inputs.  For example, we want to make predictions for 10 countries with their respective linear models.
+
+.pull-left[
+```{r}
+# input 1: data
+glimpse(gap_split_small)
+```
+]
+
+.pull-right[
+```{r}
+# input 2: models
+(gap_mods <- gap_split_small %>%
+  map(~ lm(
+    formula = lifeExp ~ year + pop + gdpPercap,
+    data = .x
+    ))
+)
+```
+
+]
+
+---
+# .font120.red[`map2()`] for two input elements
+
+Say we have a procedure based on two inputs.  For example, we want to make predictions for 10 countries with their respective linear models.
+
+```{r}
+# 1. do for one
+predict(gap_mods[[1]], gap_split_small[[1]])
+```
+
+--
+
+```{r eval=FALSE}
+# 2. identify recipe
+predict(________, ________)
+```
+
+--
+
+```{r}
+# 3. do for all
+map2(gap_mods, gap_split_small, predict) %>% glimpse(give.attr = FALSE)
+```
+
+]
+
+---
+# .font120.red[`pmap()`] for n input elements
+
+.pull-left[
+
+And if we have a procedure with $>2$ elements:
+
+Say we want to iterate over each of the following hyperparameters for a random forest model:
+
+```{r}
+# list of hyper parameter inputs
+hyper_params <- list(
+  mtry = c(20, 25, 30),
+  node_size = c(3, 6, 9),
+  sample_size = c(.50, .632, .80)
+)
+```
+
+]
+
+---
+# .font120.red[`pmap()`] for n input elements
+
+.scrollable90[
+.pull-left[
+
+And if we have a procedure with $>2$ elements:
+
+Say we want to iterate over each of the following hyperparameters for a random forest model:
+
+```{r}
+# list of hyper parameter inputs
+hyper_params <- list(
+  mtry = c(20, 25, 30),
+  node_size = c(3, 6, 9),
+  sample_size = c(.50, .632, .80)
+)
+```
+
+]
+
+.pull-right[
+
+```{r}
+# 1. do it for one
+ranger::ranger(
+  formula         = Sale_Price ~ ., 
+  data            = AmesHousing::make_ames(), 
+  num.trees       = 500,
+  mtry            = hyper_params$mtry[1],
+  min.node.size   = hyper_params$node_size[1],
+  sample.fraction = hyper_params$sample_size[1],
+  seed            = 123
+  )$prediction.error
+```
+
+```{r, eval=FALSE}
+# 2. identify recipe
+ranger::ranger(
+  formula         = Sale_Price ~ ., 
+  data            = AmesHousing::make_ames(), 
+  num.trees       = 500,
+  mtry            = ________,
+  min.node.size   = ________,
+  sample.fraction = ________,
+  seed            = 123
+  )$prediction.error
+```
+
+```{r}
+# 3. do it for all
+pmap_dbl(
+  hyper_params, 
+  ~ ranger::ranger(
+    formula         = Sale_Price ~ ., 
+    data            = AmesHousing::make_ames(), 
+    num.trees       = 500,
+    mtry            = ..1,
+    min.node.size   = ..2,
+    sample.fraction = ..3,
+    seed            = 123
+    )$prediction.error
+  )
+```
+]
+]
+
+---
+# So much more!
+
+And there is so much more in the ___purrr___ package!
+
+.scrollable90[
+```{r}
+lsf.str("package:purrr")
+```
+]
+
 ---
 # But there are base R functionals?
 
-talk about differences between purrr and apply family
+Yes, there are base R functionals (i.e. .font120[`sapply()`], .font120[`lapply()`], .font120[`vapply()`])
 
+But...
+
+.red[
+- inconsistencies in output.  What does .font120[`sapply()`] return?  It depends.
+- inconsistencies in syntax.
+- supplying anonymous functions and additional arguments gets verbose.
+- limited on functional capabilities
+]
+
+--
+
+Motivation for __purrr__:
+
+.green[
+- consistent return type,
+- consistent syntax,
+- useful function call shortcuts,
+- provides more complicated functionals
+]
 
 ---
-# Whetting your appetite
+# Summary
 
-demo `map2()` and `pmap()`
+.font120[
+__functional programming with purrr provides__
 
+- functions that write loops for you
+
+- consistent syntax
+
+- convenient shortcuts
+]
+
+--
+
+.font120[
+__Choosing the right function depends on:__
+
+- type of iteration
+
+- elements under consideration
+
+- type of output
+
+]
+
+---
+# Learning More
+
+.pull-left[
+
+.center.font120[Yes, functional programming is difficult to grasp!]
+
+```{r echo=FALSE}
+knitr::include_graphics("https://media1.tenor.com/images/98106050cdaa3e90bfd9cb210d9453e9/tenor.gif?itemid=5202885")
+```
+
+]
+
+--
+
+.pull-right[
+
+* R for Data Science [`r anicon::faa("external-link-alt", animate = FALSE)`](https://r4ds.had.co.nz/iteration.html)
+
+* Advanced R [`r anicon::faa("external-link-alt", animate = FALSE)`](https://adv-r.hadley.nz/functionals.html#base-functionals)
+
+* Jenny Bryan's __purrr__ tutorials [`r anicon::faa("external-link-alt", animate = FALSE)`](https://jennybc.github.io/purrr-tutorial/)
+
+* Foundations of Functional Programming with purrr [`r anicon::faa("external-link-alt", animate = FALSE)`](https://www.datacamp.com/courses/foundations-of-functional-programming-with-purrr)
+
+* Intermediate Functional Programming with __purrr__ [`r anicon::faa("external-link-alt", animate = FALSE)`](https://www.datacamp.com/courses/intermediate-functional-programming-with-purrr)
+
+]
 
 ---
 # Questions

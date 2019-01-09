@@ -24,6 +24,16 @@ background-size: contain
 .center.font200[with functional programming]
 
 ---
+class: clear, center, middle
+
+background-image: url("https://www.corporatecomplianceinsights.com/wp-content/uploads/2017/06/thinking-man.jpg")
+background-size: cover
+
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+.center.font200.bold.white[A mental model]
+
+---
 # Functional Programming
 
 .pull-left[
@@ -55,8 +65,9 @@ df5 &lt;- readr::read_csv("data/Month-04.csv")
 df11 &lt;- readr::read_csv("data/Month-11.csv")
 ```
 
-&lt;br&gt;&lt;br&gt;
-.center.bold[.content-box-gray[error prone &amp; inefficient]]
+&lt;br&gt;
+.center.bold[.content-box-gray[error prone, inefficient &amp; eyes drawn to 
+what's the same rather than what's different]]
 
 ]
 
@@ -115,6 +126,14 @@ Functional programming turns this idea into a function:
 
 .center[.content-box-gray[which is more .bold.blue[efficient], .bold.blue[strict], and .bold.blue[explicit]!  .red.bold[But how?]]]
 
+---
+class: clear, center, middle
+
+&lt;img src="https://media.mnn.com/assets/images/2013/05/grumpyCatComplain.jpg.838x0_q80.jpg" width="50%" height="50%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+.center.font200.bold[Application]
+.center.font150[_What the hell does a cat have to do with this?_]
 
 ---
 # Introducing the purrr package
@@ -152,7 +171,8 @@ The __purr__ package provides functional programming tools that:
 
 
 ```r
-library(tidyverse)
+library(tidyverse)    # includes purrr and other pkgs we'll use
+library(repurrrsive)  # provides different data sets
 ```
 
 ]
@@ -861,7 +881,7 @@ class: yourturn
 # Your Turn!
 
 .pull-left[
-With the `airquality` data set, use the most appropriate map functions to answer these three questions:
+With the built-in `airquality` data set, use the most appropriate map functions to answer these three questions:
 
 1. how many `n_distinct` values are in each column?
 
@@ -910,9 +930,11 @@ You've been introduced to the main components of __purrr__ functional programmin
 
 So, right now you probably fall in one of two camps:
 
+--
+
 .pull-left[
 
-.center.bold[Experienced `for` loop user]
+.center.bold[Experienced .font120[`for`] loop user]
 
 Switching to functionals is typically a pattern matching exercise. You look at the for loop and find a functional that matches the basic form.
 
@@ -938,45 +960,2412 @@ ___Don't worry, the following 3 steps will provide you with a strategy to simpli
 ---
 # .red[ROAD].gray[`map()`]
 
-Strategy
+&lt;br&gt;
 
+.font150.bold.blue[
+Strategy
+]
+
+.font130[
 1. Do it for one element
 
 2. Turn it into a recipe
 
 3. Use `map_*()` to do it to all elements
+]
 
 ---
-# ROAD`map()`: .red[do it for one]
+# How many films has each character been in?
 
-use Charlotte Wickham's approach to demonstrate strategy
+.pull-left[
+
+* the .font120[`sw_people`] data set contains all the characters from the Star Wars chronicles
+
+* What if we want to find how many .font120[`$films`] each character has been in?
+]
+
+.pull-right[
+
+
+```r
+glimpse(sw_people)
+## List of 87
+##  $ :List of 16
+##   ..$ name      : chr "Luke Skywalker"
+##   ..$ height    : chr "172"
+##   ..$ mass      : chr "77"
+##   ..$ hair_color: chr "blond"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "19BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr [1:5] "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/" "http://swapi.co/api/films/1/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ vehicles  : chr [1:2] "http://swapi.co/api/vehicles/14/" "http://swapi.co/api/vehicles/30/"
+##   ..$ starships : chr [1:2] "http://swapi.co/api/starships/12/" "http://swapi.co/api/starships/22/"
+##   ..$ created   : chr "2014-12-09T13:50:51.644000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:56.891000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/1/"
+##  $ :List of 14
+##   ..$ name      : chr "C-3PO"
+##   ..$ height    : chr "167"
+##   ..$ mass      : chr "75"
+##   ..$ hair_color: chr "n/a"
+##   ..$ skin_color: chr "gold"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "112BBY"
+##   ..$ gender    : chr "n/a"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr [1:6] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/2/"
+##   ..$ created   : chr "2014-12-10T15:10:51.357000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.309000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/2/"
+##  $ :List of 14
+##   ..$ name      : chr "R2-D2"
+##   ..$ height    : chr "96"
+##   ..$ mass      : chr "32"
+##   ..$ hair_color: chr "n/a"
+##   ..$ skin_color: chr "white, blue"
+##   ..$ eye_color : chr "red"
+##   ..$ birth_year: chr "33BBY"
+##   ..$ gender    : chr "n/a"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr [1:7] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/2/"
+##   ..$ created   : chr "2014-12-10T15:11:50.376000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.311000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/3/"
+##  $ :List of 15
+##   ..$ name      : chr "Darth Vader"
+##   ..$ height    : chr "202"
+##   ..$ mass      : chr "136"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "white"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "41.9BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr [1:4] "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/" "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/13/"
+##   ..$ created   : chr "2014-12-10T15:18:20.704000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.313000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/4/"
+##  $ :List of 15
+##   ..$ name      : chr "Leia Organa"
+##   ..$ height    : chr "150"
+##   ..$ mass      : chr "49"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "19BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/2/"
+##   ..$ films     : chr [1:5] "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/" "http://swapi.co/api/films/1/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/30/"
+##   ..$ created   : chr "2014-12-10T15:20:09.791000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.315000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/5/"
+##  $ :List of 14
+##   ..$ name      : chr "Owen Lars"
+##   ..$ height    : chr "178"
+##   ..$ mass      : chr "120"
+##   ..$ hair_color: chr "brown, grey"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "52BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/" "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-10T15:52:14.024000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.317000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/6/"
+##  $ :List of 14
+##   ..$ name      : chr "Beru Whitesun lars"
+##   ..$ height    : chr "165"
+##   ..$ mass      : chr "75"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "47BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/" "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-10T15:53:41.121000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.319000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/7/"
+##  $ :List of 14
+##   ..$ name      : chr "R5-D4"
+##   ..$ height    : chr "97"
+##   ..$ mass      : chr "32"
+##   ..$ hair_color: chr "n/a"
+##   ..$ skin_color: chr "white, red"
+##   ..$ eye_color : chr "red"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "n/a"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/2/"
+##   ..$ created   : chr "2014-12-10T15:57:50.959000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.321000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/8/"
+##  $ :List of 15
+##   ..$ name      : chr "Biggs Darklighter"
+##   ..$ height    : chr "183"
+##   ..$ mass      : chr "84"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "24BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/12/"
+##   ..$ created   : chr "2014-12-10T15:59:50.509000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.323000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/9/"
+##  $ :List of 16
+##   ..$ name      : chr "Obi-Wan Kenobi"
+##   ..$ height    : chr "182"
+##   ..$ mass      : chr "77"
+##   ..$ hair_color: chr "auburn, white"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue-gray"
+##   ..$ birth_year: chr "57BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/20/"
+##   ..$ films     : chr [1:6] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/38/"
+##   ..$ starships : chr [1:5] "http://swapi.co/api/starships/48/" "http://swapi.co/api/starships/59/" "http://swapi.co/api/starships/64/" "http://swapi.co/api/starships/65/" ...
+##   ..$ created   : chr "2014-12-10T16:16:29.192000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.325000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/10/"
+##  $ :List of 16
+##   ..$ name      : chr "Anakin Skywalker"
+##   ..$ height    : chr "188"
+##   ..$ mass      : chr "84"
+##   ..$ hair_color: chr "blond"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "41.9BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ vehicles  : chr [1:2] "http://swapi.co/api/vehicles/44/" "http://swapi.co/api/vehicles/46/"
+##   ..$ starships : chr [1:3] "http://swapi.co/api/starships/59/" "http://swapi.co/api/starships/65/" "http://swapi.co/api/starships/39/"
+##   ..$ created   : chr "2014-12-10T16:20:44.310000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.327000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/11/"
+##  $ :List of 14
+##   ..$ name      : chr "Wilhuff Tarkin"
+##   ..$ height    : chr "180"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "auburn, grey"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "64BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/21/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/6/" "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-10T16:26:56.138000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.330000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/12/"
+##  $ :List of 16
+##   ..$ name      : chr "Chewbacca"
+##   ..$ height    : chr "228"
+##   ..$ mass      : chr "112"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "unknown"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "200BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/14/"
+##   ..$ films     : chr [1:5] "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/" "http://swapi.co/api/films/1/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/3/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/19/"
+##   ..$ starships : chr [1:2] "http://swapi.co/api/starships/10/" "http://swapi.co/api/starships/22/"
+##   ..$ created   : chr "2014-12-10T16:42:45.066000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.332000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/13/"
+##  $ :List of 15
+##   ..$ name      : chr "Han Solo"
+##   ..$ height    : chr "180"
+##   ..$ mass      : chr "80"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "29BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/22/"
+##   ..$ films     : chr [1:4] "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/" "http://swapi.co/api/films/1/" "http://swapi.co/api/films/7/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr [1:2] "http://swapi.co/api/starships/10/" "http://swapi.co/api/starships/22/"
+##   ..$ created   : chr "2014-12-10T16:49:14.582000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.334000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/14/"
+##  $ :List of 14
+##   ..$ name      : chr "Greedo"
+##   ..$ height    : chr "173"
+##   ..$ mass      : chr "74"
+##   ..$ hair_color: chr "n/a"
+##   ..$ skin_color: chr "green"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "44BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/23/"
+##   ..$ films     : chr "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/4/"
+##   ..$ created   : chr "2014-12-10T17:03:30.334000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.336000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/15/"
+##  $ :List of 14
+##   ..$ name      : chr "Jabba Desilijic Tiure"
+##   ..$ height    : chr "175"
+##   ..$ mass      : chr "1,358"
+##   ..$ hair_color: chr "n/a"
+##   ..$ skin_color: chr "green-tan, brown"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "600BBY"
+##   ..$ gender    : chr "hermaphrodite"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/24/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/4/" "http://swapi.co/api/films/3/" "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/5/"
+##   ..$ created   : chr "2014-12-10T17:11:31.638000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.338000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/16/"
+##  $ :List of 16
+##   ..$ name      : chr "Wedge Antilles"
+##   ..$ height    : chr "170"
+##   ..$ mass      : chr "77"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "hazel"
+##   ..$ birth_year: chr "21BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/22/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/" "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/14/"
+##   ..$ starships : chr "http://swapi.co/api/starships/12/"
+##   ..$ created   : chr "2014-12-12T11:08:06.469000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.341000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/18/"
+##  $ :List of 15
+##   ..$ name      : chr "Jek Tono Porkins"
+##   ..$ height    : chr "180"
+##   ..$ mass      : chr "110"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/26/"
+##   ..$ films     : chr "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/12/"
+##   ..$ created   : chr "2014-12-12T11:16:56.569000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.343000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/19/"
+##  $ :List of 14
+##   ..$ name      : chr "Yoda"
+##   ..$ height    : chr "66"
+##   ..$ mass      : chr "17"
+##   ..$ hair_color: chr "white"
+##   ..$ skin_color: chr "green"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "896BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr [1:5] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/6/"
+##   ..$ created   : chr "2014-12-15T12:26:01.042000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.345000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/20/"
+##  $ :List of 14
+##   ..$ name      : chr "Palpatine"
+##   ..$ height    : chr "170"
+##   ..$ mass      : chr "75"
+##   ..$ hair_color: chr "grey"
+##   ..$ skin_color: chr "pale"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "82BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr [1:5] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/" "http://swapi.co/api/films/3/" ...
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-15T12:48:05.971000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.347000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/21/"
+##  $ :List of 15
+##   ..$ name      : chr "Boba Fett"
+##   ..$ height    : chr "183"
+##   ..$ mass      : chr "78.2"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "31.5BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/10/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/21/"
+##   ..$ created   : chr "2014-12-15T12:49:32.457000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.349000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/22/"
+##  $ :List of 14
+##   ..$ name      : chr "IG-88"
+##   ..$ height    : chr "200"
+##   ..$ mass      : chr "140"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "metal"
+##   ..$ eye_color : chr "red"
+##   ..$ birth_year: chr "15BBY"
+##   ..$ gender    : chr "none"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/2/"
+##   ..$ species   : chr "http://swapi.co/api/species/2/"
+##   ..$ created   : chr "2014-12-15T12:51:10.076000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.351000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/23/"
+##  $ :List of 14
+##   ..$ name      : chr "Bossk"
+##   ..$ height    : chr "190"
+##   ..$ mass      : chr "113"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "green"
+##   ..$ eye_color : chr "red"
+##   ..$ birth_year: chr "53BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/29/"
+##   ..$ films     : chr "http://swapi.co/api/films/2/"
+##   ..$ species   : chr "http://swapi.co/api/species/7/"
+##   ..$ created   : chr "2014-12-15T12:53:49.297000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.355000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/24/"
+##  $ :List of 15
+##   ..$ name      : chr "Lando Calrissian"
+##   ..$ height    : chr "177"
+##   ..$ mass      : chr "79"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "dark"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "31BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/30/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/3/" "http://swapi.co/api/films/2/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/10/"
+##   ..$ created   : chr "2014-12-15T12:56:32.683000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.357000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/25/"
+##  $ :List of 14
+##   ..$ name      : chr "Lobot"
+##   ..$ height    : chr "175"
+##   ..$ mass      : chr "79"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "37BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/6/"
+##   ..$ films     : chr "http://swapi.co/api/films/2/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-15T13:01:57.178000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.359000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/26/"
+##  $ :List of 14
+##   ..$ name      : chr "Ackbar"
+##   ..$ height    : chr "180"
+##   ..$ mass      : chr "83"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "brown mottle"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "41BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/31/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/3/" "http://swapi.co/api/films/7/"
+##   ..$ species   : chr "http://swapi.co/api/species/8/"
+##   ..$ created   : chr "2014-12-18T11:07:50.584000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.362000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/27/"
+##  $ :List of 14
+##   ..$ name      : chr "Mon Mothma"
+##   ..$ height    : chr "150"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "auburn"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "48BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/32/"
+##   ..$ films     : chr "http://swapi.co/api/films/3/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-18T11:12:38.895000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.364000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/28/"
+##  $ :List of 15
+##   ..$ name      : chr "Arvel Crynyd"
+##   ..$ height    : chr "unknown"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/3/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/28/"
+##   ..$ created   : chr "2014-12-18T11:16:33.020000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.367000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/29/"
+##  $ :List of 14
+##   ..$ name      : chr "Wicket Systri Warrick"
+##   ..$ height    : chr "88"
+##   ..$ mass      : chr "20"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "brown"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "8BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/7/"
+##   ..$ films     : chr "http://swapi.co/api/films/3/"
+##   ..$ species   : chr "http://swapi.co/api/species/9/"
+##   ..$ created   : chr "2014-12-18T11:21:58.954000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.369000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/30/"
+##  $ :List of 15
+##   ..$ name      : chr "Nien Nunb"
+##   ..$ height    : chr "160"
+##   ..$ mass      : chr "68"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/33/"
+##   ..$ films     : chr "http://swapi.co/api/films/3/"
+##   ..$ species   : chr "http://swapi.co/api/species/10/"
+##   ..$ starships : chr "http://swapi.co/api/starships/10/"
+##   ..$ created   : chr "2014-12-18T11:26:18.541000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.371000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/31/"
+##  $ :List of 15
+##   ..$ name      : chr "Qui-Gon Jinn"
+##   ..$ height    : chr "193"
+##   ..$ mass      : chr "89"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "92BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/38/"
+##   ..$ created   : chr "2014-12-19T16:54:53.618000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.375000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/32/"
+##  $ :List of 14
+##   ..$ name      : chr "Nute Gunray"
+##   ..$ height    : chr "191"
+##   ..$ mass      : chr "90"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "mottled green"
+##   ..$ eye_color : chr "red"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/18/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/11/"
+##   ..$ created   : chr "2014-12-19T17:05:57.357000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.377000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/33/"
+##  $ :List of 14
+##   ..$ name      : chr "Finis Valorum"
+##   ..$ height    : chr "170"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "blond"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "91BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/9/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-19T17:21:45.915000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.379000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/34/"
+##  $ :List of 14
+##   ..$ name      : chr "Jar Jar Binks"
+##   ..$ height    : chr "196"
+##   ..$ mass      : chr "66"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "orange"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "52BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/12/"
+##   ..$ created   : chr "2014-12-19T17:29:32.489000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.383000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/36/"
+##  $ :List of 14
+##   ..$ name      : chr "Roos Tarpals"
+##   ..$ height    : chr "224"
+##   ..$ mass      : chr "82"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/12/"
+##   ..$ created   : chr "2014-12-19T17:32:56.741000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.385000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/37/"
+##  $ :List of 14
+##   ..$ name      : chr "Rugor Nass"
+##   ..$ height    : chr "206"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "green"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/12/"
+##   ..$ created   : chr "2014-12-19T17:33:38.909000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.388000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/38/"
+##  $ :List of 14
+##   ..$ name      : chr "Ric Olié"
+##   ..$ height    : chr "183"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ starships : chr "http://swapi.co/api/starships/40/"
+##   ..$ created   : chr "2014-12-19T17:45:01.522000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.392000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/39/"
+##  $ :List of 14
+##   ..$ name      : chr "Watto"
+##   ..$ height    : chr "137"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "blue, grey"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/34/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/13/"
+##   ..$ created   : chr "2014-12-19T17:48:54.647000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.395000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/40/"
+##  $ :List of 14
+##   ..$ name      : chr "Sebulba"
+##   ..$ height    : chr "112"
+##   ..$ mass      : chr "40"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey, red"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/35/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/14/"
+##   ..$ created   : chr "2014-12-19T17:53:02.586000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.397000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/41/"
+##  $ :List of 13
+##   ..$ name      : chr "Quarsh Panaka"
+##   ..$ height    : chr "183"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "dark"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "62BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ created   : chr "2014-12-19T17:55:43.348000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.399000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/42/"
+##  $ :List of 14
+##   ..$ name      : chr "Shmi Skywalker"
+##   ..$ height    : chr "163"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "72BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-19T17:57:41.191000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.401000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/43/"
+##  $ :List of 16
+##   ..$ name      : chr "Darth Maul"
+##   ..$ height    : chr "175"
+##   ..$ mass      : chr "80"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "red"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "54BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/36/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/22/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/42/"
+##   ..$ starships : chr "http://swapi.co/api/starships/41/"
+##   ..$ created   : chr "2014-12-19T18:00:41.929000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.403000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/44/"
+##  $ :List of 14
+##   ..$ name      : chr "Bib Fortuna"
+##   ..$ height    : chr "180"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "pale"
+##   ..$ eye_color : chr "pink"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/37/"
+##   ..$ films     : chr "http://swapi.co/api/films/3/"
+##   ..$ species   : chr "http://swapi.co/api/species/15/"
+##   ..$ created   : chr "2014-12-20T09:47:02.512000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.407000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/45/"
+##  $ :List of 14
+##   ..$ name      : chr "Ayla Secura"
+##   ..$ height    : chr "178"
+##   ..$ mass      : chr "55"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "blue"
+##   ..$ eye_color : chr "hazel"
+##   ..$ birth_year: chr "48BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/37/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/15/"
+##   ..$ created   : chr "2014-12-20T09:48:01.172000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.409000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/46/"
+##  $ :List of 14
+##   ..$ name      : chr "Dud Bolt"
+##   ..$ height    : chr "94"
+##   ..$ mass      : chr "45"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "blue, grey"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/39/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/17/"
+##   ..$ created   : chr "2014-12-20T09:57:31.858000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.414000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/48/"
+##  $ :List of 14
+##   ..$ name      : chr "Gasgano"
+##   ..$ height    : chr "122"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "white, blue"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/40/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/18/"
+##   ..$ created   : chr "2014-12-20T10:02:12.223000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.416000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/49/"
+##  $ :List of 14
+##   ..$ name      : chr "Ben Quadinaros"
+##   ..$ height    : chr "163"
+##   ..$ mass      : chr "65"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey, green, yellow"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/41/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/19/"
+##   ..$ created   : chr "2014-12-20T10:08:33.777000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.417000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/50/"
+##  $ :List of 14
+##   ..$ name      : chr "Mace Windu"
+##   ..$ height    : chr "188"
+##   ..$ mass      : chr "84"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "dark"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "72BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/42/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T10:12:30.846000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.420000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/51/"
+##  $ :List of 14
+##   ..$ name      : chr "Ki-Adi-Mundi"
+##   ..$ height    : chr "198"
+##   ..$ mass      : chr "82"
+##   ..$ hair_color: chr "white"
+##   ..$ skin_color: chr "pale"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "92BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/43/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/20/"
+##   ..$ created   : chr "2014-12-20T10:15:32.293000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.422000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/52/"
+##  $ :List of 14
+##   ..$ name      : chr "Kit Fisto"
+##   ..$ height    : chr "196"
+##   ..$ mass      : chr "87"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "green"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/44/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/21/"
+##   ..$ created   : chr "2014-12-20T10:18:57.202000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.424000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/53/"
+##  $ :List of 14
+##   ..$ name      : chr "Eeth Koth"
+##   ..$ height    : chr "171"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "brown"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/45/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/22/"
+##   ..$ created   : chr "2014-12-20T10:26:47.902000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.427000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/54/"
+##  $ :List of 14
+##   ..$ name      : chr "Adi Gallia"
+##   ..$ height    : chr "184"
+##   ..$ mass      : chr "50"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "dark"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/9/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/23/"
+##   ..$ created   : chr "2014-12-20T10:29:11.661000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.432000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/55/"
+##  $ :List of 14
+##   ..$ name      : chr "Saesee Tiin"
+##   ..$ height    : chr "188"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "pale"
+##   ..$ eye_color : chr "orange"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/47/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/24/"
+##   ..$ created   : chr "2014-12-20T10:32:11.669000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.434000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/56/"
+##  $ :List of 14
+##   ..$ name      : chr "Yarael Poof"
+##   ..$ height    : chr "264"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "white"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/48/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/25/"
+##   ..$ created   : chr "2014-12-20T10:34:48.725000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.437000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/57/"
+##  $ :List of 15
+##   ..$ name      : chr "Plo Koon"
+##   ..$ height    : chr "188"
+##   ..$ mass      : chr "80"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "orange"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "22BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/49/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/26/"
+##   ..$ starships : chr "http://swapi.co/api/starships/48/"
+##   ..$ created   : chr "2014-12-20T10:49:19.859000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.439000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/58/"
+##  $ :List of 14
+##   ..$ name      : chr "Mas Amedda"
+##   ..$ height    : chr "196"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "blue"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/50/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/27/"
+##   ..$ created   : chr "2014-12-20T10:53:26.457000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.442000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/59/"
+##  $ :List of 15
+##   ..$ name      : chr "Gregar Typho"
+##   ..$ height    : chr "185"
+##   ..$ mass      : chr "85"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "dark"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/39/"
+##   ..$ created   : chr "2014-12-20T11:10:10.381000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.445000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/60/"
+##  $ :List of 14
+##   ..$ name      : chr "Cordé"
+##   ..$ height    : chr "157"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T11:11:39.630000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.449000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/61/"
+##  $ :List of 14
+##   ..$ name      : chr "Cliegg Lars"
+##   ..$ height    : chr "183"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "82BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/1/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T15:59:03.958000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.451000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/62/"
+##  $ :List of 14
+##   ..$ name      : chr "Poggle the Lesser"
+##   ..$ height    : chr "183"
+##   ..$ mass      : chr "80"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "green"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/11/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/28/"
+##   ..$ created   : chr "2014-12-20T16:40:43.977000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.453000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/63/"
+##  $ :List of 14
+##   ..$ name      : chr "Luminara Unduli"
+##   ..$ height    : chr "170"
+##   ..$ mass      : chr "56.2"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "yellow"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "58BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/51/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/29/"
+##   ..$ created   : chr "2014-12-20T16:45:53.668000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.455000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/64/"
+##  $ :List of 14
+##   ..$ name      : chr "Barriss Offee"
+##   ..$ height    : chr "166"
+##   ..$ mass      : chr "50"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "yellow"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "40BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/51/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/29/"
+##   ..$ created   : chr "2014-12-20T16:46:40.440000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.457000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/65/"
+##  $ :List of 14
+##   ..$ name      : chr "Dormé"
+##   ..$ height    : chr "165"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T16:49:14.640000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.460000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/66/"
+##  $ :List of 15
+##   ..$ name      : chr "Dooku"
+##   ..$ height    : chr "193"
+##   ..$ mass      : chr "80"
+##   ..$ hair_color: chr "white"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "102BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/52/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/55/"
+##   ..$ created   : chr "2014-12-20T16:52:14.726000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.462000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/67/"
+##  $ :List of 14
+##   ..$ name      : chr "Bail Prestor Organa"
+##   ..$ height    : chr "191"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "tan"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "67BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/2/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T16:53:08.575000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.463000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/68/"
+##  $ :List of 14
+##   ..$ name      : chr "Jango Fett"
+##   ..$ height    : chr "183"
+##   ..$ mass      : chr "79"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "tan"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "66BBY"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/53/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T16:54:41.620000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.465000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/69/"
+##  $ :List of 15
+##   ..$ name      : chr "Zam Wesell"
+##   ..$ height    : chr "168"
+##   ..$ mass      : chr "55"
+##   ..$ hair_color: chr "blonde"
+##   ..$ skin_color: chr "fair, green, yellow"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/54/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/30/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/45/"
+##   ..$ created   : chr "2014-12-20T16:57:44.471000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.468000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/70/"
+##  $ :List of 14
+##   ..$ name      : chr "Dexter Jettster"
+##   ..$ height    : chr "198"
+##   ..$ mass      : chr "102"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "brown"
+##   ..$ eye_color : chr "yellow"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/55/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/31/"
+##   ..$ created   : chr "2014-12-20T17:28:27.248000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.470000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/71/"
+##  $ :List of 14
+##   ..$ name      : chr "Lama Su"
+##   ..$ height    : chr "229"
+##   ..$ mass      : chr "88"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/10/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/32/"
+##   ..$ created   : chr "2014-12-20T17:30:50.416000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.473000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/72/"
+##  $ :List of 14
+##   ..$ name      : chr "Taun We"
+##   ..$ height    : chr "213"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/10/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/32/"
+##   ..$ created   : chr "2014-12-20T17:31:21.195000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.474000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/73/"
+##  $ :List of 14
+##   ..$ name      : chr "Jocasta Nu"
+##   ..$ height    : chr "167"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "white"
+##   ..$ skin_color: chr "fair"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/9/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T17:32:51.996000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.476000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/74/"
+##  $ :List of 14
+##   ..$ name      : chr "Ratts Tyerell"
+##   ..$ height    : chr "79"
+##   ..$ mass      : chr "15"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey, blue"
+##   ..$ eye_color : chr "unknown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/38/"
+##   ..$ films     : chr "http://swapi.co/api/films/4/"
+##   ..$ species   : chr "http://swapi.co/api/species/16/"
+##   ..$ created   : chr "2014-12-20T09:53:15.086000Z"
+##   ..$ edited    : chr "2016-06-30T12:52:19.604868Z"
+##   ..$ url       : chr "http://swapi.co/api/people/47/"
+##  $ :List of 13
+##   ..$ name      : chr "R4-P17"
+##   ..$ height    : chr "96"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "silver, red"
+##   ..$ eye_color : chr "red, blue"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/"
+##   ..$ created   : chr "2014-12-20T17:43:36.409000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.478000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/75/"
+##  $ :List of 14
+##   ..$ name      : chr "Wat Tambor"
+##   ..$ height    : chr "193"
+##   ..$ mass      : chr "48"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "green, grey"
+##   ..$ eye_color : chr "unknown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/56/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/33/"
+##   ..$ created   : chr "2014-12-20T17:53:52.607000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.481000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/76/"
+##  $ :List of 14
+##   ..$ name      : chr "San Hill"
+##   ..$ height    : chr "191"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey"
+##   ..$ eye_color : chr "gold"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/57/"
+##   ..$ films     : chr "http://swapi.co/api/films/5/"
+##   ..$ species   : chr "http://swapi.co/api/species/34/"
+##   ..$ created   : chr "2014-12-20T17:58:17.049000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.484000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/77/"
+##  $ :List of 14
+##   ..$ name      : chr "Shaak Ti"
+##   ..$ height    : chr "178"
+##   ..$ mass      : chr "57"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "red, blue, white"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/58/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/35/"
+##   ..$ created   : chr "2014-12-20T18:44:01.103000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.486000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/78/"
+##  $ :List of 16
+##   ..$ name      : chr "Grievous"
+##   ..$ height    : chr "216"
+##   ..$ mass      : chr "159"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "brown, white"
+##   ..$ eye_color : chr "green, yellow"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/59/"
+##   ..$ films     : chr "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/36/"
+##   ..$ vehicles  : chr "http://swapi.co/api/vehicles/60/"
+##   ..$ starships : chr "http://swapi.co/api/starships/74/"
+##   ..$ created   : chr "2014-12-20T19:43:53.348000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.488000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/79/"
+##  $ :List of 14
+##   ..$ name      : chr "Tarfful"
+##   ..$ height    : chr "234"
+##   ..$ mass      : chr "136"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "brown"
+##   ..$ eye_color : chr "blue"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/14/"
+##   ..$ films     : chr "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/3/"
+##   ..$ created   : chr "2014-12-20T19:46:34.209000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.491000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/80/"
+##  $ :List of 14
+##   ..$ name      : chr "Raymus Antilles"
+##   ..$ height    : chr "188"
+##   ..$ mass      : chr "79"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/2/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/6/" "http://swapi.co/api/films/1/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2014-12-20T19:49:35.583000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.493000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/81/"
+##  $ :List of 13
+##   ..$ name      : chr "Sly Moore"
+##   ..$ height    : chr "178"
+##   ..$ mass      : chr "48"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "pale"
+##   ..$ eye_color : chr "white"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/60/"
+##   ..$ films     : chr [1:2] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/6/"
+##   ..$ created   : chr "2014-12-20T20:18:37.619000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.496000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/82/"
+##  $ :List of 14
+##   ..$ name      : chr "Tion Medon"
+##   ..$ height    : chr "206"
+##   ..$ mass      : chr "80"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "grey"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/12/"
+##   ..$ films     : chr "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/37/"
+##   ..$ created   : chr "2014-12-20T20:35:04.260000Z"
+##   ..$ edited    : chr "2014-12-20T21:17:50.498000Z"
+##   ..$ url       : chr "http://swapi.co/api/people/83/"
+##  $ :List of 14
+##   ..$ name      : chr "Finn"
+##   ..$ height    : chr "unknown"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "black"
+##   ..$ skin_color: chr "dark"
+##   ..$ eye_color : chr "dark"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/7/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2015-04-17T06:52:40.793621Z"
+##   ..$ edited    : chr "2015-04-17T06:52:40.793674Z"
+##   ..$ url       : chr "http://swapi.co/api/people/84/"
+##  $ :List of 14
+##   ..$ name      : chr "Rey"
+##   ..$ height    : chr "unknown"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "hazel"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/7/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ created   : chr "2015-04-17T06:54:01.495077Z"
+##   ..$ edited    : chr "2015-04-17T06:54:01.495128Z"
+##   ..$ url       : chr "http://swapi.co/api/people/85/"
+##  $ :List of 15
+##   ..$ name      : chr "Poe Dameron"
+##   ..$ height    : chr "unknown"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "male"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/7/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr "http://swapi.co/api/starships/77/"
+##   ..$ created   : chr "2015-04-17T06:55:21.622786Z"
+##   ..$ edited    : chr "2015-04-17T06:55:21.622835Z"
+##   ..$ url       : chr "http://swapi.co/api/people/86/"
+##  $ :List of 14
+##   ..$ name      : chr "BB8"
+##   ..$ height    : chr "unknown"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "none"
+##   ..$ skin_color: chr "none"
+##   ..$ eye_color : chr "black"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "none"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/7/"
+##   ..$ species   : chr "http://swapi.co/api/species/2/"
+##   ..$ created   : chr "2015-04-17T06:57:38.061346Z"
+##   ..$ edited    : chr "2015-04-17T06:57:38.061453Z"
+##   ..$ url       : chr "http://swapi.co/api/people/87/"
+##  $ :List of 13
+##   ..$ name      : chr "Captain Phasma"
+##   ..$ height    : chr "unknown"
+##   ..$ mass      : chr "unknown"
+##   ..$ hair_color: chr "unknown"
+##   ..$ skin_color: chr "unknown"
+##   ..$ eye_color : chr "unknown"
+##   ..$ birth_year: chr "unknown"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/28/"
+##   ..$ films     : chr "http://swapi.co/api/films/7/"
+##   ..$ created   : chr "2015-10-13T10:35:39.229823Z"
+##   ..$ edited    : chr "2015-10-13T10:35:39.229894Z"
+##   ..$ url       : chr "http://swapi.co/api/people/88/"
+##  $ :List of 15
+##   ..$ name      : chr "Padmé Amidala"
+##   ..$ height    : chr "165"
+##   ..$ mass      : chr "45"
+##   ..$ hair_color: chr "brown"
+##   ..$ skin_color: chr "light"
+##   ..$ eye_color : chr "brown"
+##   ..$ birth_year: chr "46BBY"
+##   ..$ gender    : chr "female"
+##   ..$ homeworld : chr "http://swapi.co/api/planets/8/"
+##   ..$ films     : chr [1:3] "http://swapi.co/api/films/5/" "http://swapi.co/api/films/4/" "http://swapi.co/api/films/6/"
+##   ..$ species   : chr "http://swapi.co/api/species/1/"
+##   ..$ starships : chr [1:3] "http://swapi.co/api/starships/49/" "http://swapi.co/api/starships/64/" "http://swapi.co/api/starships/39/"
+##   ..$ created   : chr "2014-12-19T17:28:26.926000Z"
+##   ..$ edited    : chr "2016-04-20T17:06:31.502555Z"
+##   ..$ url       : chr "http://swapi.co/api/people/35/"
+```
+
+
+]
 
 ---
-# ROAD`map()`: .red[turn it into a recipe]
+# .red[\#1 Do it for one element]
 
-use Charlotte Wickham's approach to demonstrate strategy
+
+```r
+# do it for the first element
+x1 &lt;- sw_people[[1]]
+length(x1$films)
+## [1] 5
+```
 
 ---
-# ROAD`map()`: .red[do it to all elements]
+# .red[\#1 Do it for one element]
 
-use Charlotte Wickham's approach to demonstrate strategy
 
+```r
+# do it for the first element
+x1 &lt;- sw_people[[1]]
+length(x1$films)
+## [1] 5
+
+# do it for the second element
+x2 &lt;- sw_people[[2]]
+length(x2$films)
+## [1] 6
+```
+
+---
+# .red[\#1 Do it for one element]
+
+
+```r
+# do it for the first element
+x1 &lt;- sw_people[[1]]
+length(x1$films)
+## [1] 5
+
+# do it for the second element
+x2 &lt;- sw_people[[2]]
+length(x2$films)
+## [1] 6
+
+# do it for the third element
+x3 &lt;- sw_people[[3]]
+length(x3$films)
+## [1] 7
+```
+
+---
+# .red[\#1 Do it for one element]
+
+.pull-left[
+
+.center[Common function theme: &lt;br&gt;.font120[`length(`]&lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt;.font120[`$films)`]]
+
+
+```r
+# do it for the first element
+x1 &lt;- sw_people[[1]]
+*length(x1$films)
+## [1] 5
+
+# do it for the second element
+x2 &lt;- sw_people[[2]]
+*length(x2$films)
+## [1] 6
+
+# do it for the third element
+x3 &lt;- sw_people[[3]]
+*length(x3$films)
+## [1] 7
+```
+
+]
+
+--
+
+.pull-right[
+
+.center[Common output theme: &lt;br&gt;Integers]
+
+
+```r
+# do it for the first element
+x1 &lt;- sw_people[[1]]
+length(x1$films)
+*## [1] 5
+
+# do it for the second element
+x2 &lt;- sw_people[[2]]
+length(x2$films)
+*## [1] 6
+
+# do it for the third element
+x3 &lt;- sw_people[[3]]
+length(x3$films)
+*## [1] 7
+```
+
+]
+
+---
+# .red[\#2 Turn it into a recipe]
+
+.pull-left[
+
+.center[
+Common function theme: &lt;br&gt;.font120[`length(`]&lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt;.font120[`$films)`]
+
+&lt;br&gt;
+
+Resulting recipe:
+
+.font120[.blue[`~`]` length(`.red[`.x`]`$films)`]
+
+]
+
+&lt;br&gt;
+* .font120.blue[`~`]: anonymous function shortcut
+* .font120.red[`.x`]: one element of our vector
+
+]
+
+---
+# .red[\#3 Do it for all elements]
+
+.pull-left[
+
+.center[
+Common function theme: &lt;br&gt;.font120[`length(`]&lt;u&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/u&gt;.font120[`$films)`]
+
+&lt;br&gt;
+
+Resulting recipe:
+
+.font120[.blue[`~`]` length(`.red[`.x`]`$films)`]
+
+]
+
+&lt;br&gt;
+* .font120.blue[`~`]: anonymous function shortcut
+* .font120.red[`.x`]: one element of our vector
+
+]
+
+.pull-right[
+
+.center[Common output theme: &lt;br&gt;Integers: use .font120[`map_int()`]]
+
+
+```r
+sw_people %&gt;% map_int(~ length(.x$films))
+##  [1] 5 6 7 4 5 3 3 1 1 6 3 2 5 4 1 3 3 1 5 5 3 1 1 2 1 2 1 1 1 1 1 3 1 2 1
+## [36] 1 1 2 1 1 2 1 1 3 1 1 1 3 3 3 2 2 2 1 3 2 1 1 1 2 2 1 1 2 2 1 1 1 1 1
+## [71] 1 1 2 1 1 2 1 1 2 2 1 1 1 1 1 1 3
+```
+
+]
 
 ---
 class: yourturn
 # Your Turn!
 
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+.pull-right[
+
+
+```r
+# 1. Extract the name of each character
+sw_people %&gt;% map_chr(~ .x$name)
+##  [1] "Luke Skywalker"        "C-3PO"                
+##  [3] "R2-D2"                 "Darth Vader"          
+##  [5] "Leia Organa"           "Owen Lars"            
+##  [7] "Beru Whitesun lars"    "R5-D4"                
+##  [9] "Biggs Darklighter"     "Obi-Wan Kenobi"       
+## [11] "Anakin Skywalker"      "Wilhuff Tarkin"       
+## [13] "Chewbacca"             "Han Solo"             
+## [15] "Greedo"                "Jabba Desilijic Tiure"
+## [17] "Wedge Antilles"        "Jek Tono Porkins"     
+## [19] "Yoda"                  "Palpatine"            
+## [21] "Boba Fett"             "IG-88"                
+## [23] "Bossk"                 "Lando Calrissian"     
+## [25] "Lobot"                 "Ackbar"               
+## [27] "Mon Mothma"            "Arvel Crynyd"         
+## [29] "Wicket Systri Warrick" "Nien Nunb"            
+## [31] "Qui-Gon Jinn"          "Nute Gunray"          
+## [33] "Finis Valorum"         "Jar Jar Binks"        
+## [35] "Roos Tarpals"          "Rugor Nass"           
+## [37] "Ric Olié"              "Watto"                
+## [39] "Sebulba"               "Quarsh Panaka"        
+## [41] "Shmi Skywalker"        "Darth Maul"           
+## [43] "Bib Fortuna"           "Ayla Secura"          
+## [45] "Dud Bolt"              "Gasgano"              
+## [47] "Ben Quadinaros"        "Mace Windu"           
+## [49] "Ki-Adi-Mundi"          "Kit Fisto"            
+## [51] "Eeth Koth"             "Adi Gallia"           
+## [53] "Saesee Tiin"           "Yarael Poof"          
+## [55] "Plo Koon"              "Mas Amedda"           
+## [57] "Gregar Typho"          "Cordé"                
+## [59] "Cliegg Lars"           "Poggle the Lesser"    
+## [61] "Luminara Unduli"       "Barriss Offee"        
+## [63] "Dormé"                 "Dooku"                
+## [65] "Bail Prestor Organa"   "Jango Fett"           
+## [67] "Zam Wesell"            "Dexter Jettster"      
+## [69] "Lama Su"               "Taun We"              
+## [71] "Jocasta Nu"            "Ratts Tyerell"        
+## [73] "R4-P17"                "Wat Tambor"           
+## [75] "San Hill"              "Shaak Ti"             
+## [77] "Grievous"              "Tarfful"              
+## [79] "Raymus Antilles"       "Sly Moore"            
+## [81] "Tion Medon"            "Finn"                 
+## [83] "Rey"                   "Poe Dameron"          
+## [85] "BB8"                   "Captain Phasma"       
+## [87] "Padmé Amidala"
+```
+
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+.pull-right[
+
+
+```r
+# 2. Identify if the character is male
+sw_people %&gt;% map_lgl(~ .x$gender == "male")
+##  [1]  TRUE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
+## [12]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
+## [23]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [34]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE
+## [45]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+## [56]  TRUE  TRUE FALSE  TRUE  TRUE FALSE FALSE FALSE  TRUE  TRUE  TRUE
+## [67] FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE  TRUE
+## [78]  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+]
+
+.pull-right[
+
+
+```r
+# 3. Identify the proportion of characters that are male
+sw_people %&gt;% 
+  map_lgl(~ .x$gender == "male") %&gt;%
+  mean()
+## [1] 0.7126437
+```
+
+]
+
+---
+class: clear, center, middle
+
+&lt;img src="http://sanitarian.net/wp-content/uploads/2011/02/appetiters1.jpg" width="50%" height="50%" style="display: block; margin: auto;" /&gt;
+
+.center.font150.bold[Some advanced features to whet your appetite for more!]
+
+---
+# Names are useful!
+
+.pull-left[
+.blue[Pro tip]: __purrr__ has a .font120[`set_names()`] function that makes renaming elements easy
+
+]
+
+.pull-right[
+
+
+```r
+sw_people %&gt;% 
+  map_chr(~ .x$name) %&gt;%          # get names of each character
+* set_names(sw_people, .) %&gt;%     # set list names
+  map_int(~ length(.x$films)) %&gt;% # get number of films
+  sort(decreasing = TRUE) 
+##                 R2-D2                 C-3PO        Obi-Wan Kenobi 
+##                     7                     6                     6 
+##        Luke Skywalker           Leia Organa             Chewbacca 
+##                     5                     5                     5 
+##                  Yoda             Palpatine           Darth Vader 
+##                     5                     5                     4 
+##              Han Solo             Owen Lars    Beru Whitesun lars 
+##                     4                     3                     3 
+##      Anakin Skywalker Jabba Desilijic Tiure        Wedge Antilles 
+##                     3                     3                     3 
+##             Boba Fett           Nute Gunray           Ayla Secura 
+##                     3                     3                     3 
+##            Mace Windu          Ki-Adi-Mundi             Kit Fisto 
+##                     3                     3                     3 
+##              Plo Koon         Padmé Amidala        Wilhuff Tarkin 
+##                     3                     3                     2 
+##      Lando Calrissian                Ackbar         Jar Jar Binks 
+##                     2                     2                     2 
+##                 Watto        Shmi Skywalker             Eeth Koth 
+##                     2                     2                     2 
+##            Adi Gallia           Saesee Tiin            Mas Amedda 
+##                     2                     2                     2 
+##     Poggle the Lesser       Luminara Unduli                 Dooku 
+##                     2                     2                     2 
+##   Bail Prestor Organa                R4-P17              Shaak Ti 
+##                     2                     2                     2 
+##       Raymus Antilles             Sly Moore                 R5-D4 
+##                     2                     2                     1 
+##     Biggs Darklighter                Greedo      Jek Tono Porkins 
+##                     1                     1                     1 
+##                 IG-88                 Bossk                 Lobot 
+##                     1                     1                     1 
+##            Mon Mothma          Arvel Crynyd Wicket Systri Warrick 
+##                     1                     1                     1 
+##             Nien Nunb          Qui-Gon Jinn         Finis Valorum 
+##                     1                     1                     1 
+##          Roos Tarpals            Rugor Nass              Ric Olié 
+##                     1                     1                     1 
+##               Sebulba         Quarsh Panaka            Darth Maul 
+##                     1                     1                     1 
+##           Bib Fortuna              Dud Bolt               Gasgano 
+##                     1                     1                     1 
+##        Ben Quadinaros           Yarael Poof          Gregar Typho 
+##                     1                     1                     1 
+##                 Cordé           Cliegg Lars         Barriss Offee 
+##                     1                     1                     1 
+##                 Dormé            Jango Fett            Zam Wesell 
+##                     1                     1                     1 
+##       Dexter Jettster               Lama Su               Taun We 
+##                     1                     1                     1 
+##            Jocasta Nu         Ratts Tyerell            Wat Tambor 
+##                     1                     1                     1 
+##              San Hill              Grievous               Tarfful 
+##                     1                     1                     1 
+##            Tion Medon                  Finn                   Rey 
+##                     1                     1                     1 
+##           Poe Dameron                   BB8        Captain Phasma 
+##                     1                     1                     1
+```
+
+]
+
+---
+# Combining multiple functionals is powerful
+
+Say we wanted to compare the approval/disapproval ratio for .font120[`Transaction_Status`] across all our .font120[`Month-XX.csv`] files.
+
+--
+
+.pull-left[
+
+.center[We can accomplish this with a sequence of functionals as follows:]
+
+
+
+```r
+list.files("data") %&gt;% 
+  paste0("data/", .) %&gt;%
+  map(read_csv) %&gt;%
+  set_names(., nm = list.files("data")) %&gt;%
+  map(~ .x$Transaction_Status == "Approved") %&gt;%
+  map_dbl(mean)
+## Month-01.csv Month-02.csv Month-03.csv Month-04.csv Month-05.csv 
+##    0.8820941    0.8799234    0.8796260    0.8855838    0.8877431 
+## Month-06.csv Month-07.csv Month-08.csv Month-09.csv Month-10.csv 
+##    0.8887138    0.8876579    0.8867352    0.8921022    0.8801898 
+## Month-11.csv 
+##    0.8786619
+```
+
+]
+
+--
+
+.pull-right[
+
+.center[Or with some initial functionals followed by __dplyr__]
+
+
+```r
+list.files("data") %&gt;% 
+  paste0("data/", .) %&gt;%
+* map_dfr(read_csv) %&gt;%  # row bind list to data frame
+  group_by(Month) %&gt;%
+  summarize(Approval_ration = mean(Transaction_Status == "Approved"))
+## # A tibble: 11 x 2
+##    Month Approval_ration
+##    &lt;chr&gt;           &lt;dbl&gt;
+##  1 Apr             0.886
+##  2 Aug             0.887
+##  3 Feb             0.880
+##  4 Jan             0.882
+##  5 Jul             0.888
+##  6 Jun             0.889
+##  7 Mar             0.880
+##  8 May             0.888
+##  9 Nov             0.879
+## 10 Oct             0.880
+## 11 Sep             0.892
+```
+
+]
+
+---
+# .font120.red[`map2()`] for two input elements
+
+Say we have a procedure based on two inputs.  For example, we want to make predictions for 10 countries with their respective linear models.
+
+.pull-left[
+
+```r
+# input 1: data
+glimpse(gap_split_small)
+## List of 10
+##  $ Afghanistan:Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 1 1 1 1 1 1 1 1 1 1 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 3 3 3 3 3 3 3 3 3 3 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 28.8 30.3 32 34 36.1 ...
+##   ..$ pop      : int [1:12] 8425333 9240934 10267083 11537966 13079460 14880372 12881816 13867957 16317921 22227415 ...
+##   ..$ gdpPercap: num [1:12] 779 821 853 836 740 ...
+##  $ Albania    :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 2 2 2 2 2 2 2 2 2 2 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 4 4 4 4 4 4 4 4 4 4 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 55.2 59.3 64.8 66.2 67.7 ...
+##   ..$ pop      : int [1:12] 1282697 1476505 1728137 1984060 2263554 2509048 2780097 3075321 3326498 3428038 ...
+##   ..$ gdpPercap: num [1:12] 1601 1942 2313 2760 3313 ...
+##  $ Algeria    :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 3 3 3 3 3 3 3 3 3 3 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 1 1 1 1 1 1 1 1 1 1 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 43.1 45.7 48.3 51.4 54.5 ...
+##   ..$ pop      : int [1:12] 9279525 10270856 11000948 12760499 14760787 17152804 20033753 23254956 26298373 29072015 ...
+##   ..$ gdpPercap: num [1:12] 2449 3014 2551 3247 4183 ...
+##  $ Angola     :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 4 4 4 4 4 4 4 4 4 4 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 1 1 1 1 1 1 1 1 1 1 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 30 32 34 36 37.9 ...
+##   ..$ pop      : int [1:12] 4232095 4561361 4826015 5247469 5894858 6162675 7016384 7874230 8735988 9875024 ...
+##   ..$ gdpPercap: num [1:12] 3521 3828 4269 5523 5473 ...
+##  $ Argentina  :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 5 5 5 5 5 5 5 5 5 5 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 2 2 2 2 2 2 2 2 2 2 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 62.5 64.4 65.1 65.6 67.1 ...
+##   ..$ pop      : int [1:12] 17876956 19610538 21283783 22934225 24779799 26983828 29341374 31620918 33958947 36203463 ...
+##   ..$ gdpPercap: num [1:12] 5911 6857 7133 8053 9443 ...
+##  $ Australia  :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 6 6 6 6 6 6 6 6 6 6 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 5 5 5 5 5 5 5 5 5 5 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 69.1 70.3 70.9 71.1 71.9 ...
+##   ..$ pop      : int [1:12] 8691212 9712569 10794968 11872264 13177000 14074100 15184200 16257249 17481977 18565243 ...
+##   ..$ gdpPercap: num [1:12] 10040 10950 12217 14526 16789 ...
+##  $ Austria    :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 7 7 7 7 7 7 7 7 7 7 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 4 4 4 4 4 4 4 4 4 4 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 66.8 67.5 69.5 70.1 70.6 ...
+##   ..$ pop      : int [1:12] 6927772 6965860 7129864 7376998 7544201 7568430 7574613 7578903 7914969 8069876 ...
+##   ..$ gdpPercap: num [1:12] 6137 8843 10751 12835 16662 ...
+##  $ Bahrain    :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 8 8 8 8 8 8 8 8 8 8 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 3 3 3 3 3 3 3 3 3 3 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 50.9 53.8 56.9 59.9 63.3 ...
+##   ..$ pop      : int [1:12] 120447 138655 171863 202182 230800 297410 377967 454612 529491 598561 ...
+##   ..$ gdpPercap: num [1:12] 9867 11636 12753 14805 18269 ...
+##  $ Bangladesh :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 9 9 9 9 9 9 9 9 9 9 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 3 3 3 3 3 3 3 3 3 3 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 37.5 39.3 41.2 43.5 45.3 ...
+##   ..$ pop      : int [1:12] 46886859 51365468 56839289 62821884 70759295 80428306 93074406 103764241 113704579 123315288 ...
+##   ..$ gdpPercap: num [1:12] 684 662 686 721 630 ...
+##  $ Belgium    :Classes 'tbl_df', 'tbl' and 'data.frame':	12 obs. of  6 variables:
+##   ..$ country  : Factor w/ 142 levels "Afghanistan",..: 10 10 10 10 10 10 10 10 10 10 ...
+##   ..$ continent: Factor w/ 5 levels "Africa","Americas",..: 4 4 4 4 4 4 4 4 4 4 ...
+##   ..$ year     : int [1:12] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##   ..$ lifeExp  : num [1:12] 68 69.2 70.2 70.9 71.4 ...
+##   ..$ pop      : int [1:12] 8730405 8989111 9218400 9556500 9709100 9821800 9856303 9870200 10045622 10199787 ...
+##   ..$ gdpPercap: num [1:12] 8343 9715 10991 13149 16672 ...
+```
+]
+
+.pull-right[
+
+```r
+# input 2: models
+(gap_mods &lt;- gap_split_small %&gt;%
+  map(~ lm(
+    formula = lifeExp ~ year + pop + gdpPercap,
+    data = .x
+    ))
+)
+## $Afghanistan
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -7.283e+02    3.882e-01   -3.130e-07    2.751e-03  
+## 
+## 
+## $Albania
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##   6.074e+02   -2.903e-01    1.131e-05    2.022e-03  
+## 
+## 
+## $Algeria
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -8.890e+02    4.760e-01    5.895e-08    1.017e-03  
+## 
+## 
+## $Angola
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -9.914e+02    5.269e-01   -2.124e-06    4.751e-04  
+## 
+## 
+## $Argentina
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -2.399e+02    1.534e-01    1.896e-07   -1.032e-05  
+## 
+## 
+## $Australia
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -2.988e+02    1.882e-01   -2.108e-07    1.997e-04  
+## 
+## 
+## $Austria
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -5.839e+02    3.361e-01   -6.898e-07   -1.453e-04  
+## 
+## 
+## $Bahrain
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -2.098e+03    1.106e+00   -4.300e-05   -5.080e-04  
+## 
+## 
+## $Bangladesh
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -4.896e+02    2.666e-01    1.098e-07    2.090e-03  
+## 
+## 
+## $Belgium
+## 
+## Call:
+## lm(formula = lifeExp ~ year + pop + gdpPercap, data = .x)
+## 
+## Coefficients:
+## (Intercept)         year          pop    gdpPercap  
+##  -6.417e+02    3.740e-01   -2.093e-06   -2.292e-04
+```
+
+]
+
+---
+# .font120.red[`map2()`] for two input elements
+
+Say we have a procedure based on two inputs.  For example, we want to make predictions for 10 countries with their respective linear models.
+
+
+```r
+# 1. do for one
+predict(gap_mods[[1]], gap_split_small[[1]])
+##        1        2        3        4        5        6        7        8 
+## 29.05388 30.85374 32.56251 34.05943 35.25344 36.75792 39.85263 41.13956 
+##        9       10       11       12 
+## 41.75528 41.80838 43.04926 43.59996
+```
+
+--
+
+
+```r
+# 2. identify recipe
+predict(________, ________)
+```
+
+--
+
+
+```r
+# 3. do for all
+map2(gap_mods, gap_split_small, predict) %&gt;% glimpse(give.attr = FALSE)
+## List of 10
+##  $ Afghanistan: Named num [1:12] 29.1 30.9 32.6 34.1 35.3 ...
+##  $ Albania    : Named num [1:12] 58.4 59.8 62 64.3 67.1 ...
+##  $ Algeria    : Named num [1:12] 43.3 46.3 48.3 51.5 54.9 ...
+##  $ Angola     : Named num [1:12] 29.9 32 34.3 36.6 37.8 ...
+##  $ Argentina  : Named num [1:12] 62.8 63.9 65 66.1 67.2 ...
+##  $ Australia  : Named num [1:12] 68.8 69.7 70.6 71.8 72.9 ...
+##  $ Austria    : Named num [1:12] 66.4 67.6 68.9 70.1 71.2 ...
+##  $ Bahrain    : Named num [1:12] 50.3 54.1 57.6 60.8 63.4 ...
+##  $ Bangladesh : Named num [1:12] 37.4 39.2 41.2 43.2 45.2 ...
+##  $ Belgium    : Named num [1:12] 68.1 69.1 70.2 70.9 71.6 ...
+```
+
+]
+
+---
+# .font120.red[`pmap()`] for n input elements
+
+.pull-left[
+
+And if we have a procedure with `\(&gt;2\)` elements:
+
+Say we want to iterate over each of the following hyperparameters for a random forest model:
+
+
+```r
+# list of hyper parameter inputs
+hyper_params &lt;- list(
+  mtry = c(20, 25, 30),
+  node_size = c(3, 6, 9),
+  sample_size = c(.50, .632, .80)
+)
+```
+
+]
+
+---
+# .font120.red[`pmap()`] for n input elements
+
+.scrollable90[
+.pull-left[
+
+And if we have a procedure with `\(&gt;2\)` elements:
+
+Say we want to iterate over each of the following hyperparameters for a random forest model:
+
+
+```r
+# list of hyper parameter inputs
+hyper_params &lt;- list(
+  mtry = c(20, 25, 30),
+  node_size = c(3, 6, 9),
+  sample_size = c(.50, .632, .80)
+)
+```
+
+]
+
+.pull-right[
+
+
+```r
+# 1. do it for one
+ranger::ranger(
+  formula         = Sale_Price ~ ., 
+  data            = AmesHousing::make_ames(), 
+  num.trees       = 500,
+  mtry            = hyper_params$mtry[1],
+  min.node.size   = hyper_params$node_size[1],
+  sample.fraction = hyper_params$sample_size[1],
+  seed            = 123
+  )$prediction.error
+## [1] 639234447
+```
+
+
+```r
+# 2. identify recipe
+ranger::ranger(
+  formula         = Sale_Price ~ ., 
+  data            = AmesHousing::make_ames(), 
+  num.trees       = 500,
+  mtry            = ________,
+  min.node.size   = ________,
+  sample.fraction = ________,
+  seed            = 123
+  )$prediction.error
+```
+
+
+```r
+# 3. do it for all
+pmap_dbl(
+  hyper_params, 
+  ~ ranger::ranger(
+    formula         = Sale_Price ~ ., 
+    data            = AmesHousing::make_ames(), 
+    num.trees       = 500,
+    mtry            = ..1,
+    min.node.size   = ..2,
+    sample.fraction = ..3,
+    seed            = 123
+    )$prediction.error
+  )
+## [1] 639234447 622843066 602642033
+```
+]
+]
+
+---
+# So much more!
+
+And there is so much more in the ___purrr___ package!
+
+.scrollable90[
+
+```r
+lsf.str("package:purrr")
+## %@% : function (x, name)  
+## %&gt;% : function (lhs, rhs)  
+## %||% : function (x, y)  
+## accumulate : function (.x, .f, ..., .init)  
+## accumulate_right : function (.x, .f, ..., .init)  
+## array_branch : function (array, margin = NULL)  
+## array_tree : function (array, margin = NULL)  
+## as_function : function (...)  
+## as_mapper : function (.f, ...)  
+## as_vector : function (.x, .type = NULL)  
+## at_depth : function (.x, .depth, .f, ...)  
+## attr_getter : function (attr)  
+## auto_browse : function (.f)  
+## compact : function (.x, .p = identity)  
+## compose : function (...)  
+## cross : function (.l, .filter = NULL)  
+## cross_d : function (...)  
+## cross_df : function (.l, .filter = NULL)  
+## cross_n : function (...)  
+## cross2 : function (.x, .y, .filter = NULL)  
+## cross3 : function (.x, .y, .z, .filter = NULL)  
+## detect : function (.x, .f, ..., .right = FALSE, .p)  
+## detect_index : function (.x, .f, ..., .right = FALSE, .p)  
+## discard : function (.x, .p, ...)  
+## every : function (.x, .p, ...)  
+## flatten : function (.x)  
+## flatten_chr : function (.x)  
+## flatten_dbl : function (.x)  
+## flatten_df : function (.x, .id = NULL)  
+## flatten_dfc : function (.x)  
+## flatten_dfr : function (.x, .id = NULL)  
+## flatten_int : function (.x)  
+## flatten_lgl : function (.x)  
+## has_element : function (.x, .y)  
+## head_while : function (.x, .p, ...)  
+## imap : function (.x, .f, ...)  
+## imap_chr : function (.x, .f, ...)  
+## imap_dbl : function (.x, .f, ...)  
+## imap_dfc : function (.x, .f, ..., .id = NULL)  
+## imap_dfr : function (.x, .f, ..., .id = NULL)  
+## imap_int : function (.x, .f, ...)  
+## imap_lgl : function (.x, .f, ...)  
+## invoke : function (.f, .x = NULL, ..., .env = NULL)  
+## invoke_map : function (.f, .x = list(NULL), ..., .env = NULL)  
+## invoke_map_chr : function (.f, .x = list(NULL), ..., .env = NULL)  
+## invoke_map_dbl : function (.f, .x = list(NULL), ..., .env = NULL)  
+## invoke_map_df : function (.f, .x = list(NULL), ..., .env = NULL)  
+## invoke_map_dfc : function (.f, .x = list(NULL), ..., .env = NULL)  
+## invoke_map_dfr : function (.f, .x = list(NULL), ..., .env = NULL)  
+## invoke_map_int : function (.f, .x = list(NULL), ..., .env = NULL)  
+## invoke_map_lgl : function (.f, .x = list(NULL), ..., .env = NULL)  
+## is_atomic : function (x, n = NULL)  
+## is_bare_atomic : function (x, n = NULL)  
+## is_bare_character : function (x, n = NULL, encoding = NULL)  
+## is_bare_double : function (x, n = NULL)  
+## is_bare_integer : function (x, n = NULL)  
+## is_bare_list : function (x, n = NULL)  
+## is_bare_logical : function (x, n = NULL)  
+## is_bare_numeric : function (x, n = NULL)  
+## is_bare_vector : function (x, n = NULL)  
+## is_character : function (x, n = NULL, encoding = NULL)  
+## is_double : function (x, n = NULL, finite = NULL)  
+## is_empty : function (x)  
+## is_formula : function (x, scoped = NULL, lhs = NULL)  
+## is_function : function (x)  
+## is_integer : function (x, n = NULL)  
+## is_list : function (x, n = NULL)  
+## is_logical : function (x, n = NULL)  
+## is_null : function (x)  
+## is_numeric : function (x)  
+## is_scalar_atomic : function (x)  
+## is_scalar_character : function (x, encoding = NULL)  
+## is_scalar_double : function (x)  
+## is_scalar_integer : function (x)  
+## is_scalar_list : function (x)  
+## is_scalar_logical : function (x)  
+## is_scalar_numeric : function (x)  
+## is_scalar_vector : function (x)  
+## is_vector : function (x, n = NULL)  
+## iwalk : function (.x, .f, ...)  
+## keep : function (.x, .p, ...)  
+## lift : function (..f, ..., .unnamed = FALSE)  
+## lift_dl : function (..f, ..., .unnamed = FALSE)  
+## lift_dv : function (..f, ..., .unnamed = FALSE)  
+## lift_ld : function (..f, ...)  
+## lift_lv : function (..f, ...)  
+## lift_vd : function (..f, ..., .type)  
+## lift_vl : function (..f, ..., .type)  
+## list_along : function (x)  
+## list_merge : function (.x, ...)  
+## list_modify : function (.x, ...)  
+## lmap : function (.x, .f, ...)  
+## lmap_at : function (.x, .at, .f, ...)  
+## lmap_if : function (.x, .p, .f, ...)  
+## map : function (.x, .f, ...)  
+## map_at : function (.x, .at, .f, ...)  
+## map_call : function (.x, .f, ...)  
+## map_chr : function (.x, .f, ...)  
+## map_dbl : function (.x, .f, ...)  
+## map_df : function (.x, .f, ..., .id = NULL)  
+## map_dfc : function (.x, .f, ...)  
+## map_dfr : function (.x, .f, ..., .id = NULL)  
+## map_if : function (.x, .p, .f, ...)  
+## map_int : function (.x, .f, ...)  
+## map_lgl : function (.x, .f, ...)  
+## map2 : function (.x, .y, .f, ...)  
+## map2_chr : function (.x, .y, .f, ...)  
+## map2_dbl : function (.x, .y, .f, ...)  
+## map2_df : function (.x, .y, .f, ..., .id = NULL)  
+## map2_dfc : function (.x, .y, .f, ...)  
+## map2_dfr : function (.x, .y, .f, ..., .id = NULL)  
+## map2_int : function (.x, .y, .f, ...)  
+## map2_lgl : function (.x, .y, .f, ...)  
+## modify : function (.x, .f, ...)  
+## modify_at : function (.x, .at, .f, ...)  
+## modify_depth : function (.x, .depth, .f, ..., .ragged = .depth &lt; 0)  
+## modify_if : function (.x, .p, .f, ...)  
+## negate : function (.p, .default = FALSE)  
+## partial : function (...f, ..., .env = parent.frame(), .lazy = TRUE, .first = TRUE)  
+## pluck : function (.x, ..., .default = NULL)  
+## pmap : function (.l, .f, ...)  
+## pmap_chr : function (.l, .f, ...)  
+## pmap_dbl : function (.l, .f, ...)  
+## pmap_df : function (.l, .f, ..., .id = NULL)  
+## pmap_dfc : function (.l, .f, ...)  
+## pmap_dfr : function (.l, .f, ..., .id = NULL)  
+## pmap_int : function (.l, .f, ...)  
+## pmap_lgl : function (.l, .f, ...)  
+## possibly : function (.f, otherwise, quiet = TRUE)  
+## prepend : function (x, values, before = 1)  
+## pwalk : function (.l, .f, ...)  
+## quietly : function (.f)  
+## rbernoulli : function (n, p = 0.5)  
+## rdunif : function (n, b, a = 1)  
+## reduce : function (.x, .f, ..., .init)  
+## reduce_right : function (.x, .f, ..., .init)  
+## reduce2 : function (.x, .y, .f, ..., .init)  
+## reduce2_right : function (.x, .y, .f, ..., .init)  
+## rep_along : function (x, y)  
+## rerun : function (.n, ...)  
+## safely : function (.f, otherwise = NULL, quiet = TRUE)  
+## set_names : function (x, nm = x, ...)  
+## simplify : function (.x, .type = NULL)  
+## simplify_all : function (.x, .type = NULL)  
+## some : function (.x, .p, ...)  
+## splice : function (...)  
+## tail_while : function (.x, .p, ...)  
+## transpose : function (.l, .names = NULL)  
+## update_list : function (.x, ...)  
+## vec_depth : function (x)  
+## walk : function (.x, .f, ...)  
+## walk2 : function (.x, .y, .f, ...)  
+## when : function (., ...)
+```
+]
+
 ---
 # But there are base R functionals?
 
-talk about differences between purrr and apply family
+Yes, there are base R functionals (i.e. .font120[`sapply()`], .font120[`lapply()`], .font120[`vapply()`])
 
+But...
+
+.red[
+- inconsistencies in output.  What does .font120[`sapply()`] return?  It depends.
+- inconsistencies in syntax.
+- supplying anonymous functions and additional arguments gets verbose.
+- limited on functional capabilities
+]
+
+--
+
+Motivation for __purrr__:
+
+.green[
+- consistent return type,
+- consistent syntax,
+- useful function call shortcuts,
+- provides more complicated functionals
+]
 
 ---
-# Whetting your appetite
+# Summary
 
-demo `map2()` and `pmap()`
+.font120[
+__functional programming with purrr provides__
 
+- functions that write loops for you
+
+- consistent syntax
+
+- convenient shortcuts
+]
+
+--
+
+.font120[
+__Choosing the right function depends on:__
+
+- type of iteration
+
+- elements under consideration
+
+- type of output
+
+]
+
+---
+# Learning More
+
+.pull-left[
+
+.center.font120[Yes, functional programming is difficult to grasp!]
+
+&lt;img src="https://media1.tenor.com/images/98106050cdaa3e90bfd9cb210d9453e9/tenor.gif?itemid=5202885" style="display: block; margin: auto;" /&gt;
+
+]
+
+--
+
+.pull-right[
+
+* R for Data Science [<span>&lt;i class="fas  fa-external-link-alt faa-FALSE animated "&gt;&lt;/i&gt;</span>](https://r4ds.had.co.nz/iteration.html)
+
+* Advanced R [<span>&lt;i class="fas  fa-external-link-alt faa-FALSE animated "&gt;&lt;/i&gt;</span>](https://adv-r.hadley.nz/functionals.html#base-functionals)
+
+* Jenny Bryan's __purrr__ tutorials [<span>&lt;i class="fas  fa-external-link-alt faa-FALSE animated "&gt;&lt;/i&gt;</span>](https://jennybc.github.io/purrr-tutorial/)
+
+* Foundations of Functional Programming with purrr [<span>&lt;i class="fas  fa-external-link-alt faa-FALSE animated "&gt;&lt;/i&gt;</span>](https://www.datacamp.com/courses/foundations-of-functional-programming-with-purrr)
+
+* Intermediate Functional Programming with __purrr__ [<span>&lt;i class="fas  fa-external-link-alt faa-FALSE animated "&gt;&lt;/i&gt;</span>](https://www.datacamp.com/courses/intermediate-functional-programming-with-purrr)
+
+]
 
 ---
 # Questions
