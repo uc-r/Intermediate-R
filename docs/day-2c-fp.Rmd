@@ -548,70 +548,166 @@ class: yourturn
 
 .pull-left[
 
+Remember how `list.files("data")` shows all the .csv files?  See if you can:
 
+1. combine `list.files("data")` and `paste0("data/", ...)` to create the following inputs:
+    ```{r, echo=FALSE}
+    list.files("data") %>% paste0("data/", .)
+    ```
+2. now use this input vector, `map()`, and `read_csv()` to import all the data files into a list
+  
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.scrollable90[
+.pull-left[
+
+Remember how `list.files("data")` shows all the .csv files?  See if you can:
+
+1. combine `list.files("data")` and `paste0("data/", ...)` to create the following inputs:
+    ```{r, echo=FALSE}
+    list.files("data") %>% paste0("data/", .)
+    ```
+2. now use this input vector, `map()`, and `read_csv()` to import all the data files into a list
+   
 ]
 
 .pull-right[
 
-```{r eval=FALSE}
-
+```{r}
+list.files("data") %>% 
+  paste0("data/", .) %>%
+  map(read_csv)
 ```
 
-
+]
 ]
 
 ---
 # Different .font120.red[`map()`] functions for different .red[outputs]
 
-* map() returns a list, which makes it the most general of the “map” family because you can put anything in a list.
+<br>
+* As previously mentioned, .font120[`map()`] returns a list, which makes it the most general of the “map” family because you can put anything in a list.
 
-* it is inconvenient to return a list when a simpler data structure would do
+* It is ___inconvenient___ to return a list when a simpler data structure would do
 
-* variants:
+* Alternative .font120[`map()`] variants include:
 
-   - map_dbl() returns a double vector 
-   - map_lgl() returns a logical vector 
-   - map_int() returns a integer vector 
-   - map_chr() returns a character vector
-   - map_df() returns a data frame
+   - .font120[`map_dbl()`] returns a double vector 
+   - .font120[`map_lgl()`] returns a logical vector 
+   - .font120[`map_int()`] returns a integer vector 
+   - .font120[`map_chr()`] returns a character vector
+   - .font120[`map_df()`] returns a data frame
 
 ---
 # A family of .font120.red[`map()`] functions
 
-demonstrate implementations
+.scrollable90[
+.pull-left[
+
+* Its best to use the most restrictive function for the output
+
+* Informative errors will let you know when a problem arises with your output
+
+* You can always use `map()` to help debug the output error
+
+]
+
+.pull-right[
+```{r}
+# output is double
+mtcars %>% map_dbl(sd)
+
+# output is integer
+iris %>% map_int(n_distinct)
+
+# output is logical
+iris %>% map_lgl(is.numeric)
+
+# output is character
+iris %>% map_chr(is.character)
+
+# output is data frame
+mtcars %>% map_df(scale)
+```
+]
+]
 
 ---
 class: yourturn
 # Your Turn!
 
 .pull-left[
-With the iris data set, use the map functions to answer these three questions:
+With the `airquality` data set, use the most appropriate map functions to answer these three questions:
 
-1. what is the class of each variable?
+1. how many `n_distinct` values are in each column?
 
-2. what is the standard deviation for each variable?
+2. are there any missing values in this data set?
 
-3. which variables have a mean value greater than 5
+3. what is the standard deviation for each variable?
 
 ]
+
+--
 
 .pull-right[
 
 ```{r}
+# 1
+airquality %>% map_int(n_distinct)
 
+# 2 
+airquality %>% map_lgl(~ any(is.na(.x)))
+
+# 3
+airquality %>% map_dbl(sd, na.rm = TRUE)
 ```
 
 ]
 
 ---
-# Specifying .font120.red[`.f`]
+# .red[ROAD].gray[`map()`]
 
-discuss shortcuts for specifying .f
+You've been introduced to the main components of __purrr__ functional programming:
 
+1. how functions work with different inputs (`.x`: vectors, data frames, lists)
 
----
-class: yourturn
-# Your Turn!
+2. how you can call functions (`.f`: name only, name + additional args, anonymous function)
+
+3. how you can pre-specify your output
+
+--
+
+So, right now you probably fall in one of two camps:
+
+.pull-left[
+
+.center.bold[Experienced `for` loop user]
+
+Switching to functionals is typically a pattern matching exercise. You look at the for loop and find a functional that matches the basic form.
+
+]
+
+--
+
+.pull-right[
+
+.center.bold[New to iteration]
+
+.center[
+`r anicon::cia("https://emojis.slackmojis.com/emojis/images/1466642830/552/wtf.gif?1466642830", animate = FALSE, size = 3)`
+]
+]
+
+--
+
+.center.red[
+___Don't worry, the following 3 steps will provide you with a strategy to simplify___ 
+]
 
 ---
 # .red[ROAD].gray[`map()`]
