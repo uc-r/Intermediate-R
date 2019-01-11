@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Writing Functions</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="scrollable.css" type="text/css" />
+    <link rel="stylesheet" href="mtheme_max.css" type="text/css" />
+    <link rel="stylesheet" href="fonts_mtheme_max.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: clear, center, middle
+
+background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6QJ1PaO6_6VTdaVUFvT8AoPsSiQ6vwn-YOj-Jz4Ig-fzztwDI")
+background-size: contain
+
+.center.font300.bold[Writing Functions]
+
+.center[_"Writing good functions is a lifetime journey."_ - Hadley Wickham]
+
+---
+# Overview
+
+- Why functions are good
+
+- Anatomy of a function
+
+- Defining functions
+
+- Defining your arguments
+
+- Checking arguments and other conditions
+
+- Lazy evaluation
+
+- Lexical scoping
+
+- Distributing your function(s)
+
+- Learning more
+
+---
+# Why functions are good
+
+
+
+---
+# Prereqs
+
+
+---
+# Key ingredients of a function
+
+&lt;br&gt;
+.pull-left[
+.font140[
+1. Name
+
+2. arguments 
+
+3. body 
+
+4. environment
+]
+]
+
+.pull-left[
+
+&lt;br&gt;
+
+```r
+my_fun &lt;- function(arg1, arg2) {
+  &lt;&lt; body &gt;&gt;
+ }
+```
+
+]
+
+---
+# Key ingredients of a function
+
+
+.pull-left[
+&lt;br&gt;
+.font140[
+
+1. Name
+
+2. arguments
+
+3. body
+
+4. environment
+]
+
+]
+
+.pull-right[
+
+
+```r
+pv &lt;- function(fv, r, n = 5) {
+  fv / (1 + r)^n
+}
+```
+
+
+```r
+args(pv)
+## function (fv, r, n = 5) 
+## NULL
+```
+
+
+```r
+body(pv)
+## {
+##     fv/(1 + r)^n
+## }
+```
+
+
+```r
+environment(pv)
+## &lt;environment: R_GlobalEnv&gt;
+```
+
+]
+
+--
+
+&lt;br&gt;
+.center[.content-box-gray[Note how the environment is our global environment]]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+Identify the arguments, body, and environment of:
+
+1. `read.csv`
+
+2. `dplyr::add_count`
+
+3. `sum`
+
+]
+
+--
+
+.pull-right[
+
+
+```r
+# #1 read.csv
+args(read.csv)
+## function (file, header = TRUE, sep = ",", quote = "\"", dec = ".", 
+##     fill = TRUE, comment.char = "", ...) 
+## NULL
+
+body(read.csv)
+## read.table(file = file, header = header, sep = sep, quote = quote, 
+##     dec = dec, fill = fill, comment.char = comment.char, ...)
+
+environment(read.csv)
+## &lt;environment: namespace:utils&gt;
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+Identify the arguments, body, and environment of:
+
+1. `read.csv`
+
+2. `dplyr::add_count`
+
+3. `sum`
+
+]
+
+.pull-right[
+
+
+```r
+# #2 dplyr::add_count
+args(dplyr::add_count)
+## function (x, ..., wt = NULL, sort = FALSE) 
+## NULL
+
+body(dplyr::add_count)
+## {
+##     g &lt;- group_vars(x)
+##     grouped &lt;- group_by(x, ..., add = TRUE)
+##     out &lt;- add_tally(grouped, wt = !!enquo(wt), sort = sort)
+##     grouped_df(out, g)
+## }
+
+environment(dplyr::add_count)
+## &lt;environment: namespace:dplyr&gt;
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.pull-left[
+
+Identify the arguments, body, and environment of:
+
+1. `read.csv`
+
+2. `dplyr::add_count`
+
+3. `sum`
+
+]
+
+.pull-right[
+
+
+```r
+# #3 sum
+args(sum)
+## function (..., na.rm = FALSE) 
+## NULL
+
+*body(sum) # NULL because its a primitive
+## NULL
+
+*environment(sum) # NULL because its a primitive
+## NULL
+```
+
+]
+
+&lt;br&gt;&lt;br&gt;
+
+.center[.content-box-gray[`sum()` is a primitive function]]
+
+---
+# Defining a function
+
+.pull-left[
+
+* We define a function with `&lt;-` just like we define any other R object 
+
+* Use informative names; strive to use verbs when possible
+
+]
+
+.pull-right[
+
+
+```r
+present_value &lt;- function() {
+  
+}
+```
+
+
+```r
+compute_pv &lt;- function() {
+  
+}
+```
+
+]
+
+---
+# Defining a function
+
+.pull-left[
+
+* We define a function with `&lt;-` just like we define any other R object 
+
+* Use informative names; strive to use verbs when possible 
+
+* We can define a function with no arguments; however, this is rarely useful
+
+]
+
+.pull-right[
+
+
+```r
+present_value &lt;- function() {
+  
+}
+```
+
+
+```r
+compute_pv &lt;- function() {
+  
+}
+```
+
+
+```r
+compute_pv &lt;- function() {
+  1000 / (1 + 0.05)^10
+}
+
+compute_pv()
+## [1] 613.9133
+```
+
+]
+
+&lt;br&gt;
+
+--
+
+.center[___We want a function that does one thing consistently well, yet provide flexibility in the inputs provided.___]
+
+---
+# Defining a function
+
+.pull-left[
+.opacity20[
+* We define a function with `&lt;-` just like we define any other R object 
+
+* Use informative names; strive to use verbs when possible 
+
+* We can define a function with no arguments; however, this is rarely useful
+]
+.font120[
+* Consequently, most functions have all key ingredients
+]
+]
+
+.pull-right[
+
+.opacity20[
+
+```r
+present_value &lt;- function() {
+  
+}
+```
+]
+.opacity20[
+
+```r
+compute_pv &lt;- function() {
+  
+}
+```
+]
+.opacity20[
+
+```r
+compute_pv &lt;- function() {
+  1000 / (1 + 0.05)^10
+}
+```
+]
+.code80[
+
+```r
+compute_pv &lt;- function(fv, r, n) {
+  fv / (1 + r)^n
+}
+
+compute_pv(fv = 1000, r = .05, n = 10)
+## [1] 613.9133
+
+compute_pv(fv = 2000, r = .08, n = 5)
+## [1] 1361.166
+```
+]
+]
+
+---
+class: yourturn
+# Your Turn!
+
+define your first function
+
+---
+# Calling arguments in different ways
+
+.font120[Many ways to call arguments:]
+
+.pull-left[
+.font140[
+* Using argument names
+
+]
+]
+
+.pull-right[
+
+
+```r
+compute_pv(fv = 1000, r = .05, n = 10)
+## [1] 613.9133
+```
+
+]
+
+---
+# Calling arguments in different ways
+
+.font120[Many ways to call arguments:]
+
+.pull-left[
+.font120[
+* Using argument names
+
+* Positional matching
+
+]
+]
+
+.pull-right[
+
+
+```r
+compute_pv(fv = 1000, r = .05, n = 10)
+## [1] 613.9133
+```
+
+
+```r
+compute_pv(1000, .05, 10)
+## [1] 613.9133
+```
+
+]
+
+---
+# Calling arguments in different ways
+
+.font120[Many ways to call arguments:]
+
+.pull-left[
+.font120[
+* Using argument names
+
+* Positional matching
+
+* Must use names if you change order
+
+* ...otherwise error or incorrect computation will occur
+
+]
+]
+
+.pull-right[
+
+
+```r
+compute_pv(fv = 1000, r = .05, n = 10)
+## [1] 613.9133
+```
+
+
+```r
+compute_pv(1000, .05, 10)
+## [1] 613.9133
+```
+
+
+```r
+compute_pv(r = .05, fv = 1000, n = 10)
+## [1] 613.9133
+```
+
+
+```r
+compute_pv(.05, 1000, 10)
+## [1] 4.950274e-32
+```
+
+]
+
+---
+# Calling arguments in different ways
+
+.font120[Many ways to call arguments:]
+
+.pull-left[
+.font120[
+* Using argument names
+
+* Positional matching
+
+* Must use names if you change order
+
+* ...otherwise error or incorrect computation will occur
+
+* missing arguments results in error
+]
+]
+
+.pull-right[
+
+
+```r
+compute_pv(fv = 1000, r = .05, n = 10)
+## [1] 613.9133
+```
+
+
+```r
+compute_pv(1000, .05, 10)
+## [1] 613.9133
+```
+
+
+```r
+compute_pv(r = .05, fv = 1000, n = 10)
+## [1] 613.9133
+```
+
+
+```r
+compute_pv(.05, 1000, 10)
+## [1] 4.950274e-32
+```
+
+
+```r
+compute_pv(1000, .05)
+## Error in compute_pv(1000, 0.05): argument "n" is missing, with no default
+```
+
+]
+
+
+---
+# Ordering your arguments
+
+Ordering arguments in your functions is important:
+
+* pipe (.font120[`%&gt;%`]) operator
+   - tidyverse pkgs consistently have data as first argument
+   - makes for intuitive syntax &amp; easy flow
+
+* positional matching
+   - which args are most vs less important
+   - helps dictate where defaults need to go (next slide)
+
+```r
+# bad --&gt; rounding to digits is least important parameter
+compute_pv &lt;- function(digits, r, n, fv) {
+  &lt;&lt; body &gt;&gt;
+}
+
+# better but could still be improved --&gt; does a user always need to specify digits to round to?
+compute_pv &lt;- function(fv, r, n, digits) {
+  &lt;&lt; body &gt;&gt;
+}
+```
+
+---
+# Setting (good) defaults
+
+.pull-left[
+
+* As our functions require more inputs...
+
+* many of them can likely do with defaults
+
+* Usually, the first 1-3 arguments are not preset but the rest are
+
+* Good defaults are largely based on
+   - methodology best practices (i.e. hyperparameters, removing missing values)
+   - industry best practices or current values (i.e. current interest rates)
+   - organizational best practices (i.e. golden rules)
+
+]
+
+.pull-right[
+
+
+```r
+compute_pv &lt;- function(fv, r, n, digits = 2) {
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+# by default, will round to 2 digits
+compute_pv(1000, .05, 10)
+## [1] 613.91
+
+# to adjust, specify by position
+compute_pv(1000, .05, 10, 0)
+## [1] 614
+
+# or by name
+compute_pv(1000, .05, 10, digits = 0)
+## [1] 614
+```
+
+]
+
+---
+class: yourturn
+# Your Turn!
+
+
+---
+# Checking arguments and other conditions
+
+* We've created a function that allows users to specify their inputs
+
+* But how do we ensure they provide us with the right kind of inputs?
+
+* Or what if we want to be able to provide some sort of feedback to the user?
+
+* There are several ways to signal __conditions__ to function users:
+
+--
+   - .font110[`stop()`] &amp; .font110[`stopifnot()`]: signal an .red[error] (no way for a function to continue and execution must stop)
+   
+--
+   
+   - .font110[`warning()`]: signal a warning (something has gone wrong but the function has been able to at least partially recover.)
+   
+--
+   
+   - .font110[`message()`]: signal an informative message (function works fine but user should be informed of something.)
+   
+.center[___The most common you will use are .font120[`stop()`] &amp; .font120[`message()`]___]   
+
+---
+# `stop()` &amp; `stopifnot()`
+
+Invalid parameters
+
+
+---
+# `warning()`
+
+
+
+---
+# `message()`
+
+
+---
+class: yourturn
+# Your Turn!
+
+
+---
+# NULL &amp; lazy evaluation
+
+
+---
+# Lexical scoping
+
+- nested environments in R 
+- where a function looks for variables 
+- how to use global variables (and why you shouldn't) 
+
+---
+# Distributing your function
+
+- using the source function to read an R script 
+- when you might consider writing a package (package writing will not be covered)
+
+---
+# Learning more
+
+
+---
+# Questions
+
+&lt;br&gt;
+
+&lt;img src="images/questions.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
