@@ -15,11 +15,11 @@
 
 class: clear, center, middle
 
-background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6QJ1PaO6_6VTdaVUFvT8AoPsSiQ6vwn-YOj-Jz4Ig-fzztwDI")
+background-image: url("images/function-icon.jpg")
 background-size: contain
 
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
 .center.font300.bold[Writing Functions]
-
 .center[_"Writing good functions is a lifetime journey."_ - Hadley Wickham]
 
 ---
@@ -641,8 +641,60 @@ class: yourturn
 ---
 # `stop()` &amp; `stopifnot()`
 
-Invalid parameters
+.scrollable90[
+.pull-left[
 
+* The .font120[`stop`] functions are most commonly used to check for proper inputs
+
+* Weigh the benefits of highly custom, informative error messages (via `stop`) versus short to the point (via `stopifnot`)
+
+]
+
+.pull-right[
+
+
+```r
+# stop
+compute_pv &lt;- function(fv, r, n, digits = 2) {
+  
+  if(!is.numeric(fv)) {
+*   stop("`fv` must be numeric", call. = FALSE)
+  }
+  
+  if(!is.numeric(r)) {
+*   stop("`r` must be numeric", call. = FALSE)
+  }
+  
+  if(!is.numeric(n)) {
+*   stop("`n` must be numeric", call. = FALSE)
+  }
+  
+  if(!is.numeric(digits)) {
+*   stop("`digits` must be numeric", call. = FALSE)
+  }
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+compute_pv("1000", .05, 10)
+## Error: `fv` must be numeric
+```
+
+
+```r
+# stopifnot
+compute_pv &lt;- function(fv, r, n, digits = 2) {
+  
+* stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+compute_pv("1000", .05, 10)
+## Error in compute_pv("1000", 0.05, 10): is.numeric(fv) is not TRUE
+```
+]
+]
 
 ---
 # `warning()`
