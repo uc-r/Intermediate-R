@@ -67,11 +67,102 @@ background-size: contain
 ---
 # Why functions are good
 
+.pull-left[
+* A function centralizes a common task to a single, abstract method
 
+* This helps to:
+
+   - increase .green[reusability] which...
+   - reduces .red[verbosity]
+   - reduces .red[repetitiveness]
+   - reduces the .red[chance of making an error]
+   - reduces .red[instances requiring updates] when changes are needed
+   - reduces .red[amount of code to test]
+]
+
+--
+
+.pull-right[
+
+Consider the following from Hadley Wickham’s book _R for Data Science_.  Where's the .red[error]?
+
+```{r, eval=FALSE}
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df$a <- (df$a - min(df$a, na.rm = TRUE)) /
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) /
+  (max(df$b, na.rm = TRUE) - min(df$b, na.rm = TRUE))
+df$c <- (df$c - min(df$c, na.rm = TRUE)) /
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) /
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+```
+
+]
+
+---
+# Why functions are good
+
+.pull-left[
+* A function centralizes a common task to a single, abstract method
+
+* This helps to:
+
+   - increase .green[reusability] which...
+   - reduces .red[verbosity]
+   - reduces .red[repetitiveness]
+   - reduces the .red[chance of making an error]
+   - reduces .red[instances requiring updates] when changes are needed
+   - reduces .red[amount of code to test]
+]
+
+.pull-right[
+
+Consider the following from Hadley Wickham’s book _R for Data Science_.  Where's the .red[error]?
+
+```{r, eval=FALSE}
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df$a <- (df$a - min(df$a, na.rm = TRUE)) / 
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) / 
+  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE)) #<<
+df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+```
+
+]
 
 ---
 # Prereqs
 
+
+.center.font200.bold[Base R]
+
+--
+
+```{r echo=FALSE}
+knitr::include_graphics("https://media.giphy.com/media/tLql6mMHC6wvK/giphy.gif")
+```
+
+--
+
+<br>
+
+.center.bold[I will use some packages throughout but these are simply for examples.  You will be notified but sometimes you just need to learn to `r anicon::faa("heart", colour = "red", animate = "pulse")` base R.]
 
 ---
 # Key ingredients of a function
@@ -522,7 +613,7 @@ compute_pv <- function(fv, r, n, digits) {
 ```
 
 ---
-# Setting (good) defaults
+# Setting (.green[good]) defaults
 
 .pull-left[
 
@@ -588,7 +679,7 @@ class: yourturn
 .center[___The most common you will use are .font120[`stop()`] & .font120[`message()`]___]   
 
 ---
-# `stop()` & `stopifnot()`
+# `stop()` & `stopifnot()` 
 
 .scrollable90[
 .pull-left[
@@ -739,34 +830,680 @@ df <- readr::read_csv("data/Month-01.csv")
 ]
 
 ---
+# `message()`
+
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+   - default argument that may be non-trivial
+   - how information was interpreted by the function
+   - words of encouragement!
+   
+]   
+
+.pull-right[
+<br>
+```{r messages-gitr-example, echo=FALSE}
+knitr::include_graphics("images/gitr-example.png")
+```
+
+]
+
+---
+# `message()`
+
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+   - default argument that may be non-trivial
+   - how information was interpreted by the function
+   - words of encouragement!
+   - or even industry/business best practices
+
+]   
+
+.pull-right[
+
+```{r messages-pv-example, message=TRUE}
+compute_pv <- function(fv, r, n, digits = 2) {
+  
+  stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  
+  if(r < 0.01 || r > 0.25) { #<<
+    message("Your interest rate exceeds the normal ranges of 1-25%") #<<
+  } #<<
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+compute_pv(1000, .26, 10)
+```
+
+]
+
+---
+# `message()`
+
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+   - default argument that may be non-trivial
+   - how information was interpreted by the function
+   - words of encouragement!
+   - or even industry/business best practices
+   
+* .blue[Always provide an option to suppress messages]
+
+]   
+
+.pull-right[
+
+```{r messages-silence-example, message=TRUE}
+compute_pv <- function(fv, r, n, digits = 2, quiet = FALSE) { #<<
+  
+  stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  
+  if(!quiet) { #<<
+    if(r < 0.01 || r > 0.25) { 
+    message("Your interest rate exceeds the normal ranges of 1-25%") 
+    }
+    # other messages here...
+  }
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+# default provides message
+compute_pv(1000, .26, 10)
+
+# user can silence
+compute_pv(1000, .26, 10, quiet = TRUE)
+```
+
+]
+
+---
 class: yourturn
 # Your Turn!
 
 
 ---
-# NULL & lazy evaluation
+# Lazy evaluation
+
+.pull-left[
+.font120[
+* In R, function arguments are .blue[__lazily evaluated: *only evaluated if accessed*__]
+]
+]
+
+.pull-right[
+```{r}
+h01 <- function(x) {
+  10
+}
+
+h01(x = stop("This is an error!"))
+```
+]
+
+---
+# Lazy evaluation
+
+.pull-left[
+* In R, function arguments are .blue[__lazily evaluated: *only evaluated if accessed*__]
+
+* This provides you with lots of flexibility in when and how to evaluate inputs
+
+]
+
+.pull-right[
+```{r lazy-eval}
+h02 <- function(x, y, z) {
+  if(missing(z)) {
+    sum(x, y)
+  } else {
+    sum(x, y, z)
+  }
+}
+
+# z does not exist
+h02(x = 1, y = 2)
+
+# z does exist
+h02(x = 1, y = 2, z = 3)
+```
+]
+
+---
+# Lazy evaluation
+
+.pull-left[
+* In R, function arguments are .blue[__lazily evaluated: *only evaluated if accessed*__]
+
+* This provides you with lots of flexibility in when and how to evaluate inputs
+
+* You need to be careful with how you use this, as it even allows you to use arguments outside of your function environment
+
+]
+
+.pull-right[
+
+```{r echo=FALSE, cache=FALSE}
+rm(list = ls())
+```
+
+```{r lazy-eval-2, cache=FALSE}
+h03 <- function(x, y) {
+    if(exists("z")) {
+      x + y + z
+    } else {
+      x + y
+    }
+}
+
+# z does not exist
+h03(x = 1, y = 2)
+
+# z exists in global environment
+z <- 3
+h03(x = 1, y = 2)
+```
+]
+
+---
+# Lazy evaluation
+
+.pull-left[
+* In R, function arguments are .blue[__lazily evaluated: *only evaluated if accessed*__]
+
+* This provides you with lots of flexibility in when and how to evaluate inputs
+
+* You need to be careful with how you use this, as it even allows you to use arguments outside of your function environment
+
+* One of the more common applications is to .blue[use `NULL` to indicate that a variable is not required but can be used if supplied]
+
+]
+
+.pull-right[
+```{r lazy-eval-3}
+compute_pv <- function(fv, r, n, multiplier = NULL) { #<<
+  
+  # compute present value
+  pv <- round(fv / (1 + r)^n)
+  
+  # apply multiplier if its supplied #<<
+  if(is.null(multiplier)) { #<<
+    pv #<<
+  } else { #<<
+    pv * multiplier #<<
+  } #<<
+}
+
+# w/o multiplier
+compute_pv(1000, .05, 10)
+
+# with multiplier
+compute_pv(1000, .05, 10, multiplier = 1.25)
+```
+]
+
+---
+class: yourturn
+# Your Turn!
 
 
 ---
 # Lexical scoping
 
-- nested environments in R 
-- where a function looks for variables 
-- how to use global variables (and why you shouldn't) 
+.pull-left[
+* R uses a nested environment structure 
+
+* a function has:
+   - its own environment
+   - plus one or more parent environments
+   - always a fresh start
+   
+* a function will search:
+   1. itself
+   2. through hierarchical parental environments
+   
+* a function will never:
+   - use a parameter from a parent environment when it exists in the current environment
+   - search within another function unless it's its parent
+]
+
+.pull-right[
+
+```{r echo=FALSE, out.width="50%"}
+knitr::include_graphics("images/nested-environments1.png")
+```
+
+```{r echo=FALSE, out.width="50%"}
+knitr::include_graphics("images/nested-environments2.png")
+```
+
+]
 
 ---
-# Distributing your function
+# Pure functions
 
-- using the source function to read an R script 
-- when you might consider writing a package (package writing will not be covered)
+.pull-left[
 
+* This is why `h03()` in the previous example worked
+
+* However, we now have an ___impure___ function 
+
+* .blue.bold[Pure function]:
+   - returns the same result if given the same arguments 
+   - does not cause any observable side effects
+
+]
+
+---
+# Pure functions
+
+.pull-left[
+
+* This is why `h03()` in the previous example worked
+
+* However, we now have an impure function 
+
+* .blue.bold[Pure function]:
+   - ___returns the same result if given the same arguments___ 
+   - does not cause any observable side effects
+
+<br>
+.center.bold.red[_Constency is our friend!_]
+
+]
+
+.pull-right[
+.code70[
+```{r}
+# h03() changes depending on z's value
+# outside of the function call
+z <- 4
+h03(x = 1, y = 2)
+
+z <- 5
+h03(x = 1, y = 2)
+
+# if your function is dependent on randomness
+# allow users to set seed
+get_n_samples <- function(x, n, seed = NULL) {
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+  sample(x, size = n)
+}
+
+x <- 1:10
+
+# allows user to always get same results
+get_n_samples(x, 5, seed = 123)
+get_n_samples(x, 5, seed = 123)
+```
+]
+]
+
+---
+# Pure functions
+
+.pull-left[
+
+* This is why `h03()` in the previous example worked
+
+* However, we now have an impure function 
+
+* .blue.bold[Pure function]:
+   - returns the same result if given the same arguments 
+   - ___does not cause any observable side effects___
+
+<br>
+.center.bold.red[_Don't change things the user doesn't want or expect!_]
+
+]
+
+.pull-right[
+
+```{r}
+get_n_samples <- function(x, n, seed = NULL) {
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+  
+  samples <- sample(x, size = n)
+  
+  # overwrite x #<<
+  x <<- samples #<<
+  
+  # change options to print 8 decimals #<<
+  options(digits = 2) #<<
+  
+  samples
+}
+
+x <- seq(.0001, 1, by = 0.001)
+
+get_n_samples(x, 5, seed = 123)
+
+x
+```
+
+]
+
+---
+# Pure functions
+
+.font140[
+Take-away:
+
+* functions should do one thing
+
+* functions should do that one thing consistently
+
+* functions should not do anything else
+]
+
+---
+# Distributing your function(s)
+
+.pull-left[
+Two main ways to distribute your functions:
+
+.font120[
+1. using the `source()` function to read an R script 
+   - easy to get started
+   - all functions/objects in the sourced .R script will be imported to your global environment
+   - does not scale well
+]   
+]
+
+.pull-right[
+
+<br>
+
+```{r, echo=FALSE, cache=FALSE}
+rm(list = ls())
+```
+
+```{r, cache=FALSE}
+source("my-functions/custom-stat-functions.R")
+
+ls()
+
+mtcars %>% map_dbl(skewness)
+```
+
+]
+
+---
+# Distributing your function(s)
+
+.pull-left[
+Two main ways to distribute your functions:
+
+1. using the `source()` function to read an R script 
+   - easy to get started
+   - all functions/objects in the sourced .R script will be imported to your global environment
+   - does not scale well
+
+2. writing a package (package writing will not be covered)
+   - hard to get started
+   - scales beautifully
+]
+
+.pull-right[
+
+<br>
+
+```{r, cache=FALSE}
+library(gitr)
+lsf.str("package:gitr")
+```
+
+]
 
 ---
 # Bells & whistles
 
+.pull-left[
+
+We can do ___many___ other things with functions such as:
+.font120[
+* add progress bars
+]
+]
+
+
+.pull-right[
+
+```{r progress-bar, eval=FALSE}
+import_monthly_data <- function(files, quiet = FALSE) {
+  
+  if(!quiet) {
+    pb <- progress_estimated(length(files))
+  }
+  
+  special_import <- function(x) {
+    if (quiet) {
+      suppressMessages(readr::read_csv(x))
+    } else {
+      pb$tick()$print()
+      suppressMessages(readr::read_csv(x))
+    }
+  }
+  
+  purrr::map_dfr(paste0("data/", files), special_import)
+}
+
+import_monthly_data(list.files("data"))
+## |=================================================================|100% ~0 s remaining     
+## # A tibble: 698,159 x 10
+##    Account_ID Transaction_Timest… Factor_A Factor_B Factor_C Factor_D Factor_E Response
+##         <int> <dttm>                 <int>    <int> <chr>       <int> <chr>       <int>
+##  1          5 2009-01-08 00:16:41        2        6 VI             20 A            1020
+##  2         16 2009-01-20 22:40:08        2        6 VI             20 H            1020
+##  3         28 2009-01-19 13:24:55        2        6 VI             21 NULL         1020
+##  4         40 2009-01-05 16:10:58        2        6 VI             20 H            1020
+##  5         62 2009-01-21 19:13:13        2        6 VI             20 B            1020
+##  6         64 2009-01-01 18:53:02        7        6 MC             20 NULL         1020
+##  7         69 2009-01-08 00:15:19        2        6 VI             20 H            1020
+##  8         69 2009-01-19 09:33:22        2        6 VI             20 H            1020
+##  9         70 2009-01-05 12:07:47        2        6 VI             20 B            1020
+## 10         79 2009-01-07 19:41:18        7        6 MC             20 NULL         1020
+## # … with 698,149 more rows, and 2 more variables: Transaction_Status <chr>, Month <chr>
+```
+
+]
+
+---
+# Bells & whistles
+
+.pull-left[
+
+We can do ___many___ other things with functions such as:
+
+* add progress bars
+
+* take any number of additional arguments with .font120[`...`] to:
+   - pass arguments on to internal arguments
+
+]
+
+
+.pull-right[
+
+```{r, out.height="50%", out.width="50%"}
+plot_strongest_corr <- function(data, response, ...) {
+  # find strong correlation
+  vars <- setdiff(names(data), response)
+  correlations <- sapply(data[, vars], function(x) cor(data[, response], x))
+  x <- names(which.max(abs(correlations)))
+  
+  # plot relationship
+  plot(data[, x], data[, response], xlab = x, ylab = response, ...)
+}
+
+plot_strongest_corr(mtcars, "mpg", pch = 19, col = "blue", main = "Some cool title")
+```
+
+]
+
+---
+# Bells & whistles
+
+.pull-left[
+
+We can do ___many___ other things with functions such as:
+
+* add progress bars
+
+* take any number of additional arguments with .font120[`...`] to:
+   - pass arguments on to internal arguments
+   - or accept unknown number of inputs
+
+]
+
+
+.pull-right[
+
+```{r}
+select <- function(.data, ...) {
+  # convert ... to a list and then to a string
+  arguments <- substitute(...())
+  vars <- paste(arguments)
+  
+  # index for 
+  .data[, vars]
+}
+
+select(mtcars, mpg, wt)
+```
+
+]
+
+---
+# Bells & whistles
+
+.scrollable90[
+.pull-left[
+
+We can do ___many___ other things with functions such as:
+
+* add progress bars
+
+* take any number of additional arguments with .font120[`...`]
+
+* improve efficiency with C++
+
+]
+
+
+.pull-right[
+
+```{r}
+# create our own sum function
+sumR <- function(x) {
+  total <- 0
+  for (i in seq_along(x)) {
+    total <- total + x[i]
+  }
+  total
+}
+
+# use Rcpp to write a sum function in C++
+library(Rcpp)
+cppFunction('double sumC(NumericVector x) {
+  int n = x.size();
+  double total = 0;
+  for(int i = 0; i < n; ++i) {
+    total += x[i];
+  }
+  return total;
+}')
+
+x <- runif(1e3)
+bench::mark(
+  sum(x),
+  sumC(x),
+  sumR(x)
+)[1:6]
+```
+]
+]
+
+---
+# Bells & whistles
+
+.scrollable90[
+.pull-left[
+
+We can do ___many___ other things with functions such as:
+
+* add progress bars
+
+* take any number of additional arguments with .font120[`...`]
+
+* improve efficiency with C++
+
+<br>
+
+.center.bold[.content-box-gray[_And so much more!_]]
+
+]
+
+
+.pull-right[
+
+```{r}
+# create our own sum function
+sumR <- function(x) {
+  total <- 0
+  for (i in seq_along(x)) {
+    total <- total + x[i]
+  }
+  total
+}
+
+# use Rcpp to write a sum function in C++
+library(Rcpp)
+cppFunction('double sumC(NumericVector x) {
+  int n = x.size();
+  double total = 0;
+  for(int i = 0; i < n; ++i) {
+    total += x[i];
+  }
+  return total;
+}')
+
+x <- runif(1e3)
+bench::mark(
+  sum(x),
+  sumC(x),
+  sumR(x)
+)[1:6]
+```
+]
+]
 
 ---
 # Learning more
+
+.center.font150.bold[Advanced R: https://adv-r.hadley.nz/]
+
+```{r, echo=FALSE}
+knitr::include_graphics("images/adv-r-cover.png")
+```
 
 
 ---
