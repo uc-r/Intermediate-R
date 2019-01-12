@@ -595,7 +595,11 @@ class: yourturn
 
 * The .font120[`stop`] functions are most commonly used to check for proper inputs
 
+* but can be used to .red[stop] the function procedures because the user's environment is not properly established
+
 * Weigh the benefits of highly custom, informative error messages (via `stop`) versus short to the point (via `stopifnot`)
+
+* Execution will stop at the first violation
 
 ]
 
@@ -624,7 +628,7 @@ compute_pv <- function(fv, r, n, digits = 2) {
   round(fv / (1 + r)^n, digits = digits)
 }
 
-compute_pv("1000", .05, 10)
+compute_pv("1000", ".05", 10)
 ```
 
 ```{r stopifnot, error=TRUE}
@@ -636,7 +640,7 @@ compute_pv <- function(fv, r, n, digits = 2) {
   round(fv / (1 + r)^n, digits = digits)
 }
 
-compute_pv("1000", .05, 10)
+compute_pv("1000", ".05", 10)
 ```
 ]
 ]
@@ -644,11 +648,95 @@ compute_pv("1000", .05, 10)
 ---
 # `warning()`
 
+.pull-left[
+* `warnings()` are rarely used but...
 
+* can be useful to signal .blue[non-terminating] concerns
+   - hyperparameter clashes in a grid search
+   - an extremely long compute time and the user may want to re-assess
+   - deprecated functions
+
+```{r show-deprecation, message=TRUE, warning=TRUE}
+lubridate::mdy(c("2-1-2019", "1995"))
+```
+
+]
+
+--
+
+.pull-right[
+
+```{r warning, error=TRUE, warning=TRUE}
+present_value <- function(fv, r, n, digits = 2) {
+  
+  warning("`present_value()` is deprecated. Use `compute_pv()`", call. = FALSE) #<<
+  stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+present_value(1000, .05, 10)
+```
+
+
+]
 
 ---
 # `message()`
 
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+]
+
+---
+# `message()`
+
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+   - default argument that may be non-trivial
+   
+]   
+
+.pull-right[
+
+```{r messages-ggplot-example, message=TRUE, fig.height=4}
+library(ggplot2)
+
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram()
+```
+
+]
+
+---
+# `message()`
+
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+   - default argument that may be non-trivial
+   - how information was interpreted by the function
+   
+]   
+
+.pull-right[
+
+```{r messages-readr-example, message=TRUE}
+df <- readr::read_csv("data/Month-01.csv")
+```
+
+]
 
 ---
 class: yourturn
@@ -671,6 +759,11 @@ class: yourturn
 
 - using the source function to read an R script 
 - when you might consider writing a package (package writing will not be covered)
+
+
+---
+# Bells & whistles
+
 
 ---
 # Learning more

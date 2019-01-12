@@ -646,7 +646,11 @@ class: yourturn
 
 * The .font120[`stop`] functions are most commonly used to check for proper inputs
 
+* but can be used to .red[stop] the function procedures because the user's environment is not properly established
+
 * Weigh the benefits of highly custom, informative error messages (via `stop`) versus short to the point (via `stopifnot`)
+
+* Execution will stop at the first violation
 
 ]
 
@@ -676,7 +680,7 @@ compute_pv &lt;- function(fv, r, n, digits = 2) {
   round(fv / (1 + r)^n, digits = digits)
 }
 
-compute_pv("1000", .05, 10)
+compute_pv("1000", ".05", 10)
 ## Error: `fv` must be numeric
 ```
 
@@ -690,8 +694,8 @@ compute_pv &lt;- function(fv, r, n, digits = 2) {
   round(fv / (1 + r)^n, digits = digits)
 }
 
-compute_pv("1000", .05, 10)
-## Error in compute_pv("1000", 0.05, 10): is.numeric(fv) is not TRUE
+compute_pv("1000", ".05", 10)
+## Error in compute_pv("1000", ".05", 10): is.numeric(fv) is not TRUE
 ```
 ]
 ]
@@ -699,11 +703,119 @@ compute_pv("1000", .05, 10)
 ---
 # `warning()`
 
+.pull-left[
+* `warnings()` are rarely used but...
 
+* can be useful to signal .blue[non-terminating] concerns
+   - hyperparameter clashes in a grid search
+   - an extremely long compute time and the user may want to re-assess
+   - deprecated functions
+
+
+```r
+lubridate::mdy(c("2-1-2019", "1995"))
+## Warning: 1 failed to parse.
+## [1] "2019-02-01" NA
+```
+
+]
+
+--
+
+.pull-right[
+
+
+```r
+present_value &lt;- function(fv, r, n, digits = 2) {
+  
+* warning("`present_value()` is deprecated. Use `compute_pv()`", call. = FALSE)
+  stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+present_value(1000, .05, 10)
+## Warning: `present_value()` is deprecated. Use `compute_pv()`
+## [1] 613.91
+```
+
+
+]
 
 ---
 # `message()`
 
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+]
+
+---
+# `message()`
+
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+   - default argument that may be non-trivial
+   
+]   
+
+.pull-right[
+
+
+```r
+library(ggplot2)
+
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram()
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+&lt;img src="day-2d-functions_files/figure-html/messages-ggplot-example-1.png" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# `message()`
+
+.pull-left[
+* designed to be informational
+
+* use them to tell the user that you’ve done something on their behalf
+
+* may represent:
+   - default argument that may be non-trivial
+   - how information was interpreted by the function
+   
+]   
+
+.pull-right[
+
+
+```r
+df &lt;- readr::read_csv("data/Month-01.csv")
+## Parsed with column specification:
+## cols(
+##   Account_ID = col_integer(),
+##   Transaction_Timestamp = col_datetime(format = ""),
+##   Factor_A = col_integer(),
+##   Factor_B = col_integer(),
+##   Factor_C = col_character(),
+##   Factor_D = col_integer(),
+##   Factor_E = col_character(),
+##   Response = col_integer(),
+##   Transaction_Status = col_character(),
+##   Month = col_character()
+## )
+```
+
+]
 
 ---
 class: yourturn
@@ -726,6 +838,11 @@ class: yourturn
 
 - using the source function to read an R script 
 - when you might consider writing a package (package writing will not be covered)
+
+
+---
+# Bells &amp; whistles
+
 
 ---
 # Learning more
