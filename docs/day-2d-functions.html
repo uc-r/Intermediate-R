@@ -482,7 +482,23 @@ compute_pv(fv = 2000, r = .08, n = 5)
 class: yourturn
 # Your Turn!
 
-define your first function
+.pull-left[
+* Define a function titled ratio that takes arguments `x` and `y` and returns their ratio, `x / y`
+
+* Call `ratio()` with arguments 3 and 4
+]
+--
+.pull-right[
+
+```r
+ratio &lt;- function(x, y) {
+  x / y
+}
+
+ratio(3, 4)
+## [1] 0.75
+```
+]
 
 ---
 # Calling arguments in different ways
@@ -704,8 +720,79 @@ compute_pv(1000, .05, 10, digits = 0)
 
 ---
 class: yourturn
-# Your Turn!
+# Your Turn - Part 1
 
+.pull-left[
+* Earlier in these slides you saw the following code duplicated:
+
+```r
+(df$a - min(df$a, na.rm = TRUE)) /  
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+```
+
+* Can you write a function called `rescale()` that takes argument `x` and executes this code?
+
+* Test it on the following vector:
+
+
+```r
+set.seed(123)
+test_vector &lt;- runif(20, min = 25, max = 40)
+```
+
+]
+--
+.pull-right[
+
+
+```r
+rescale &lt;- function(x){
+  rng &lt;- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+rescale(test_vector)
+##  [1] 0.2684 0.8158 0.4011 0.9193 0.9821 0.0038 0.5313 0.9296 0.5568 0.4532
+## [11] 1.0000 0.4496 0.6947 0.5800 0.0665 0.9377 0.2230 0.0000 0.3125 0.9975
+```
+
+]
+
+---
+class: yourturn
+# Your Turn - Part 2
+
+.pull-left[
+
+* Now add an argument to `rescale()` that allows you to round the output to a specified decimal.  
+
+* Set the default to 2.
+]
+
+--
+
+.pull-right[
+
+
+```r
+rescale &lt;- function(x, digits = 2){
+  rng &lt;- range(x, na.rm = TRUE)
+  scaled &lt;- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+
+# default
+rescale(test_vector)
+##  [1] 0.27 0.82 0.40 0.92 0.98 0.00 0.53 0.93 0.56 0.45 1.00 0.45 0.69 0.58
+## [15] 0.07 0.94 0.22 0.00 0.31 1.00
+
+# 3 digits
+rescale(test_vector, digits = 3)
+##  [1] 0.268 0.816 0.401 0.919 0.982 0.004 0.531 0.930 0.557 0.453 1.000
+## [12] 0.450 0.695 0.580 0.067 0.938 0.223 0.000 0.312 0.997
+```
+
+]
 
 ---
 # Checking arguments and other conditions
@@ -803,6 +890,7 @@ compute_pv("1000", ".05", 10)
    - hyperparameter clashes in a grid search
    - an extremely long compute time and the user may want to re-assess
    - deprecated functions
+   - NAs, NULLs, Infs exist, which result in NA output
 
 
 ```r
@@ -1021,6 +1109,158 @@ compute_pv(1000, .26, 10, quiet = TRUE)
 class: yourturn
 # Your Turn!
 
+.pull-left[
+
+Let's go back to our `rescale()` function:
+
+```r
+rescale &lt;- function(x, digits = 2){
+  rng &lt;- range(x, na.rm = TRUE)
+  scaled &lt;- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.scrollable90[
+.pull-left[
+
+Let's go back to our `rescale()` function:
+
+
+```r
+rescale &lt;- function(x, digits = 2){
+* rng &lt;- range(x, na.rm = TRUE)
+  scaled &lt;- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+
+* Move the `na.rm = TRUE` option to the function arguments so that the user can control whether or not to remove missing values.
+* Add a `warning()` that tells the user NAs are present (if they use `na.rm = FALSE`)
+* Add a `message()` that tells the user how many NAs were removed
+* add a missing value to your test_vector and test out your revised function
+
+
+```r
+test_vector &lt;- c(NA, test_vector)
+```
+
+]
+
+.pull-right[
+
+
+
+Your results should look something like this:
+
+
+```r
+# results in an error
+rescale(letters)
+## Error: `x` must be a numeric atomic vector
+
+# results in warning
+rescale(test_vector, na.rm = FALSE)
+## Warning: There are 1 NAs. Remove them with `na.rm = TRUE`
+##  [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+
+# results in message
+rescale(test_vector)
+## 1 NAs were removed.
+##  [1] 0.27 0.82 0.40 0.92 0.98 0.00 0.53 0.93 0.56 0.45 1.00 0.45 0.69 0.58
+## [15] 0.07 0.94 0.22 0.00 0.31 1.00
+```
+
+]
+]
+
+---
+class: yourturn
+# Your Turn!
+.scrollable90[
+.pull-left[
+
+Let's go back to our `rescale()` function:
+
+
+```r
+rescale &lt;- function(x, digits = 2){
+* rng &lt;- range(x, na.rm = TRUE)
+  scaled &lt;- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+
+* Move the `na.rm = TRUE` option to the function arguments so that the user can control whether or not to remove missing values.
+* Add a `warning()` that tells the user NAs are present (if they use `na.rm = FALSE`)
+* Add a `message()` that tells the user how many NAs were removed
+* add a missing value to your test_vector and test out your revised function
+
+
+```r
+test_vector &lt;- c(NA, test_vector)
+```
+
+]
+
+.pull-right[
+
+
+```r
+rescale &lt;- function(x, digits = 2, na.rm = TRUE, quiet = FALSE){
+  # make sure x an numeric atomic vector
+  if(!is.atomic(x) || !is.numeric(x)) {
+    stop("`x` must be a numeric atomic vector", call. = FALSE)
+  }
+  
+  # compute number of missing values
+  missing_n &lt;- sum(is.na(x))
+  
+  # warning if na.rm = FALSE and NAs are present
+  if(!na.rm) {
+    warning(paste(
+      "There are", 
+      missing_n,
+      "NAs. Remove them with `na.rm = TRUE`"),
+      call. = FALSE)
+  }
+  
+  # message to report how many NAs were removed
+  if(na.rm) {
+    x &lt;- x[!is.na(x)]
+    if(!quiet) {
+      message(paste(missing_n, "NAs were removed."))
+    }
+  }
+  
+  # compute scaling
+  rng &lt;- range(x)
+  scaled &lt;- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+
+# results in an error
+rescale(letters)
+## Error: `x` must be a numeric atomic vector
+
+# results in warning
+rescale(test_vector, na.rm = FALSE)
+## Warning: There are 1 NAs. Remove them with `na.rm = TRUE`
+##  [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+
+# results in message
+rescale(test_vector)
+## 1 NAs were removed.
+##  [1] 0.27 0.82 0.40 0.92 0.98 0.00 0.53 0.93 0.56 0.45 1.00 0.45 0.69 0.58
+## [15] 0.07 0.94 0.22 0.00 0.31 1.00
+```
+]
+]
 
 ---
 # Lazy evaluation
@@ -1150,11 +1390,6 @@ compute_pv(1000, .05, 10, multiplier = 1.25)
 ## [1] 767.5
 ```
 ]
-
----
-class: yourturn
-# Your Turn!
-
 
 ---
 # Lexical scoping
@@ -1340,7 +1575,7 @@ source("my-functions/custom-stat-functions.R")
 ls()
 ## [1] "skewness"  "std_dev"   "std_error" "variance"
 
-mtcars %&gt;% map_dbl(skewness)
+purrr::map_dbl(mtcars, skewness)
 ##   mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb 
 ##  0.65 -0.19  0.41  0.77  0.28  0.45  0.39  0.26  0.39  0.56  1.12
 ```
@@ -1359,6 +1594,7 @@ Two main ways to distribute your functions:
    - does not scale well
 
 2. writing a package (package writing will not be covered)
+   - once you have a few functions that serve a common use
    - hard to get started
    - scales beautifully
 ]
@@ -1475,7 +1711,7 @@ plot_strongest_corr &lt;- function(data, response, ...) {
 plot_strongest_corr(mtcars, "mpg", pch = 19, col = "blue", main = "Some cool title")
 ```
 
-&lt;img src="day-2d-functions_files/figure-html/unnamed-chunk-25-1.png" width="50%" height="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="day-2d-functions_files/figure-html/unnamed-chunk-27-1.png" width="50%" height="50%" style="display: block; margin: auto;" /&gt;
 
 ]
 
@@ -1596,9 +1832,9 @@ bench::mark(
 ## # A tibble: 3 x 6
 ##   expression      min     mean   median      max `itr/sec`
 ##   &lt;chr&gt;      &lt;bch:tm&gt; &lt;bch:tm&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt;
-## 1 sum(x)        980ns   1.09µs   1.06µs   22.2µs   913271.
-## 2 sumC(x)      2.13µs   3.04µs   2.38µs  816.6µs   329303.
-## 3 sumR(x)     35.62µs  39.01µs  37.88µs  101.5µs    25633.
+## 1 sum(x)        950ns   1.14µs    968ns  21.39µs   877949.
+## 2 sumC(x)      2.12µs   4.42µs   4.54µs   1.09ms   226007.
+## 3 sumR(x)     35.82µs  39.34µs  37.27µs 256.51µs    25421.
 ```
 ]
 ]
@@ -1657,11 +1893,73 @@ bench::mark(
 ## # A tibble: 3 x 6
 ##   expression      min     mean   median      max `itr/sec`
 ##   &lt;chr&gt;      &lt;bch:tm&gt; &lt;bch:tm&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt;
-## 1 sum(x)       1.01µs   1.14µs   1.06µs   15.2µs   878179.
-## 2 sumC(x)      2.19µs   4.16µs   4.29µs  848.9µs   240624.
-## 3 sumR(x)     35.68µs  46.31µs  37.35µs   67.1ms    21593.
+## 1 sum(x)        950ns   1.27µs    995ns   37.5µs   784899.
+## 2 sumC(x)      2.12µs   3.67µs   2.51µs   1.24ms   272609.
+## 3 sumR(x)     35.63µs  38.98µs  37.22µs 132.34µs    25655.
 ```
 ]
+]
+
+---
+class: yourturn
+# Time permitting
+
+Practice writing the following functions and test them on the given test vector
+
+.pull-left[
+
+
+```r
+# test vector
+set.seed(123)
+x &lt;- rlnorm(100)
+
+# create a function that computes the variance of x
+(1 / (length(x) - 1)) * sum((x - mean(x))^2)
+
+# create a function that computes the standard deviation of x
+sqrt((1 / (length(x) - 1)) * sum((x - mean(x))^2))
+
+# create a function that computes the standard error of x
+var_x &lt;- (1 / (length(x) - 1)) * sum((x - mean(x))^2)
+sqrt(var_x / length(x))
+
+# create a function that computes the skewness of x
+n &lt;- length(x)
+v &lt;- var(x)
+m &lt;- mean(x)
+third.moment &lt;- (1 / (n - 2)) * sum((x - m)^3)
+third.moment / (var(x)^(3 / 2))
+```
+
+]
+
+.pull-right[
+
+
+```r
+# test vector
+set.seed(123)
+x &lt;- rlnorm(100)
+
+# variance function output
+variance(x)
+## [1] 3
+
+# stardard dev output
+std_dev(x)
+## [1] 1.7
+
+# standard error output
+std_error(x)
+## [1] 0.17
+
+# skewness output
+skewness(x)
+## [1] 2.3
+```
+
+
 ]
 
 ---

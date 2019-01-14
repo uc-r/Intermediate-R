@@ -457,7 +457,21 @@ compute_pv(fv = 2000, r = .08, n = 5)
 class: yourturn
 # Your Turn!
 
-define your first function
+.pull-left[
+* Define a function titled ratio that takes arguments `x` and `y` and returns their ratio, `x / y`
+
+* Call `ratio()` with arguments 3 and 4
+]
+--
+.pull-right[
+```{r first-your-turn}
+ratio <- function(x, y) {
+  x / y
+}
+
+ratio(3, 4)
+```
+]
 
 ---
 # Calling arguments in different ways
@@ -651,8 +665,70 @@ compute_pv(1000, .05, 10, digits = 0)
 
 ---
 class: yourturn
-# Your Turn!
+# Your Turn - Part 1
 
+.pull-left[
+* Earlier in these slides you saw the following code duplicated:
+
+```r
+(df$a - min(df$a, na.rm = TRUE)) /  
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+```
+
+* Can you write a function called `rescale()` that takes argument `x` and executes this code?
+
+* Test it on the following vector:
+
+```{r test-vector}
+set.seed(123)
+test_vector <- runif(20, min = 25, max = 40)
+```
+
+]
+--
+.pull-right[
+
+```{r your-turn-2}
+rescale <- function(x){
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+rescale(test_vector)
+```
+
+]
+
+---
+class: yourturn
+# Your Turn - Part 2
+
+.pull-left[
+
+* Now add an argument to `rescale()` that allows you to round the output to a specified decimal.  
+
+* Set the default to 2.
+]
+
+--
+
+.pull-right[
+
+```{r your-turn-3}
+rescale <- function(x, digits = 2){
+  rng <- range(x, na.rm = TRUE)
+  scaled <- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+
+# default
+rescale(test_vector)
+
+# 3 digits
+rescale(test_vector, digits = 3)
+```
+
+]
 
 ---
 # Checking arguments and other conditions
@@ -746,6 +822,7 @@ compute_pv("1000", ".05", 10)
    - hyperparameter clashes in a grid search
    - an extremely long compute time and the user may want to re-assess
    - deprecated functions
+   - NAs, NULLs, Infs exist, which result in NA output
 
 ```{r show-deprecation, message=TRUE, warning=TRUE}
 lubridate::mdy(c("2-1-2019", "1995"))
@@ -935,6 +1012,172 @@ compute_pv(1000, .26, 10, quiet = TRUE)
 class: yourturn
 # Your Turn!
 
+.pull-left[
+
+Let's go back to our `rescale()` function:
+
+```r
+rescale <- function(x, digits = 2){
+  rng <- range(x, na.rm = TRUE)
+  scaled <- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+]
+
+---
+class: yourturn
+# Your Turn!
+
+.scrollable90[
+.pull-left[
+
+Let's go back to our `rescale()` function:
+
+```{r, eval = FALSE}
+rescale <- function(x, digits = 2){
+  rng <- range(x, na.rm = TRUE) #<<
+  scaled <- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+
+* Move the `na.rm = TRUE` option to the function arguments so that the user can control whether or not to remove missing values.
+* Add a `warning()` that tells the user NAs are present (if they use `na.rm = FALSE`)
+* Add a `message()` that tells the user how many NAs were removed
+* add a missing value to your test_vector and test out your revised function
+
+```{r test-vector-with-NA}
+test_vector <- c(NA, test_vector)
+```
+
+]
+
+.pull-right[
+
+```{r your-turn-5-hidden, echo=FALSE}
+rescale <- function(x, digits = 2, na.rm = TRUE, quiet = FALSE){
+  # make sure x is numeric
+  if(!is.atomic(x) || !is.numeric(x)) {
+    stop("`x` must be a numeric atomic vector", call. = FALSE)
+  }
+  
+  # compute number of missing values
+  missing_n <- sum(is.na(x))
+  
+  # warning if na.rm = FALSE and NAs are present
+  if(!na.rm) {
+    warning(paste(
+      "There are", 
+      missing_n,
+      "NAs. Remove them with `na.rm = TRUE`"),
+      call. = FALSE)
+  }
+  
+  # message to report how many NAs were removed
+  if(na.rm) {
+    x <- x[!is.na(x)]
+    if(!quiet) {
+      message(paste(missing_n, "NAs were removed."))
+    }
+  }
+  
+  # compute scaling
+  rng <- range(x)
+  scaled <- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+
+Your results should look something like this:
+
+```{r your-turn-5-example-output, message=TRUE, warning=TRUE, error=TRUE}
+# results in an error
+rescale(letters)
+
+# results in warning
+rescale(test_vector, na.rm = FALSE)
+
+# results in message
+rescale(test_vector)
+```
+
+]
+]
+
+---
+class: yourturn
+# Your Turn!
+.scrollable90[
+.pull-left[
+
+Let's go back to our `rescale()` function:
+
+```{r, eval = FALSE}
+rescale <- function(x, digits = 2){
+  rng <- range(x, na.rm = TRUE) #<<
+  scaled <- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+
+* Move the `na.rm = TRUE` option to the function arguments so that the user can control whether or not to remove missing values.
+* Add a `warning()` that tells the user NAs are present (if they use `na.rm = FALSE`)
+* Add a `message()` that tells the user how many NAs were removed
+* add a missing value to your test_vector and test out your revised function
+
+```{r test-vector-with-NA-silent, eval=FALSE}
+test_vector <- c(NA, test_vector)
+```
+
+]
+
+.pull-right[
+
+```{r your-turn-5, message=TRUE, warning=TRUE, error=TRUE}
+rescale <- function(x, digits = 2, na.rm = TRUE, quiet = FALSE){
+  # make sure x an numeric atomic vector
+  if(!is.atomic(x) || !is.numeric(x)) {
+    stop("`x` must be a numeric atomic vector", call. = FALSE)
+  }
+  
+  # compute number of missing values
+  missing_n <- sum(is.na(x))
+  
+  # warning if na.rm = FALSE and NAs are present
+  if(!na.rm) {
+    warning(paste(
+      "There are", 
+      missing_n,
+      "NAs. Remove them with `na.rm = TRUE`"),
+      call. = FALSE)
+  }
+  
+  # message to report how many NAs were removed
+  if(na.rm) {
+    x <- x[!is.na(x)]
+    if(!quiet) {
+      message(paste(missing_n, "NAs were removed."))
+    }
+  }
+  
+  # compute scaling
+  rng <- range(x)
+  scaled <- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+
+# results in an error
+rescale(letters)
+
+# results in warning
+rescale(test_vector, na.rm = FALSE)
+
+# results in message
+rescale(test_vector)
+```
+]
+]
 
 ---
 # Lazy evaluation
@@ -1055,11 +1298,6 @@ compute_pv(1000, .05, 10)
 compute_pv(1000, .05, 10, multiplier = 1.25)
 ```
 ]
-
----
-class: yourturn
-# Your Turn!
-
 
 ---
 # Lexical scoping
@@ -1241,7 +1479,7 @@ source("my-functions/custom-stat-functions.R")
 
 ls()
 
-mtcars %>% map_dbl(skewness)
+purrr::map_dbl(mtcars, skewness)
 ```
 
 ]
@@ -1258,6 +1496,7 @@ Two main ways to distribute your functions:
    - does not scale well
 
 2. writing a package (package writing will not be covered)
+   - once you have a few functions that serve a common use
    - hard to get started
    - scales beautifully
 ]
@@ -1494,6 +1733,62 @@ bench::mark(
 )[1:6]
 ```
 ]
+]
+
+---
+class: yourturn
+# Time permitting
+
+Practice writing the following functions and test them on the given test vector
+
+.pull-left[
+
+```{r practice, eval=FALSE}
+# test vector
+set.seed(123)
+x <- rlnorm(100)
+
+# create a function that computes the variance of x
+(1 / (length(x) - 1)) * sum((x - mean(x))^2)
+
+# create a function that computes the standard deviation of x
+sqrt((1 / (length(x) - 1)) * sum((x - mean(x))^2))
+
+# create a function that computes the standard error of x
+var_x <- (1 / (length(x) - 1)) * sum((x - mean(x))^2)
+sqrt(var_x / length(x))
+
+# create a function that computes the skewness of x
+n <- length(x)
+v <- var(x)
+m <- mean(x)
+third.moment <- (1 / (n - 2)) * sum((x - m)^3)
+third.moment / (var(x)^(3 / 2))
+```
+
+]
+
+.pull-right[
+
+```{r}
+# test vector
+set.seed(123)
+x <- rlnorm(100)
+
+# variance function output
+variance(x)
+
+# stardard dev output
+std_dev(x)
+
+# standard error output
+std_error(x)
+
+# skewness output
+skewness(x)
+```
+
+
 ]
 
 ---
