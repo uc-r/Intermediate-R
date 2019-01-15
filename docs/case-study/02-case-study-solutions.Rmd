@@ -1,11 +1,10 @@
 ---
-title: "Day 1 Case Study Exercises"
+title: "Day 1 Case Study Solutions"
 output: github_document
 ---
   
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  eval = FALSE,
   echo = TRUE,
   warning = FALSE,
   message = FALSE,
@@ -24,8 +23,8 @@ knitr::opts_chunk$set(
 4. Load the __tidyverse__ and __repurrrsive___ packages.  The __repurrrsive__ package provides some data sets we'll use later in this case study.
 
 ```{r}
-library(_______)
-library(_______)
+library(tidyverse)
+library(repurrrsive)
 ```
 
 
@@ -33,19 +32,7 @@ library(_______)
 
 5. Import the `Month-XX.csv` files into your current R session.  Do so using a `for` loop or ___purrr___.  Rather than have 11 separate data frames (one for each month), combines these so that you have one data frame containing all the data.  You final data frame should have 698,159 rows and 10 columns.
 
-```{r}
-# import all data files into one data frame titled "df"
-# add your code here
-
-# after your done, run this line and you should have same
-# results as you see in the code chunk below
-glimpse(df)
-```
-
-```{r importing-data, echo=FALSE, eval=TRUE}
-library(tidyverse)
-library(repurrrsive)
-
+```{r importing-data}
 # import all data files into one data frame titled "df"
 df <- list.files("../data") %>%
   paste0("../data/", .) %>%
@@ -54,16 +41,16 @@ df <- list.files("../data") %>%
 glimpse(df)
 ```
 
-6. Use one of the `map()` function variants to check the current class of each column i.e. (`class(df$Account_ID)`).
+6. Check the current class of each column i.e. (`class(df$Account_ID)`).  Since the time stamp variable has two classes, you can't condense this down to an atomic vector.
 
 ```{r}
-df %>% map_xxx(______)
+df %>% map(class)
 ```
 
 7. How many unique values exists in each column?
 
 ```{r}
-df %>% map_xxx(n_distinct)
+df %>% map_int(n_distinct)
 ```
 
 8. Use `mutate()` and `ifelse()` (or `if_else()`) to modify the `Factor_A` variable. Change those observations that have the following values to:
@@ -75,14 +62,10 @@ df %>% map_xxx(n_distinct)
 
 ```{r}
 df <- df %>%
-  mutate(Factor_A = if_else(_____ == _____, _____, _____))
-```
-
-```{r eval=TRUE, echo=FALSE}
-df <- df %>%
   mutate(Factor_A = if_else(Factor_A %in% c(0, 2, 7, 8), "low", "high"))
-```
 
+glimpse(df)
+```
 
 9. Create a function that converts monthly values to quarters.  Do it such that:
 
@@ -94,23 +77,6 @@ df <- df %>%
 Be sure to include a `stop()` error in the function that stops execution if the input is not a character atomic vector.  Also, think about how you want to deal with NAs or entries that are not a missing value.
 
 ```{r}
-convert_to_qtr <- function(x) {
-  
-  # add a stop error
-  stop(__________)
-  
-  
-  dplyr::case_when(
-    ______ ~ "Q1",
-    ______ ~ "Q2",
-    ______ ~ "Q3",
-    ______ ~ "Q4", 
-    TRUE   ~ NA_character_
-  )
-}
-```
-
-```{r echo=FALSE, eval=TRUE}
 convert_to_qtr <- function(x) {
   
   # make sure x is a character atomic vector
@@ -126,24 +92,14 @@ convert_to_qtr <- function(x) {
 }
 ```
 
-
 10. Use the function you created above in a `mutate()` statement to create a new variable called "Qtr" in the __df__ data frame.
 
 ```{r}
-df <- df %>%
-  mutate(Qtr = ____________)
-
-glimpse(df)
-```
-
-```{r echo=FALSE, eval=TRUE}
 df <- df %>%
   mutate(Qtr = convert_to_qtr(Month))
 
 glimpse(df)
 ```
-
-
 
 11. Unfortunately, some of the "Factor_" variables have observations that contain the 
 value "NULL" (they are recorded as a character string, not the actual `NULL` value.  
@@ -151,13 +107,6 @@ Use `filter_at()` to filter out any of these observations. Your resulting data f
 should have 489,537 rows after filtering.
 
 ```{r}
-df <- df %>%
-  filter_at(vars(_______), all_vars(_______))
-
-glimpse(df)
-```
-
-```{r echo=FALSE, eval=TRUE}
 df <- df %>%
   filter_at(vars(contains("Factor")), all_vars(. != "NULL"))
 
@@ -172,55 +121,31 @@ Using `ifelse()` (or __dplyr__'s `if_else()`) inside `mutate()`, recode any valu
 ```{r convert-factor-d-values}
 # unique values of Factor D before being re-coded
 sort(unique(df$Factor_D))
-## [1] 10 15 20 21 25 30 35 40 50 55 70 90
 
 # recode Factor D
 df <- df %>%
-  mutate(Factor_D = if_else(_______, _______, _______))
+  mutate(Factor_D = if_else(Factor_D == 26L, 25L, Factor_D))
 
 # unique values of Factor D after being re-coded
 sort(unique(df$Factor_D))
-## [1] 10 15 20 21 25 30 35 40 50 55 70 90
 ```
 
 
-13.  Using the `sw_people` data set in the __repurrrsive__ package, find the number of films each Star Wars characters appears in.  Be sure to use the most appropriate `map_xxx()` variant.
+13.  Using the `sw_people` data set in the __repurrrsive__ package, find the number of films each Star Wars characters appears in.
 
 ```{r}
-sw_people %>% map_xxx(________)
-```
-
-Results should look like:
-
-```{r, eval=TRUE, echo=FALSE}
 sw_people %>% map_int(~ length(.x$films))
 ```
 
 14. Using the same data and approach, extract the name of each Star Wars character.  Hint: the first element of each list item is the characters name.
 
 ```{r}
-sw_people %>% map_xxx(________)
-```
-
-Results should look like:
-
-```{r, eval=TRUE, echo=FALSE}
 sw_people %>% map_chr(~ .x[[1]])
 ```
 
 15. Create a plot that shows the number of films each Star Wars character has been in.  To do so, fill in the blanks below and your plot should look similar to one below the following code chunk.
 
-```{r}
-sw_people %>% 
-  map_chr(_____) %>%                               # extract the names
-  set_names(sw_people, nm = .) %>%                 # set the list names as character names
-  map_df(_____) %>%                                # extract number of films and make a data frame
-  gather(Character, Films) %>%                     # gather (via tidyr)
-  ggplot(aes(Films, reorder(Character, Films))) +  # plot results
-  geom_point()
-```
-
-```{r, fig.height=11, eval=TRUE, echo=FALSE}
+```{r, fig.height=11}
 sw_people %>% 
   map_chr(~ .x[[1]]) %>% 
   set_names(sw_people, nm = .) %>%
@@ -229,3 +154,4 @@ sw_people %>%
   ggplot(aes(Films, reorder(Character, Films))) +
   geom_point()
 ```
+

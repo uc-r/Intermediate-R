@@ -41,7 +41,7 @@ training:
 | Lunch                                                                                         | 12:00 - 1:00  |
 | [Writing functions](https://uc-r.github.io/Intermediate-R/day-2d-functions.html)              |  1:00 - 2:30  |
 | Break                                                                                         |  2:30 - 2:45  |
-| Case study                                                                                    |  2:45 - 4:00  |
+| [Case study](https://uc-r.github.io/Intermediate-R/day-2e-case-study.html)                    |  2:45 - 4:00  |
 | Q\&A                                                                                          |  4:00 - 4:30  |
 
 ### Course Preparation
