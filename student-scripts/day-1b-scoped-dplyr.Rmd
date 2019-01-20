@@ -1,0 +1,330 @@
+---
+title: "Scoped dplyr verbs"
+output: html_notebook
+---
+
+# Module set-up
+
+```{r slide-2}
+## ----package-requirements------------------------------------------------
+library(nycflights13)  # data
+library(dplyr)         # data transformation
+
+## ----data-requirements---------------------------------------------------
+flights
+```
+
+# dplyr review
+
+* `filter`: pick observations based on values
+* `select`: pick variables
+* `summarize`: compute statistical summaries
+* `group_by`: perform operations at different levels of your data
+* `arrange`: reorder data
+* `mutate`: create new variables
+
+```{r slide-6}
+## ----filter-observations-------------------------------------------------
+# filter flights with arrival delay > 60 minutes
+filter(flights, arr_delay > 60)
+```
+
+
+```{r slide-7}
+## ----select-variables----------------------------------------------------
+# select carrier, year, month, day, and all variables containing "delay"
+select(flights, carrier, year, month, day, contains("delay"))
+```
+
+
+```{r slide-8}
+## ----summary-statistics--------------------------------------------------
+# compute median departure delay across all fights
+summarize(flights, median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+
+```{r slide-9}
+## ----grouped-summary-statistics------------------------------------------
+# compute median departure delay for each carrier
+flights %>%
+  group_by(carrier) %>%
+  summarize(median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+The `%>%` operator takes the output of the left-hand-side function and passes it 
+to the right-hand-side function as the first argument.
+
+```{r slide-10}
+#--------------TRADITIONAL APPROACH -------------------------------------------------------
+# Step 1: group data
+grouped_flights <- group_by(flights, carrier)
+
+# Step 2: compute median departure delay for each carrier
+summarize(grouped_flights, median_delay = median(dep_delay, na.rm = TRUE))
+
+
+#--------------NESTED APPROACH ------------------------------------------------------------
+summarize(group_by(flights, carrier), median_delay = median(dep_delay, na.rm = TRUE))
+
+
+#--------------PIPE OPERATOR APPROACH -----------------------------------------------------
+flights %>%
+  group_by(carrier) %>%
+  summarize(median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+
+```{r slide-11}
+## ----arrange-data-based-on-variable--------------------------------------
+# rank order carriers with greatest delays on Jan 31
+flights %>%
+  filter(month == 1, day == 31) %>%
+  group_by(carrier) %>%
+  summarize(avg_delay = mean(arr_delay, na.rm = TRUE)) %>%
+  arrange(desc(avg_delay)) #<<
+```
+
+
+```{r slide-12}
+## ----create-new-variable-with-mutate-------------------------------------
+# rank order carriers with greatest difference in delays
+flights %>%
+  filter(month == 1, day == 31) %>%
+  group_by(carrier) %>%
+  summarize(
+    avg_dep_delay = mean(dep_delay, na.rm = TRUE),
+    avg_arr_delay = mean(arr_delay, na.rm = TRUE)
+    ) %>%
+  mutate(avg_diff = avg_arr_delay - avg_dep_delay) %>% #<<
+  arrange(desc(avg_diff ))
+```
+
+## Your Turn!
+
+1. Which top 5 destination airports (`dest`) have the largest median arrival 
+   delays (`arr_delay`)?
+   
+2. Which carriers (`carrier`) have the fastest average air speed where 
+   `air_speed = distance / air_time`
+
+```{r slide-13}
+## ----your-turn-1a--------------------------------------------------------
+# 1 
+flights %>%
+ group_by(____) %>%
+ summarize(____) %>% 
+ arrange(____)
+
+## ----your-turn-1b--------------------------------------------------------
+# 2
+flights %>%
+ mutate(____) %>%
+ group_by(____) %>%
+ summarize(____) %>%
+  arrange(____)
+```
+
+
+# Scoped dplyr verbs
+
+Performing manipulations on **multiple"** columns can be tedious. Say we wanted 
+to compute several departure and arrival time stats for each month:
+
+```{r slide-15}
+## ----multiple-summary-statistics-----------------------------------------
+# compute several departure and arrival time stats for each month
+flights %>%
+  group_by(month) %>%
+  summarize(
+    dep_actual = mean(dep_time, na.rm = TRUE),
+    dep_sched  = mean(sched_dep_time, na.rm = TRUE),
+    dep_delay  = mean(dep_delay, na.rm = TRUE),
+    arr_actual = mean(arr_time, na.rm = TRUE),
+    arr_sched  = mean(sched_arr_time, na.rm = TRUE),
+    arr_delay  = mean(arr_delay, na.rm = TRUE),
+  )
+```
+
+Many __dplyr__ functions have cousins with the following suffixes:
+
+- `*_all()`: execute function(s) on all variables
+- `*_if()`: execute function(s) on variables that meet a certain condition
+- `*_at()`: execute function(s) for pre-specified variables
+
+## Transform all variables with `*all()`
+
+```{r slide-18}
+## ----summarize-all-example-1---------------------------------------------
+flights %>%
+  group_by(month) %>%
+  summarize_all(mean, na.rm = TRUE)
+```
+
+
+```{r slide-19}
+## ----mutate-all-example-1 -----------------------------------------------
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
+  mutate_all(scale) 
+```
+
+What if we want to write our own custom function on the fly?
+
+```{r slide-20}
+## ------------------------------------------------------------------------
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
+  mutate_all(function(x) (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)) #<<
+
+## ------------------------------------------------------------------------
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
+  mutate_all(.funs = funs((. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE))) #<<
+```
+
+## Your Turn!
+
+Using the `flights` data:
+
+1. convert month and day variables to type character
+2. group by month and day
+3. select all variables containing "time" and "delay"
+4. compute the mean of all "time" and "delay" variables
+
+```{r slide-21}
+## ---Your-Turn -----------------------------------------------------------
+flights %>%
+  mutate(____) %>%
+  group_by(____) %>%
+  select(____) %>%
+  summarize_all(____)
+```
+
+But what if we only want to transform .red[some] but not all variables?
+
+```{r slide-22}
+## ----mutate-all----------------------------------------------------------
+# my own standarizing function
+standardize <- function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+# works when performed on only numeric variables
+flights %>%
+  select(-c(carrier, tailnum, origin, dest, time_hour)) %>%
+  mutate_all(standardize)
+```
+
+## Transform some variables with `*_if()`
+
+```{r slide-24}
+## ----mutate-if-----------------------------------------------------------
+# standardize only numeric variables but keep ALL variables
+flights %>%
+  mutate_if(is.numeric, standardize) 
+```
+
+## Your Turn!
+
+Using the `flights` data:
+
+1. convert year, month, and day variables to type character
+2. group by month
+3. compute the mean of all numeric variables
+
+```{r slide-25}
+## ---Your-turn-------------------------------------------------------------
+flights %>%
+ mutate(____) %>%
+ group_by(____) %>%
+ summarize_if(____)
+```
+
+
+## Transform specific variables with `*_at()`
+
+```{r slide-28}
+## ----unscoped-approach---------------------------------------------------
+flights %>%
+  mutate(
+    year  = as.character(year),  # can we   #<<
+    month = as.character(month), # simplify #<<
+    day   = as.character(day)    # this?    #<<
+  ) %>%
+  group_by(month) %>%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+
+## ----scoped-at-approach--------------------------------------------------
+flights %>%
+  mutate_at(vars(year, month, day), as.character) %>% #<<
+  group_by(month) %>%
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+```
+
+Any `select()` helper function can be used in vars()!
+
+```{r slide-30}
+## ----summarize-at-with-helpers-------------------------------------------
+flights %>%
+  group_by(dest) %>%
+  summarize_at(vars(contains("delay"), ends_with("time")), median, na.rm = TRUE)
+```
+
+We can also include multiple functions to be executed with the `funs()` wrapper.
+
+```{r slide-31}
+## ----summarize-at-with-multiple-functions---------------------------------
+flights %>%
+  group_by(dest) %>%
+  summarize_at(vars(contains("delay")), funs(mean, sd), na.rm = TRUE)
+```
+
+## Filtering rows that meet certain conditions
+
+- The `all_vars()` function can be used to filter rows where all variables meet 
+  the same logical condition.
+  
+- The `any_vars()` function can be used to filter rows where at least one variable 
+  meets the logical condition.
+
+```{r slide-33}
+## ----filter-at-with-all-vars---------------------------------------------
+# This will return rows where all variables containing "delay" are NA
+flights %>% 
+  filter_at(vars(contains("delay")), all_vars(is.na(.)))
+
+## ----filter-at-with-any-vars---------------------------------------------
+# This will return rows where any variable containing "delay" is NA
+flights %>% 
+  filter_at(vars(contains("delay")), any_vars(is.na(.)))
+```
+
+## `group_by_*()` and its helpers
+
+```{r slide-34}
+## ------------------------------------------------------------------------
+flights %>%
+  mutate( 
+    carrier = as.factor(carrier),
+    month   = as.factor(month)
+  ) %>%
+  group_by(carrier, month) %>%
+  summarize_at(vars(contains("delay")), median, na.rm = TRUE)
+
+## ------------------------------------------------------------------------
+flights %>%
+  group_by_at(vars(carrier, month), as.factor) %>%
+  summarize_at(vars(contains("delay")), median, na.rm = TRUE)
+```
+
+
+## Your Turn!
+
+```{r slide-35}
+## ---- Your-turn ---------------------------------------------------------
+flights %>%
+  filter_xxx(vars(contains("_____")), any_vars(___ > quantile(___, .99, na.rm = TRUE)))
+```
+
+
