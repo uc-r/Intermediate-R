@@ -1,0 +1,231 @@
+---
+title: "Conditional Statements"
+output: html_notebook
+---
+
+# Prerequisites
+
+```{r setup}
+library(dplyr)
+```
+
+
+# `if` statement
+
+```{r slide-6}
+# create x
+set.seed(10)
+x <- runif(1)
+
+# check if x meets some condition
+if(x > .5) {
+  paste("x equals", round(x, 2), "which is greater than 0.5")
+}
+```
+
+## Dealing with multiple inputs
+
+```{r slide-9}
+x <- c(8, 3, -2, 5)
+
+# check if any x elements are less than 0
+any(x < 0)
+
+# if statement using any()
+if(any(x < 0)) {
+  print("x contains a negative number")
+}
+
+# check if all x elements are less than 0
+all(x < 0)
+
+# if statement using all()
+if(all(x < 0)) {
+  print("x contains a negative number")
+}
+```
+
+
+## Most common uses of `if()` statements
+
+You typically use `if()` statements in functions and looping statements. We'll see more examples and alternatives of these uses in later modules.
+
+```{r slide-10a}
+# example `if` statement in function
+mean <- function(x) {
+  if(!is.numeric(x)) {
+    stop("x must be numeric", call. = FALSE)
+  }
+  sum(x) / length(x)
+}
+mean(letters)
+```
+
+```{r slide-10b}
+# example `if` statement in looping statement
+# flip a coin until we get 10 heads in a row
+results <- NULL
+repeat{
+  # flip coin & add to results vector
+  results <- c(results, sample(c("heads", "tails"), 1))
+  # repeat until you have at least 10 flips
+  if(length(results) < 10) next()
+  # if last 10 flips are all the same
+  # report number of flips and break
+  if(length(unique(tail(results, 10))) == 1) {
+    cat("Number of flips:", length(results))
+    break()
+  }
+}
+```
+
+
+# `ifelse` statement'
+
+1. evaluates if the test expression is TRUE
+2. if TRUE, execute statement 1
+3. if FALSE, exectute statement 2
+
+```{r slide-12}
+# create x
+set.seed(10)
+x <- runif(1)
+
+# check if x meets some condition
+if(x > .7) {
+  paste("x equals", round(x, 2), "which is greater than 0.7")
+} else {
+  paste("x equals", round(x, 2), "which is less than 0.7")
+} 
+```
+
+We can continue to expand an if...else statement:
+
+```{r}
+# testing for more than two conditions
+if(x < 3) {
+  print("x has low tolerance")
+} else if(x == 3 & x < 8) {
+  print("x has moderate tolerance")
+} else {
+  print("x has high tolerance")
+}
+```
+
+## Your Turn!
+
+Fill in the following code chunk so that:
+
+- if month has value 1-9 the file name printed out will be "data/month-0X.csv"
+- if month has value 10-12 the file name printed out will be "data/month-1X.csv"
+- if month is an invalid month number (not 1-12), the result printed out is "Invalid month"
+test it out for when month equals 6, 10, & 13
+
+```{r slide-16}
+month <- 4
+if(month _____) {
+  paste0("data/", "Month-0", month, ".csv")
+} else if(month _____) {
+  paste0("data/", "Month-", month, ".csv")
+} else {
+  print("_____")
+}
+```
+
+
+## Vectorized `ifelse`
+
+We can vectorize an if...else statement with:
+
+```{r slide-19a}
+# base R approach
+x <- c(runif(5), NA)
+ifelse(x > .5, "greater than", "less than")
+```
+
+```{r slide-19b}
+# dplyr R approach
+dplyr::if_else(x > .5, "greater than", "less than", missing = "something else")
+```
+
+## Vectorize multiple conditional statements
+
+Best way to vectorize multiple conditions (i.e. if...else...if...else]) is with `dplyr::case_when()`
+
+```{r slide-20}
+(x <- c(runif(10), NA, Inf))
+
+dplyr::case_when(
+  x < .3   ~ "low",
+  x < .7   ~ "medium",
+  x <= .10 ~ "high",
+  is.na(x) ~ "missing",
+  TRUE     ~ "out of bounds"
+)
+```
+
+## Your Turn!
+
+Re-write the below code using a vectorized approach. Test the results with `month <- 1:13`.
+
+```{r slide-21}
+month <- 1:13
+if(month %in% 1:9) {
+  paste0("data/", "Month-0", month, ".csv")
+} else if(month %in% 10:12) {
+  paste0("data/", "Month-", month, ".csv")
+} else {
+  print("Invalid month")
+}
+```
+
+
+# Conditional statements within dplyr
+
+- So how can we leverage these skills when performing exploratory data analysis?
+- Most common is to use use `ifelse()`, `if_else()`, and `case_when()` within `dplyr::mutate()`
+
+```{r slide-22a}
+mpg <- ggplot2::mpg
+
+# if_else within mutate
+mpg %>%
+  select(manufacturer, model, year, cty) %>%
+  mutate(cty_rating = if_else(cty > median(cty), "Above", "Below"))
+```
+
+```{r slide-22b}
+# case_when within mutate
+mpg %>%
+  select(manufacturer, model, year, cty) %>%
+  mutate(cty_rating = case_when(
+    cty < quantile(cty, .33) ~ "Low",
+    cty < quantile(cty, .77) ~ "Medium",
+    TRUE                     ~ "High"
+  ))
+```
+
+## Your Turn!
+
+Fill in the blanks below to assign each flight to a severity rating of 1, 2, 3, or 4 based on the arrival delay (`arr_delay`) variable:
+
+- severity = 1: if `arr_delay` < 25th percentile
+- severity = 2: if `arr_delay` < 50th percentile
+- severity = 3: if `arr_delay` < 75th percentile
+- severity = 4: if `arr_delay` >= 75th percentile
+
+_Hint: use `quantile(x, perc_value)`_
+
+```{r slide-23}
+# fill in the blanks
+nycflights13::flights %>%
+  filter(arr_delay > 0) %>%
+  select(carrier, tailnum, arr_delay) %>%
+  mutate(severity = case_when(
+    ______ ~ 1,
+    ______ ~ 2,
+    ______ ~ 3,
+    ______ ~ 4
+  ))
+```
+

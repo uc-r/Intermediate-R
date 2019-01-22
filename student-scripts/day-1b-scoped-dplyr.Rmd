@@ -321,6 +321,8 @@ flights %>%
 
 ## Your Turn!
 
+Fill in the blanks and select the right `filter_*()` to filter for those flights where either departure delay (`dep_delay`) or arrival delay (`arr_delay`) exceeded the 99th percentile (hint: `quantile(x, .99)` provides the 99th percentile for variable `x`).
+
 ```{r slide-35}
 ## ---- Your-turn ---------------------------------------------------------
 flights %>%
