@@ -1,0 +1,571 @@
+---
+title: "Writing Functions"
+output: html_notebook
+---
+
+A function centralizes a common task to a single, abstract method
+
+This helps to:
+
+- increase reusability which...
+- reduces verbosity
+- reduces repetitiveness
+- reduces the chance of making an error
+- reduces instances requiring updates when changes are needed
+- reduces amount of code to test
+
+# Key ingredients to a function
+
+1. Name
+2. arguments
+3. body
+4. environment
+
+```{r slide-7}
+# present value function
+pv <- function(fv, r, n = 5) {
+  fv / (1 + r)^n
+}
+
+# arguments
+args(pv)
+
+# body
+body(pv)
+
+# environment
+environment(pv)
+```
+
+## Your Turn!
+
+Identify the arguments, body, and environment of:
+
+1. `read.csv`
+2. `dplyr::add_count`
+3. `sum`
+
+
+# Define a function
+
+- We define a function with <- just like we define any other R object
+- Use informative names; strive to use verbs when possible
+- We can define a function with no arguments; however, this is rarely useful
+- Consequently, most functions have all key ingredients
+
+```{r slide-13}
+compute_pv <- function(fv, r, n) {
+  fv / (1 + r)^n
+}
+
+compute_pv(fv = 1000, r = .05, n = 10)
+
+compute_pv(fv = 2000, r = .08, n = 5)
+```
+
+## Your Turn!
+
+- Define a function titled ratio that takes arguments x and y and returns their 
+  ratio, `x / y`
+- Call `ratio()` with arguments 3 and 4
+
+```{r slide-14}
+ratio <- function(___, ___) {
+  _______
+}
+```
+
+
+Calling arguments in different ways
+
+Many ways to call arguments:
+
+- Using argument names
+- Positional matching
+- Must use names if you change order
+- ...otherwise error or incorrect computation will occur
+- missing arguments results in error
+
+```{r slide-18}
+# using arg names
+compute_pv(fv = 1000, r = .05, n = 10)
+
+# positional matching
+compute_pv(1000, .05, 10)
+
+# use names when changing order
+compute_pv(r = .05, fv = 1000, n = 10)
+
+# ...otherwise an error occurs
+compute_pv(.05, 1000, 10)
+
+# missing arguments result in error
+compute_pv(1000, .05)
+```
+
+# Setting good defaults
+
+- As our functions require more inputs...
+- many of them can likely do with defaults
+- Usually, the first 1-3 arguments are not preset but the rest are
+- Good defaults are largely based on
+   - methodology best practices (i.e. hyperparameters, removing missing values)
+   - industry best practices or current values (i.e. current interest rates)
+   - organizational best practices (i.e. golden rules)
+
+```{r slide-20}
+# set default value for digits argument
+compute_pv <- function(fv, r, n, digits = 2) {
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+# by default, will round to 2 digits
+compute_pv(1000, .05, 10)
+
+# to adjust, specify by position
+compute_pv(1000, .05, 10, 0)
+
+# or by name
+compute_pv(1000, .05, 10, digits = 0)
+```
+
+## Your Turn Part 1
+
+- Earlier in these slides you saw the following code duplicated:
+
+```
+(df$a - min(df$a, na.rm = TRUE)) / (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+```
+
+- Can you write a function called rescale() that takes argument x and executes 
+  this code?
+- Test it on the following vector:
+
+```{r slide-21}
+set.seed(123)
+test_vector <- runif(20, min = 25, max = 40)
+```
+
+## Your Turn Part 2
+
+- Now add an argument to rescale() that allows you to round the output to a 
+  specified decimal.
+- Set the default to 2.
+
+
+# Checking arguments and other conditions
+
+- We've created a function that allows users to specify their inputs
+- But how do we ensure they provide us with the right kind of inputs?
+- Or what if we want to be able to provide some sort of feedback to the user?
+- There are several ways to signal conditions to function users:
+   - `stop()` & `stopifnot()`: signal an error (no way for a function to continue 
+      and execution must stop)
+   - `warning()`: signal a warning (something has gone wrong but the function has 
+      been able to at least partially recover.)
+   - `message()`: signal an informative message (function works fine but user 
+      should be informed of something.)
+
+## `stop()` & `stopifnot()`
+
+- The stop functions are most commonly used to check for proper inputs
+- but can be used to stop the function procedures because the user's environment 
+  is not properly established
+- Weigh the benefits of highly custom, informative error messages (via `stop`) 
+  versus short to the point (via 
+  `stopifnot`)
+- Execution will stop at the first violation
+
+```{r slide-24}
+# stop
+compute_pv <- function(fv, r, n, digits = 2) {
+  if(!is.numeric(fv)) {
+    stop("`fv` must be numeric", call. = FALSE)
+  }
+  if(!is.numeric(r)) {
+    stop("`r` must be numeric", call. = FALSE)
+  }
+  if(!is.numeric(n)) {
+    stop("`n` must be numeric", call. = FALSE)
+  }
+  if(!is.numeric(digits)) {
+    stop("`digits` must be numeric", call. = FALSE)
+  }
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+compute_pv("1000", ".05", 10)
+
+# stopifnot
+compute_pv <- function(fv, r, n, digits = 2) {
+  stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  round(fv / (1 + r)^n, digits = digits)
+}
+compute_pv("1000", ".05", 10)
+```
+
+## `warning()`
+
+- `warnings()` are rarely used but...
+- can be useful to signal non-terminating concerns
+   - hyperparameter clashes in a grid search
+   - an extremely long compute time and the user may want to re-assess
+   - deprecated functions
+   - NAs, NULLs, Infs exist, which result in NA output
+
+```{r slide-25}
+# example in established function
+lubridate::mdy(c("2-1-2019", "1995"))
+
+# how to implement
+present_value <- function(fv, r, n, digits = 2) {
+  
+  warning("`present_value()` is deprecated. Use `compute_pv()`", call. = FALSE)
+  stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+
+present_value(1000, .05, 10)
+```
+
+## `message()`
+
+- designed to be informational
+- use them to tell the user that you’ve done something on their behalf
+- may represent:
+  - default argument that may be non-trivial
+  - how information was interpreted by the function
+  - words of encouragement!
+  - or even industry/business best practices
+- Always provide an option to suppress messages
+
+```{r slide-31}
+compute_pv <- function(fv, r, n, digits = 2, quiet = FALSE) {
+  
+  stopifnot(is.numeric(fv), is.numeric(r), is.numeric(n), is.numeric(digits))
+  
+  if(!quiet) {
+    if(r < 0.01 || r > 0.25) { 
+    message("Your interest rate exceeds the normal ranges of 1-25%") 
+    }
+    # other messages here...
+  }
+  
+  round(fv / (1 + r)^n, digits = digits)
+}
+# default provides message
+compute_pv(1000, .26, 10)
+
+# user can silence
+compute_pv(1000, .26, 10, quiet = TRUE)
+```
+
+## Your Turn!
+
+Let's go back to our `rescale()` function:
+
+```{r slide-32a}
+rescale <- function(x, digits = 2){
+  rng <- range(x, na.rm = TRUE)
+  scaled <- (x - rng[1]) / (rng[2] - rng[1])
+  round(scaled, digits = digits)
+}
+```
+
+- Move the `na.rm = TRUE` option to the function arguments so that the user can 
+  control whether or not to remove missing values.
+- Add a `warning()` that tells the user NAs are present (if they use `na.rm = FALSE`)
+- Add a `message()` that tells the user how many NAs were removed
+- add a missing value to your test_vector and test out your revised function
+
+# Lazy evaluation
+
+In R, function arguments are lazily evaluated: only evaluated if accessed
+
+```{r slide-35}
+h01 <- function(x) {
+  10
+}
+
+h01(x = stop("This is an error!"))
+```
+
+This provides you with lots of flexibility in when and how to evaluate inputs
+
+```{r slide-36}
+h02 <- function(x, y, z) {
+  if(missing(z)) {
+    sum(x, y)
+  } else {
+    sum(x, y, z)
+  }
+}
+
+# z does not exist
+h02(x = 1, y = 2)
+
+# z does exist
+h02(x = 1, y = 2, z = 3)
+```
+
+You need to be careful with how you use this, as it even allows you to use 
+arguments outside of your function environment
+
+```{r slide-37}
+h03 <- function(x, y) {
+    if(exists("z")) {
+      x + y + z
+    } else {
+      x + y
+    }
+}
+# z does not exist
+h03(x = 1, y = 2)
+
+# z exists in global environment
+z <- 3
+h03(x = 1, y = 2)
+```
+
+One of the more common applications is to use NULL to indicate that a variable 
+is not required but can be used if supplied
+
+```{r slide-38}
+compute_pv <- function(fv, r, n, multiplier = NULL) {
+  # compute present value
+  pv <- round(fv / (1 + r)^n)
+  
+  # apply multiplier if its supplied
+  if(is.null(multiplier)) {
+    pv
+  } else {
+    pv * multiplier
+  }
+}
+
+# w/o multiplier
+compute_pv(1000, .05, 10)
+
+# with multiplier
+compute_pv(1000, .05, 10, multiplier = 1.25)
+```
+
+# Lexical scoping
+
+- R uses a nested environment structure
+- a function has:
+   - its own environment
+   - plus one or more parent environments
+   - always a fresh start
+- a function will search:
+   - itself
+   - through hierarchical parental environments 
+- a function will never:
+   - use a parameter from a parent environment when it exists in the current 
+    environment
+   - search within another function unless it's its parent
+
+# Pure Functions
+
+- This is why `h03()` in the previous example worked
+- However, we now have an impure function
+- Pure function:
+   - returns the same result if given the same arguments
+   - does not cause any observable side effects
+
+```{r slide-41}
+#---------------------BAD---------------------------------------------------
+# h03() changes depending on z's value
+# outside of the function call
+z <- 4
+h03(x = 1, y = 2)
+
+z <- 5
+h03(x = 1, y = 2)
+
+#---------------------GOOD--------------------------------------------------
+# if your function is dependent on randomness
+# allow users to set seed
+get_n_samples <- function(x, n, seed = NULL) {
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+  sample(x, size = n)
+}
+
+x <- 1:10
+
+# allows user to always get same results
+get_n_samples(x, 5, seed = 123)
+get_n_samples(x, 5, seed = 123)
+```
+
+```{r slide-42}
+# NEVER DO THIS!
+get_n_samples <- function(x, n, seed = NULL) {
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+  samples <- sample(x, size = n)
+  
+  # overwrite x
+  x <<- samples
+  
+  # change options to print 8 decimals
+  options(digits = 2)
+  samples
+}
+
+x <- seq(.0001, 1, by = 0.001)
+get_n_samples(x, 5, seed = 123)
+
+x
+```
+
+Take-away:
+
+- functions should do one thing
+- functions should do that one thing consistently
+- functions should not do anything else
+
+# Distributing your functions
+
+Two main ways to distribute your functions:
+
+1. using the source() function to read an R script
+   - easy to get started
+   - all functions/objects in the sourced .R script will be imported to your 
+     global environment
+   - does not scale well
+   
+```{r slide-44}
+source("my-functions/custom-stat-functions.R")
+ls()
+
+purrr::map_dbl(mtcars, skewness)
+```
+
+2. writing a package (package writing will not be covered)
+   - once you have a few functions that serve a common use
+   - hard to get started
+   - scales beautifully 
+   
+# Bells & whistles
+
+We can do many other things with functions such as:
+
+## add progress bars
+
+```{r slide-46}
+import_monthly_data <- function(files, quiet = FALSE) {
+  if(!quiet) {
+    pb <- progress_estimated(length(files))
+  }
+  special_import <- function(x) {
+    if (quiet) {
+      suppressMessages(readr::read_csv(x))
+    } else {
+      pb$tick()$print()
+      suppressMessages(readr::read_csv(x))
+    }
+  }
+  purrr::map_dfr(paste0("data/", files), special_import)
+}
+import_monthly_data(list.files("data"))
+```
+
+## take any number of additional arguments with ... to:
+
+- pass arguments on to internal arguments
+   
+```{r slide-47}
+plot_strongest_corr <- function(data, response, ...) {
+  # find strong correlation
+  vars <- setdiff(names(data), response)
+  correlations <- sapply(data[, vars], function(x) cor(data[, response], x))
+  x <- names(which.max(abs(correlations)))
+  
+  # plot relationship
+  plot(data[, x], data[, response], xlab = x, ylab = response, ...)
+}
+
+plot_strongest_corr(mtcars, "mpg", pch = 19, col = "blue", main = "Some cool title")
+```
+
+- or accept unknown number of inputs
+
+```{r slide-48}
+select <- function(.data, ...) {
+  # convert ... to a list and then to a string
+  arguments <- substitute(...())
+  vars <- paste(arguments)
+  
+  # index for 
+  .data[, vars]
+}
+
+select(mtcars, mpg, wt)
+```
+
+- improve efficiency with C++
+
+```{r slide-49}
+# create our own sum function
+sumR <- function(x) {
+  total <- 0
+  for (i in seq_along(x)) {
+    total <- total + x[i]
+  }
+  total
+}
+
+# use Rcpp to write a sum function in C++
+library(Rcpp)
+cppFunction('double sumC(NumericVector x) {
+  int n = x.size();
+  double total = 0;
+  for(int i = 0; i < n; ++i) {
+    total += x[i];
+  }
+  return total;
+}')
+
+x <- runif(1e3)
+bench::mark(
+  sum(x),
+  sumC(x),
+  sumR(x)
+)[1:6]
+```
+
+# Your Turn - Time Permitting
+
+Practice writing the following functions and test them on the given test vector
+
+```{r slide-51}
+# test vector
+set.seed(123)
+x <- rlnorm(100)
+
+# create a function that computes the variance of x
+(1 / (length(x) - 1)) * sum((x - mean(x))^2)
+
+# create a function that computes the standard deviation of x
+sqrt((1 / (length(x) - 1)) * sum((x - mean(x))^2))
+
+# create a function that computes the standard error of x
+var_x <- (1 / (length(x) - 1)) * sum((x - mean(x))^2)
+sqrt(var_x / length(x))
+
+# create a function that computes the skewness of x
+n <- length(x)
+v <- var(x)
+m <- mean(x)
+third.moment <- (1 / (n - 2)) * sum((x - m)^3)
+third.moment / (var(x)^(3 / 2))
+```
+
+# Learning More
+
+Advanced R: https://adv-r.hadley.nz/
