@@ -1,0 +1,329 @@
+---
+title: "Iteration with Functional Programming"
+output: html_notebook
+---
+
+
+The __purr__ package provides functional programming tools that:
+
+1. for each element of x
+2. apply function f and
+3. provide consistent output
+
+# Prerequisites
+
+```{r slide-9}
+library(tidyverse)    # includes purrr and other pkgs we'll use
+library(repurrrsive)  # provides different data sets
+```
+
+## Your Turn!
+
+Run the following examples in your console. Don't worry about understanding 
+everything, but identify
+
+1. what is the input of each map function,
+2. what is the output of each map function, and
+3. talk to your neighbor about what you think each function is doing.
+
+```{r slide-14}
+# 1.
+iris %>% map(n_distinct)
+
+# 2.
+input <- c(1, 5, 10)
+input %>% map(runif, min = 1, max = 2)
+
+# 3.
+input %>% map(~ sample(1:10, size = .x, replace = TRUE))
+```
+
+
+# The function call
+
+We can make function calls in different ways:
+
+```{r slide-16-19}
+# function with default parameters, by default
+# .x will go in as the first argument
+map(input, runif)
+
+# same as above but supplying additional parameters
+map(input, runif, min = 1, max = 2)
+
+# anonymous function defined using formula shortcut
+# handy when .x is not first argument
+map(input, ~ sample(1:10, size = .x, replace = TRUE))
+
+# traditional approach to apply anonymous function
+# TOO VERBOSE!
+map(input, function(x) sample(1:10, size = .x, replace = TRUE))
+```
+
+
+## Your Turn!
+
+Remember how `list.files("data")` shows all the .csv files? See if you can:
+
+1. combine `list.files("data")` and `paste0("data/", ...)` to create the following inputs:
+
+```
+##  [1] "data/Month-01.csv" "data/Month-02.csv" "data/Month-03.csv"
+##  [4] "data/Month-04.csv" "data/Month-05.csv" "data/Month-06.csv"
+##  [7] "data/Month-07.csv" "data/Month-08.csv" "data/Month-09.csv"
+## [10] "data/Month-10.csv" "data/Month-11.csv"
+```
+
+2. now use this input vector, `map()`, and `read_csv()` to import all the data 
+files into a list
+
+```{r slide-21}
+list.files("data") %>% 
+  paste0("data/", .) %>%
+  map(______)
+```
+
+
+# Different `map()` functions for different outputs
+
+As previously mentioned, `map()` returns a list, which makes it the most general 
+of the “map” family because you can put anything in a list.
+
+It is inconvenient to return a list when a simpler data structure would do
+
+Alternative map() variants include:
+   - `map_dbl()` returns a double vector
+   - `map_lgl()` returns a logical vector
+   - `map_int()` returns a integer vector
+   - `map_chr()` returns a character vector
+   - `map_df()` returns a data frame
+
+- Its best to use the most restrictive function for the output
+- Informative errors will let you know when a problem arises with your output
+- You can always use `map()` to help debug the output error
+
+```{r slide-23}
+# output is double
+mtcars %>% map_dbl(sd)
+ 
+# output is integer
+iris %>% map_int(n_distinct)
+ 
+# output is logical
+iris %>% map_lgl(is.numeric)
+ 
+# output is character
+iris %>% map_chr(is.character)
+
+# output is data frame
+mtcars %>% map_df(scale)
+```
+
+## Your Turn!
+
+With the built-in airquality data set, use the most appropriate map functions to 
+answer these three questions:
+
+1. how many n_distinct values are in each column?
+2. are there any missing values in this data set?
+3. what is the standard deviation for each variable?
+
+```{r slide-24}
+
+```
+
+
+# Road `map()` Strategy
+
+1. Do it for one element
+2. Turn it into a recipe
+3. Use `map_*()` to do it to all elements
+
+## How many films has each character been in?
+
+- the sw_people data set contains all the characters from the Star Wars chronicles
+- What if we want to find how many $films each character has been in?
+
+```{r slide-27}
+glimpse(sw_people)
+```
+
+## #1 Do it for one element
+
+```{r slide-28}
+# do it for the first element
+x1 <- sw_people[[1]]
+length(x1$films)
+
+# do it for the second element
+x2 <- sw_people[[2]]
+length(x2$films)
+
+# do it for the third element
+x3 <- sw_people[[3]]
+length(x3$films)
+```
+
+## #2 Turn it into a recipe
+
+- `~`: anonymous function shortcut
+- `.x`: one element of our vector
+
+```{r slide-33}
+sw_people %>% map_int(~ length(.x$films))
+```
+
+## Your Turn!
+
+Use the:
+
+1. do it for one,
+2. create recipe,
+3. do it for all
+
+strategy to:
+
+1. Extract the name of each character
+2. Identify if the character is male
+3. Identify the proportion of characters that are male
+
+```{r slide-34}
+# use sw_people to answer the above questions
+sw_people
+```
+
+
+# Some advanced features to whet your appetite for more!
+
+## Renaming elements
+
+Pro tip: purrr has a `set_names()` function that makes renaming elements easy
+
+```{r slide-39}
+sw_people %>% 
+  map_chr(~ .x$name) %>%          # get names of each character
+  set_names(sw_people, .) %>%     # set list names
+  map_int(~ length(.x$films)) %>% # get number of films
+  sort(decreasing = TRUE) 
+```
+
+## Combining multiple functionals is powerful. 
+
+Say we wanted to compare the approval/disapproval ratio for Transaction_Status 
+across all our Month-XX.csv files.
+
+We can accomplish this with a sequence of functionals as follows:
+
+```{r slide-40a}
+list.files("data") %>% 
+  paste0("data/", .) %>%
+  map(read_csv) %>%
+  set_names(., nm = list.files("data")) %>%
+  map(~ .x$Transaction_Status == "Approved") %>%
+  map_dbl(mean)
+```
+
+Or with some initial functionals followed by __dplyr__:
+
+```{r slide-40b}
+list.files("data") %>% 
+  paste0("data/", .) %>%
+  map_dfr(read_csv) %>%  # row bind list to data frame
+  group_by(Month) %>%
+  summarize(Approval_ration = mean(Transaction_Status == "Approved"))
+```
+
+## `map2()` for two input elements
+
+Say we have a procedure based on two inputs. For example, we want to make 
+predictions for 10 countries with their respective linear models.
+
+```{r slide-41}
+# input 1: data
+glimpse(gap_split_small)
+
+# input 2: models
+(gap_mods <- gap_split_small %>%
+  map(~ lm(
+    formula = lifeExp ~ year + pop + gdpPercap,
+    data = .x
+    ))
+)
+```
+
+```{r slide-42a}
+# 1. do for one
+predict(gap_mods[[1]], gap_split_small[[1]])
+```
+
+```{r slide-42b, eval=FALSE}
+# 2. identify recipe
+predict(________, ________)
+```
+
+```{r slide-42c}
+# 3. do for all
+map2(gap_mods, gap_split_small, predict) %>% glimpse(give.attr = FALSE)
+```
+
+## `pmap()` for n input elements
+
+And if we have a procedure with $>2$ elements:
+
+Say we want to iterate over each of the following hyperparameters for a random forest model:
+
+```{r slide-43}
+# list of hyper parameter inputs
+hyper_params <- list(
+  mtry = c(20, 25, 30),
+  node_size = c(3, 6, 9),
+  sample_size = c(.50, .632, .80)
+)
+```
+
+```{r slide-44a}
+# 1. do it for one
+ranger::ranger(
+  formula         = Sale_Price ~ ., 
+  data            = AmesHousing::make_ames(), 
+  num.trees       = 500,
+  mtry            = hyper_params$mtry[1],
+  min.node.size   = hyper_params$node_size[1],
+  sample.fraction = hyper_params$sample_size[1],
+  seed            = 123
+  )$prediction.error
+```
+
+```{r slide-44b, eval=FALSE}
+# 2. identify recipe
+ranger::ranger(
+  formula         = Sale_Price ~ ., 
+  data            = AmesHousing::make_ames(), 
+  num.trees       = 500,
+  mtry            = ________,
+  min.node.size   = ________,
+  sample.fraction = ________,
+  seed            = 123
+  )$prediction.error
+```
+
+```{r slide44-c}
+# 3. do it for all
+pmap_dbl(
+  hyper_params, 
+  ~ ranger::ranger(
+    formula         = Sale_Price ~ ., 
+    data            = AmesHousing::make_ames(), 
+    num.trees       = 500,
+    mtry            = ..1,
+    min.node.size   = ..2,
+    sample.fraction = ..3,
+    seed            = 123
+    )$prediction.error
+  )
+```
+
+
+
+
+
