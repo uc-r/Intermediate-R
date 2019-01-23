@@ -1,0 +1,236 @@
+---
+title: "Iterating with Loops"
+output: html_notebook
+---
+
+# Intro
+
+Often, we need to execute repetitive code statements a particular number of times. 
+Or, we may even need to execute code for an undetermined number of times until a 
+certain condition no longer holds.
+
+* `for` loops: execute code for a prescribed number of times (Rule of 👍, 3x).
+* `while` & `repeat` loops: repeat code while condition holds
+* `next` & `break`: additional clauses to control flow
+
+# `for` loops
+
+Most basic for loop you will see
+
+```{r slide-5}
+for (i in 2010:2017) {
+  print(paste("The year is", i))
+}
+```
+
+Re-write the above with `seq_along()` on a pre-defined variable
+
+```{r slide-6}
+x <- 2010:2017
+
+for (i in seq_along(x)) {
+  print(paste("The year is", x[i]))
+}
+```
+
+## Your Turn!
+
+We can see all data sets that we have in the "data" folder with `list.files()`
+
+```{r slide-9a}
+list.files("data")
+```
+
+Say we wanted to import one of these files into R with the following steps
+
+```{r slide-9b}
+# here's a single file
+(first_df <- list.files("data")[1])
+
+# create path and import this single file
+df <- readr::read_csv(paste0("data/", first_df))
+
+# create a new name for file
+(new_name <- stringr::str_sub(first_df, end = -5))
+
+# dynamically rename file
+assign(new_name, df)
+```
+
+Can you incorporate these procedures into a for loop to import all the data 
+files?
+
+```{r slide-9c}
+# fill in these gaps
+for(i in _____) {
+  # 1: import data
+  df <- readr::read_csv(_____)
+  
+  # 2: remove ".csv" of name
+  new_name <- _____
+  
+  # 3: dynamically rename file
+  assign(_____, _____)
+}
+```
+
+## Controlling sequences
+
+There are two ways to control the progression of a loop:
+
+1. `next`: terminates the current iteration and advances to the next.
+2. `break`: exits the entire for loop.
+
+```{r slide-12}
+x <- c(1, 2, NA, 3)
+
+# use next to skip an iteration
+for (i in x) {
+  if (is.na(i)) next
+  print(i)
+}
+
+# use break to stop
+for (i in x) {
+  if (is.na(i)) break 
+  print(i)
+}
+```
+
+Note that break and next only control the progression of the direct loop 
+environment they are in.
+
+Break out of inner loop only:
+
+```{r slide-13a}
+x <- 1:3
+y <- c("a", "b", NA)
+
+for(i in x) {
+  print(i)
+  for(j in y) {
+    if(is.na(j)) break # break out of inner loop
+    print(j)
+  }
+}
+```
+
+Use `stop` to stop entire process. You'll learn more about stop() in the functions
+module!
+
+```{r slide-13b}
+for(i in x) {
+  print(i)
+  for(j in y) {
+    if(is.na(j)) stop("break in inner loop")
+    print(j)
+  }
+}
+```
+
+## Your Turn!
+
+The following code identifies the month of the data set:
+
+```{r slide-14a}
+# data files
+(data_files <- list.files("data"))
+
+# extract month number
+as.numeric(stringr::str_extract(data_files, "\\d+"))
+```
+
+Modify the following `for` loop with a `next` or `break` statement to:
+
+1. only import Month-01 through Month-07
+2. only import Month-08 through Month-10
+
+```{r slide-14b}
+# Modify this code chunk with you next/break statement
+for(i in list.files("data")) {
+  # steps to import each data set
+  df <- readr::read_csv(paste0("data/", i))
+  new_name <- stringr::str_sub(i, end = -5)
+  assign(new_name, df)
+  rm(df)
+}
+```
+
+
+# Repeating code for undefined number of iterations
+
+Sometimes we need to execute code for an undetermined number of times until a 
+certain condition no longer holds.
+
+Two very similar options:
+
+1. `while` loop
+   - Test condition first
+   - Then execute code
+2. `repeat` loop
+   - Execute code first
+   - Then test condition
+
+
+```{r slide-17a}
+# while loop
+coin <- c("heads", "tails")
+n_tries <- 0
+flip <- NULL
+
+while(length(unique(flip)) != 1) {
+  # flip coin 10x
+  flip <- sample(coin, 10, replace = TRUE)
+  
+  # add to the number of tries
+  n_tries <- n_tries + 1
+}
+
+n_tries
+```
+
+```{r slide-17b}
+coin <- c("heads", "tails")
+n_tries <- 0
+
+repeat {
+  # flip coin 10x
+  flip <- sample(coin, 10, replace = TRUE)
+  
+  # add to the number of tries
+  n_tries <- n_tries + 1
+  
+  # if current flip contains all heads or tails break
+  if(length(unique(flip)) == 1) {
+    print(n_tries)
+    break
+  }
+}
+```
+
+## Your Turn!
+
+An elementary example of a random walk is the random walk on the integer number 
+line, Z, which starts at 0 and at each step moves +1 or −1 with equal probability.
+
+See if you can do a random walk starting at 0, with each step either adding or subtracting 1. Have your random walk stop if it exceeds 100 or if the number of 
+steps taken exceeds 10,000.
+
+Fill in the this incomplete code chunk:
+
+```{r slide-18}
+value <- 0
+step <- 0
+repeat {
+  # randomly add or subtract 1
+  
+  # count step
+  
+  # break once our walk exceeds 100
+  if(some_condition) {
+    print(step)
+    break
+  }
+}
+```
+
