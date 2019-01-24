@@ -49,10 +49,11 @@ training:
 To prepare for this course please complete the following ***prior*** to
 the day of class:
 
-1.  Download the class material at [TBD](). This will provide you with
-    the data and R scripts to follow along during class. I have also
-    included handy cheat sheets that you can reference throughout
-    different sections.
+1.  Download the class material
+    [here](https://www.dropbox.com/sh/cafgzwtd7hbpz50/AABxrvnAqAwVU0rCCy55omg2a?dl=1).
+    This will provide you with the data and scripts to follow along
+    during class. Be sure to unzip the file otherwise you will have run
+    issues.
 
 2.  All slides are available via the hyperlinks in the schedule above so
     that you can follow along.
@@ -61,12 +62,16 @@ the day of class:
     you have an earlier version of R that is at least version 3.4.5 or
     later you should be ok but its best to be as current as possible.
     
-      - R: 3.5.1 \[[download latest
+      - R: 3.5.2 \[[download latest
         version](https://cran.r-project.org/)\]
       - RStudio: 1.1.463 \[[download latest
         version](https://www.rstudio.com/products/rstudio/download/#download)\]
 
-4.  This course makes some assumptions about your prior knowledge. To
+4.  Run the `00-run-this-script-first.R` script to make sure you have
+    all the required packages for this course. If you run into any
+    problems just let me know.
+
+5.  This course makes some assumptions about your prior knowledge. To
     ensure your success, be sure that you have reviewed and are
     comfortable with the material covered in the [Intro to
     R](https://github.com/uc-r/Intro-R) course.
