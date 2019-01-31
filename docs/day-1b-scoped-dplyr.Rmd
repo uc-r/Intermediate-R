@@ -606,15 +606,13 @@ class: yourturn
 
 Using the `flights` data:
 
-1. convert month and day variables to type character
-2. group by month and day
-3. select all variables containing "time" and "delay"
-4. compute the mean of all "time" and "delay" variables
+1. group by month and day
+2. select all variables containing "time" and "delay"
+3. compute the mean of all "time" and "delay" variables
 
 ```r
 # hint
 flights %>%
-  mutate(____) %>%
   group_by(____) %>%
   select(____) %>%
   summarize_all(____) 
@@ -630,10 +628,6 @@ flights %>%
 
 ```{r}
 flights %>%
-  mutate(
-    month = as.character(month),
-    day   = as.character(day)
-  ) %>%
   group_by(month, day) %>%
   select(contains("time"), contains("delay")) %>%
   summarize_all(mean, na.rm = TRUE)

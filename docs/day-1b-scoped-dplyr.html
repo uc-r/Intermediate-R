@@ -816,15 +816,13 @@ class: yourturn
 
 Using the `flights` data:
 
-1. convert month and day variables to type character
-2. group by month and day
-3. select all variables containing "time" and "delay"
-4. compute the mean of all "time" and "delay" variables
+1. group by month and day
+2. select all variables containing "time" and "delay"
+3. compute the mean of all "time" and "delay" variables
 
 ```r
 # hint
 flights %&gt;%
-  mutate(____) %&gt;%
   group_by(____) %&gt;%
   select(____) %&gt;%
   summarize_all(____) 
@@ -841,27 +839,23 @@ flights %&gt;%
 
 ```r
 flights %&gt;%
-  mutate(
-    month = as.character(month),
-    day   = as.character(day)
-  ) %&gt;%
   group_by(month, day) %&gt;%
   select(contains("time"), contains("delay")) %&gt;%
   summarize_all(mean, na.rm = TRUE)
 ## # A tibble: 365 x 10
 ## # Groups:   month [?]
-##    month day   dep_time sched_dep_time arr_time sched_arr_time air_time
-##    &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt;          &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;    &lt;dbl&gt;
-##  1 1     1        1385.          1372.    1562.          1568.     170.
-##  2 1     10       1333.          1339.    1523.          1540.     147.
-##  3 1     11       1326.          1337.    1508.          1538.     149.
-##  4 1     12       1300.          1303.    1493.          1508.     148.
-##  5 1     13       1395.          1399.    1495.          1597.     154.
-##  6 1     14       1336.          1335.    1531.          1539.     155.
-##  7 1     15       1328.          1330.    1533.          1541.     153.
-##  8 1     16       1364.          1332.    1530.          1543.     161.
-##  9 1     17       1343.          1336.    1541.          1544.     155.
-## 10 1     18       1341.          1335.    1539.          1543.     149.
+##    month   day dep_time sched_dep_time arr_time sched_arr_time air_time
+##    &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;          &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;    &lt;dbl&gt;
+##  1     1     1    1385.          1372.    1562.          1568.     170.
+##  2     1     2    1354.          1341.    1533.          1539.     162.
+##  3     1     3    1357.          1344.    1536.          1543.     157.
+##  4     1     4    1348.          1341.    1519.          1541.     151.
+##  5     1     5    1326.          1326.    1509.          1524.     161.
+##  6     1     6    1399.          1393.    1573.          1596.     160.
+##  7     1     7    1341.          1337.    1516.          1539.     145.
+##  8     1     8    1335.          1334.    1534.          1536.     149.
+##  9     1     9    1326.          1335.    1523.          1538.     153.
+## 10     1    10    1333.          1339.    1523.          1540.     147.
 ## # … with 355 more rows, and 3 more variables: time_hour &lt;dttm&gt;,
 ## #   dep_delay &lt;dbl&gt;, arr_delay &lt;dbl&gt;
 ```
